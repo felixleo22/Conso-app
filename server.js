@@ -2,6 +2,7 @@ const express = require('express');
 
 // Client routing
 const client = require('./client');
+
 const app = express();
 
 app.use('/', client);
