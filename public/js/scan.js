@@ -85,12 +85,12 @@ $(() => {
             Quagga.stop();
             setTimeout(() => { $('#livestream_scanner').modal('hide'); }, 1000);
             const settings = {
-                url: `https://world.openfoodfacts.org/api/v0/product/${result.codeResult.code}.json`,
+                url: `/api/product/${result.codeResult.code}`,
                 method: 'GET',
                 'Content-Type': 'application/json',
             };
             $.ajax(settings).done((response) => {
-                console.log(response.product.quantity);
+                console.log(response);
             });
         }
     });
