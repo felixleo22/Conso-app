@@ -1,3 +1,13 @@
 body{
-    background-color: brown;
+    background: url(../img/panier.webp) no-repeat center fixed; 
+    -webkit-background-size: cover; /* pour anciens Chrome et Safari */
+    background-size: cover;
+
+    color:white;
+}
+.zone{
+    background-color: rgb(46, 26, 26);
+    text-align: center;
+    border-radius: 10px;
+    width: min-content;
 }
