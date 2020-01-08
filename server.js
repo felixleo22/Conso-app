@@ -1,4 +1,5 @@
 const express = require('express');
+const twig = require('twig');
 
 // Client routing
 const client = require('./client');
@@ -8,12 +9,12 @@ const api = require('./api');
 const app = express();
 
 // App setting
-app.configure(() => {
-    // Twig settings
-    app.set('views', `${__dirname}/client/views`);
-    app.set('view engine', 'twig');
-});
+app.set('views', './client/views/');
+app.set('view engine', 'html');
+// eslint-disable-next-line no-underscore-dangle
+app.engine('html', twig.__express);
 
+// Routers
 app.use('/', client);
 app.use('/api', api);
 
