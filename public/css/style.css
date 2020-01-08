@@ -6,8 +6,20 @@ body{
     color:white;
 }
 .zone{
-    background-color: rgb(46, 26, 26);
+    position: absolute;
+     margin: auto;
+     top: 0;
+     right: 0;
+     bottom: 0;
+     left: 0;
+
+    background-color: white;
     text-align: center;
-    border-radius: 10px;
+    border-radius: 5px;
     width: min-content;
+    height: 50%;
+
+}
+header{
+    background-color: white;
 }
