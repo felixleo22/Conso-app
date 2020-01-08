@@ -14,7 +14,7 @@ router.get('/product/:code', (req, res) => {
         .then((json) => {
             if (json.status === 0) throw new Error(json.status_verbose);
             // FIXME cela ne s'insere pas
-            db.get('products').findOneAndUpdate({
+            db.product.insert({
                 code: barcode,
                 prix: 5,
             });
