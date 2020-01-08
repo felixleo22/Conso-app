@@ -9,6 +9,8 @@ const app = express();
 app.use('/', client);
 app.use('/api', api);
 
+app.use('/static', express.static('public'));
+
 app.listen(8080, () => {
     console.log('Conso App server is running !');
 });
