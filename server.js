@@ -1,10 +1,10 @@
 const express = require('express');
 
+// Client routing
+const client = require('./client');
 const app = express();
 
-app.get('/', (req, res) => {
-    res.send('Bienvenue sur la page Conso App');
-});
+app.use('/', client);
 
 app.listen(8080, () => {
     console.log('Conso App server is running !');
