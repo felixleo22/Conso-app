@@ -1,8 +1,9 @@
 const fetch = require('node-fetch');
 const router = require('express').Router();
+// const mongodb = require('mongodb').MongoClient;
 
 router.get('/', (req, res) => {
-    res.send('L API de conso App focntionne !');
+    res.send('L API de conso App fonctionne !');
 });
 
 router.get('/product/:code', (req, res) => {
