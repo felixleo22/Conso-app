@@ -6,8 +6,6 @@ $(() => {
         inputStream: {
             type: 'LiveStream',
             constraints: {
-                width: { min: 640 },
-                height: { min: 480 },
                 aspectRatio: { min: 1, max: 100 },
                 facingMode: 'environment',
                 // or "user" for the front camera
