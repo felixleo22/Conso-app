@@ -1,7 +1,7 @@
 const router = require('express').Router();
 
 router.get('/', (req, res) => {
-    res.send('Bienvenue sur Conso App !');
+    res.render('home.html.twig');
 });
 
 router.get('/zinzin', (req, res) => {
