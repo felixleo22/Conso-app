@@ -8,4 +8,8 @@ router.get('/zinzin', (req, res) => {
     res.sendFile('./client/views/index.html', { root: '.' });
 });
 
+router.get('/accueil', (req, res) => {
+    res.sendFile('./client/views/accueil.html', { root: '.' });
+});
+
 module.exports = router;
