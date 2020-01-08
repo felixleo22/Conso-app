@@ -88,7 +88,7 @@ $(() => {
                 'Content-Type': 'application/json',
             };
             $.ajax(settings).done((response) => {
-                console.log(response);
+                $('#result').text(response.product.product_name);
             });
         }
     });
