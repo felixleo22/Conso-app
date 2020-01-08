@@ -1,6 +1,6 @@
 const fetch = require('node-fetch');
 const router = require('express').Router();
-// const mongodb = require('mongodb').MongoClient;
+const db = require('../lib/mongo');
 
 router.get('/', (req, res) => {
     res.send('L API de conso App fonctionne !');
@@ -13,6 +13,11 @@ router.get('/product/:code', (req, res) => {
         .then((data) => data.json())
         .then((json) => {
             if (json.status === 0) throw new Error(json.status_verbose);
+            // FIXME cela ne s'insere pas
+            db.get('products').findOneAndUpdate({
+                code: barcode,
+                prix: 5,
+            });
             res.send(json);
         })
         .catch((error) => {
