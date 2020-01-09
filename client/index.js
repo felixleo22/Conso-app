@@ -4,7 +4,7 @@ router.get('/', (req, res) => {
     res.render('home.html.twig');
 });
 
-router.get('/zinzin', (req, res) => {
+router.get('/scan', (req, res) => {
     res.sendFile('./client/views/index.html', { root: '.' });
 });
 
