@@ -4,21 +4,7 @@ body {
     /* pour anciens Chrome et Safari */
     background-size: cover;
     color: white;
-}
-
-.zone {
-    /*position: absolute;
-    margin: auto;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    background-color: white;
-    text-align: center;
-    border-radius: 5px;
-    width: min-content;
-    height: 50%;
-    color: black;*/
+    min-width: 306px;
 }
 
 i {
@@ -88,4 +74,16 @@ h1 {
     color: white;
     text-shadow: 2px 2px 2px black;
     font-weight: bold;
+}
+
+button{
+    width: 100%;
+}
+
+form{
+    background-color: rgba(41, 41, 41,0.8);
+    max-width: 300px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 5px;
 }
