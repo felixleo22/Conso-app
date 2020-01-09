@@ -25,9 +25,9 @@ services:
     restart: always
     container_name: database
     environment:
-        - MONGO_INITDB_DATABASE = ConsoApp
-        - MONGO_INITDB_USERNAME = root
-        - MONGO_INITDB_PASSWORD = example
+        - MONGO_INITDB_DATABASE=ConsoApp
+        - MONGO_INITDB_USERNAME=root
+        - MONGO_INITDB_PASSWORD=example
     volumes:
         - ./mongo-volume:/data/db
     ports:

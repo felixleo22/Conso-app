@@ -15,7 +15,7 @@ router.get('/product/:code', (req, res) => {
         .then((json) => {
             if (json.status === 0) throw new Error(json.status_verbose);
             // FIXME cela ne s'insere pas
-            db.product.insert({
+            db.get('products').insert({
                 code: barcode,
                 prix: 5,
             });
@@ -32,9 +32,10 @@ router.get('/product/:code', (req, res) => {
 
 // router to see all of bdd
 router.get('/bdd', (req, res) => {
-    const val = db.products.findOne();
-    console.log(val);
-    res.send(val);
+    db.get('products').findOne({}, (err, result) => {
+        if (err) console.log(err);
+        res.send(result);
+    });
 });
 
 module.exports = router;

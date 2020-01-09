@@ -27,7 +27,7 @@ app.use('/static', express.static('public'));
 app.listen(8080, () => {
     console.log('Conso App server is running !');
     // FIXME problème de connexion à mongo
-    db.connect('mongodb://consoapp.net:27017/', 'ConsoApp', (err, data) => {
+    db.connect('mongodb://mongodb/ConsoApp', (err, data) => {
         if (err) {
             throw new Error(err);
         }
