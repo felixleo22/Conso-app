@@ -23,7 +23,7 @@ services:
     image: 'mongo'
     container_name: 'mongo'
     environment:
-        - MONGO_INITDB_DATABASE = firstmongodb
+        - MONGO_INITDB_DATABASE = ConsoApp
         - MONGO_INITDB_USERNAME = root
         - MONGO_INITDB_PASSWORD = rootpassword
     volumes:
