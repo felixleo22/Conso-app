@@ -6,6 +6,7 @@ router.get('/', (req, res) => {
     res.send('L API de conso App fonctionne !');
 });
 
+// router to send barcode with price
 router.get('/product/:code', (req, res) => {
     const barcode = req.params.code;
     const url = `https://world.openfoodfacts.org/api/v0/product/${barcode}.json`;
@@ -27,6 +28,13 @@ router.get('/product/:code', (req, res) => {
                 message: error.message,
             });
         });
+});
+
+// router to see all of bdd
+router.get('/bdd', (req, res) => {
+    const val = db.products.findOne();
+    console.log(val);
+    res.send(val);
 });
 
 module.exports = router;
