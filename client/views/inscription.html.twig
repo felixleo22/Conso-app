@@ -1,14 +1,7 @@
 <!doctype html>
 <html lang="fr">
 
-<head>
-    <meta charset="utf-8">
-    <title>Connexion - Conso App 2.0</title>
-    <script src="https://kit.fontawesome.com/d30d61b515.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    <link rel="stylesheet" href="/static/css/style.css">
-    <script type="text/javascript" src="/static/js/menu.js"></script>
-</head>
+    {% include 'base/head.html.twig' %}
 
 <body>
     <div class="header">
@@ -19,25 +12,31 @@
             <a class="menu-large" href="accueil"><i class="fas fa-shopping-basket"></i></a>
             <a class="menu-large" href="accueil"><i class="fas fa-user-alt"></i></a>
             <a class="menu-large" href="accueil"><i class="fas fa-sign-in-alt"></i></a>
-
         </div>
     </div>
 
-    <h1 class="display-7 text-center">Connexion</h1>
+    <div id="app"> 
+        <p> {{test}} </p>
+    </div>
+    
+
+    <h1 class="display-7 text-center">Inscription</h1>
 
     <form>
         <div class="form-group">
-      
             <label for="email">Adresse Email</label>
-            <input type="email" class="form-control" id="email" placeholder="Email">
+            <input id="email" type="email" class="form-control"  placeholder="Email">
     
             <label for="password1">Mot de passe</label>
-            <input type="password" class="form-control" id="password1" placeholder="Mot de passe">
-    </div>
+            <input id="password1" type="password" class="form-control"  placeholder="Mot de passe">
+  
+            <label for="password2">Confirmez votre mot de passe</label>
+            <input id="password2" type="password" class="form-control" placeholder="Mot de passe">
+        </div>
         <button type="submit" class="btn btn-primary">S'inscrire</button>
-        <p>Pas de compte ? <a href="/inscription">S'inscire</a></p>
+        <p>Déjà un compte ? <a href="/connexion">Se connecter</a></p>
     </form>
     
 </body>
-
+<script type="text/javascript" src="/static/js/vue/vue.js"></script>
 </html>

@@ -5,19 +5,19 @@ router.get('/', (req, res) => {
 });
 
 router.get('/scan', (req, res) => {
-    res.sendFile('./client/views/index.html', { root: '.' });
+    res.render('index.html.twig', { root: '.' });
 });
 
 router.get('/accueil', (req, res) => {
-    res.sendFile('./client/views/accueil.html', { root: '.' });
+    res.render('accueil.html.twig', { root: '.' });
 });
 
 router.get('/connexion', (req, res) => {
-    res.sendFile('./client/views/connexion.html', { root: '.' });
+    res.render('connexion.html.twig', { root: '.' });
 });
 
 router.get('/inscription', (req, res) => {
-    res.sendFile('./client/views/inscription.html', { root: '.' });
+    res.render('inscription.html.twig', { root: '.' });
 });
 
 module.exports = router;
