@@ -1,10 +1,12 @@
 const fetch = require('node-fetch');
 const router = require('express').Router();
+const db = require('../lib/mongo');
 
 router.get('/', (req, res) => {
-    res.send('L API de conso App focntionne !');
+    res.send('L API de conso App fonctionne !');
 });
 
+// router to send barcode with price
 router.get('/product/:code', (req, res) => {
     const barcode = req.params.code;
     const url = `https://world.openfoodfacts.org/api/v0/product/${barcode}.json`;
@@ -12,6 +14,11 @@ router.get('/product/:code', (req, res) => {
         .then((data) => data.json())
         .then((json) => {
             if (json.status === 0) throw new Error(json.status_verbose);
+            // FIXME cela ne s'insere pas
+            db.get('products').insert({
+                code: barcode,
+                prix: 5,
+            });
             res.send(json);
         })
         .catch((error) => {
@@ -21,6 +28,14 @@ router.get('/product/:code', (req, res) => {
                 message: error.message,
             });
         });
+});
+
+// router to see all of bdd
+router.get('/bdd', (req, res) => {
+    db.get('products').findOne({}, (err, result) => {
+        if (err) console.log(err);
+        res.send(result);
+    });
 });
 
 module.exports = router;

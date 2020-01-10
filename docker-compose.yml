@@ -1,33 +1,36 @@
-version: "3"
+version: "2"
 
-networks:
-  lbs.net:
+networks: 
+  consoapp.net:
     driver: bridge
 
 services:
-  client:
+  node:
     image: node
-    environment:
-      - NODE_ENV=dev
-      - VHOST_HOSTNAME=client.local
-    ports:
-      - "80:8080"
+    container_name: node
+    user: "node"
+    working_dir: /app/client
     volumes:
       - .:/app/client
-    working_dir: /app/client
-    command: npm run dev
-    networks:
-      - lbs.net
+    command: "npm run dev"
+    ports:
+      - "80:8080"
+    networks: 
+      - 'consoapp.net'
+    links: 
+      - database:mongodb
       
   database:
-    image: 'mongo'
-    container_name: 'mongo'
+    image: mongo
+    restart: always
+    container_name: database
     environment:
-        - MONGO_INITDB_DATABASE = firstmongodb
-        - MONGO_INITDB_USERNAME = root
-        - MONGO_INITDB_PASSWORD = rootpassword
+        - MONGO_INITDB_DATABASE=ConsoApp
+        - MONGO_INITDB_USERNAME=root
+        - MONGO_INITDB_PASSWORD=example
     volumes:
-        - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
         - ./mongo-volume:/data/db
     ports:
-        - '27017-27019:27017-27019'
+        - '27017:27017'
+    networks: 
+        - 'consoapp.net'
