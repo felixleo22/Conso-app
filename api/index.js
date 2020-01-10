@@ -14,12 +14,14 @@ router.get('/product/:code', (req, res) => {
         .then((data) => data.json())
         .then((json) => {
             if (json.status === 0) throw new Error(json.status_verbose);
-            // FIXME cela ne s'insere pas
-            db.get('products').insert({
-                code: barcode,
-                prix: 5,
+
+            db.get('product').findOne({ _id: barcode }, (err, doc) => {
+                const product = doc || { _id: barcode, shop: [] };
+
+                product.data = json.product;
+
+                res.send(product);
             });
-            res.send(json);
         })
         .catch((error) => {
             res.status(404).json({

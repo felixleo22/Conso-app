@@ -1,5 +1,6 @@
 const express = require('express');
 const twig = require('twig');
+const bodyparser = require('body-parser'); 
 
 // Mongodb
 const db = require('./lib/mongo');
@@ -9,7 +10,6 @@ const client = require('./client');
 const api = require('./api');
 
 
-
 const app = express();
 
 // App setting
@@ -17,6 +17,12 @@ app.set('views', './client/views/');
 app.set('view engine', 'html');
 // eslint-disable-next-line no-underscore-dangle
 app.engine('html', twig.__express);
+
+// middleware
+app.use(bodyparser({
+    extended: false,
+}));
+app.use(bodyparser.json());
 
 // Routers
 app.use('/', client);
@@ -31,6 +37,6 @@ app.listen(8080, () => {
         if (err) {
             throw new Error(err);
         }
-        console.log(data);
+        console.log('Connected to database');
     });
 });
