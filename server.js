@@ -2,12 +2,12 @@ const express = require('express');
 const twig = require('twig');
 
 // Mongodb
+// eslint-disable-next-line import/no-unresolved
 const db = require('./lib/mongo');
 // Client routing
 const client = require('./client');
 // API routing
 const api = require('./api');
-
 
 
 const app = express();
