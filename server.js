@@ -1,6 +1,6 @@
 const express = require('express');
 const twig = require('twig');
-const bodyparser = require('body-parser'); 
+const bodyparser = require('body-parser');
 
 // Mongodb
 const db = require('./lib/mongo');
@@ -32,8 +32,7 @@ app.use('/static', express.static('public'));
 
 app.listen(8080, () => {
     console.log('Conso App server is running !');
-    // FIXME problème de connexion à mongo
-    db.connect('mongodb://mongodb/ConsoApp', (err, data) => {
+    db.connect('mongodb://mongodb/ConsoApp', (err) => {
         if (err) {
             throw new Error(err);
         }
