@@ -1,7 +1,11 @@
 /* eslint-disable no-underscore-dangle */
 const fetch = require('node-fetch');
 const router = require('express').Router();
-const db = require('../lib/mongo');
+const bodyParser = require('body-parser');
+// eslint-disable-next-line import/no-unresolved
+const db = require('./lib/mongo');
+
+router.use(bodyParser.json());
 
 router.get('/', (req, res) => {
     res.send('L API de conso App fonctionne !');
@@ -74,6 +78,31 @@ router.put('/product/:code', (req, res) => {
                 message: error.message,
             });
         });
+});
+
+// router to see all of bdd
+router.get('/bdd', (req, res) => {
+    db.get('magasin').find().toArray((result) => {
+        res.json(result);
+    });
+});
+
+router.post('/:magasin', (req, res) => {
+    if (req.params.magasin !== 'magasin') {
+        res.status(400).json({
+            type: 'error',
+            error: 400,
+            message: 'Route non connue',
+        });
+    } else {
+        const data = req.body;
+        db.get('shops').insert(data);
+        res.status(200).json({
+            type: 'success',
+            code: 200,
+            content: data,
+        });
+    }
 });
 
 module.exports = router;

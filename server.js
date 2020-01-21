@@ -3,6 +3,7 @@ const twig = require('twig');
 const bodyparser = require('body-parser');
 
 // Mongodb
+// eslint-disable-next-line import/no-unresolved
 const db = require('./lib/mongo');
 // Client routing
 const client = require('./client');
