@@ -2,8 +2,7 @@
 const fetch = require('node-fetch');
 const router = require('express').Router();
 const bodyParser = require('body-parser');
-// eslint-disable-next-line import/no-unresolved
-const db = require('./lib/mongo');
+const db = require('../lib/mongo');
 
 router.use(bodyParser.json());
 
@@ -65,7 +64,7 @@ router.put('/product/:code', (req, res) => {
                         shops: [inputObj],
                     },
                 },
-            // eslint-disable-next-line arrow-body-style
+                // eslint-disable-next-line arrow-body-style
             }], () => {
                 // TODO prendre en charge les erreurs
                 return res.send('ok');
@@ -87,22 +86,14 @@ router.get('/bdd', (req, res) => {
     });
 });
 
-router.post('/:magasin', (req, res) => {
-    if (req.params.magasin !== 'magasin') {
-        res.status(400).json({
-            type: 'error',
-            error: 400,
-            message: 'Route non connue',
-        });
-    } else {
-        const data = req.body;
-        db.get('shops').insert(data);
-        res.status(200).json({
-            type: 'success',
-            code: 200,
-            content: data,
-        });
-    }
+router.post('/magasin', (req, res) => {
+    const data = req.body;
+    db.get('shops').insert(data);
+    res.status(200).json({
+        type: 'success',
+        code: 200,
+        content: data,
+    });
 });
 
 module.exports = router;
