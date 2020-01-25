@@ -65,9 +65,9 @@ router.put('/product/:code', (req, res) => {
                     },
                 },
                 // eslint-disable-next-line arrow-body-style
-            }], () => {
+            }], (error, result) => {
                 // TODO prendre en charge les erreurs
-                return res.send('ok');
+                return res.json(result);
             });
         })
         .catch((error) => {
@@ -79,13 +79,6 @@ router.put('/product/:code', (req, res) => {
         });
 });
 
-// router to see all of bdd
-router.get('/bdd', (req, res) => {
-    db.get('magasin').find().toArray((result) => {
-        res.json(result);
-    });
-});
-
 router.post('/magasin', (req, res) => {
     const data = req.body;
     db.get('shops').insert(data);
@@ -95,5 +88,10 @@ router.post('/magasin', (req, res) => {
         content: data,
     });
 });
+
+/* Errors and unknown routes */
+router.all('*', (req, res) => res.status(400).json({ type: 'error', code: 400, message: 'bad request' }));
+// eslint-disable-next-line no-unused-vars
+router.use((error, req, res, next) => res.status(500).json({ type: 'error', code: 500, message: error.message }));
 
 module.exports = router;
