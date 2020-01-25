@@ -45,7 +45,6 @@ router.put('/product/:code', (req, res) => {
         .then((json) => {
             if (json.status === 0) throw new Error(json.status_verbose);
 
-            // TODO update shop prices
             const inputObj = { _id: shop, price };
             db.get('product').bulkWrite([{
                 updateOne: {
@@ -65,17 +64,15 @@ router.put('/product/:code', (req, res) => {
                     },
                 },
                 // eslint-disable-next-line arrow-body-style
-            }], (error, result) => {
-                // TODO prendre en charge les erreurs
-                return res.json(result);
+            }], (result) => {
+                if (!result.result.ok) {
+                    throw new Error("Can't create or update this product");
+                }
+                return res.status(204).send('ok');
             });
         })
         .catch((error) => {
-            res.status(404).json({
-                type: 'error',
-                error: 404,
-                message: error.message,
-            });
+            throw new Error(`Cant update this product : ${error.message}`);
         });
 });
 
