@@ -1,17 +1,23 @@
 /* eslint-disable no-underscore-dangle */
+const express = require('express');
+const bodyparser = require('body-parser');
 const fetch = require('node-fetch');
-const router = require('express').Router();
-const bodyParser = require('body-parser');
-const db = require('../lib/mongo');
 
-router.use(bodyParser.json());
+// eslint-disable-next-line import/no-unresolved
+const db = require('./lib/mongo');
 
-router.get('/', (req, res) => {
-    res.send('L API de conso App fonctionne !');
+const app = express();
+
+// middleware
+app.use(bodyparser.json());
+
+// Routers
+app.get('/', (req, res) => {
+    res.json({ name: 'Conso App' });
 });
 
 // router to send barcode with price
-router.get('/product/:code', (req, res) => {
+app.get('/product/:code', (req, res) => {
     const barcode = req.params.code;
     const url = `https://world.openfoodfacts.org/api/v0/product/${barcode}.json`;
     fetch(url)
@@ -36,7 +42,7 @@ router.get('/product/:code', (req, res) => {
         });
 });
 
-router.put('/product/:code', (req, res) => {
+app.put('/product/:code', (req, res) => {
     const { shop, price } = req.body;
     const barcode = req.params.code;
     const url = `https://world.openfoodfacts.org/api/v0/product/${barcode}.json`;
@@ -76,7 +82,7 @@ router.put('/product/:code', (req, res) => {
         });
 });
 
-router.post('/magasin', (req, res) => {
+app.post('/magasin', (req, res) => {
     const data = req.body;
     db.get('shops').insert(data);
     res.status(200).json({
@@ -87,8 +93,16 @@ router.post('/magasin', (req, res) => {
 });
 
 /* Errors and unknown routes */
-router.all('*', (req, res) => res.status(400).json({ type: 'error', code: 400, message: 'bad request' }));
+app.all('*', (req, res) => res.status(400).json({ type: 'error', code: 400, message: 'bad request' }));
 // eslint-disable-next-line no-unused-vars
-router.use((error, req, res, next) => res.status(500).json({ type: 'error', code: 500, message: error.message }));
+app.use((error, req, res, next) => res.status(500).json({ type: 'error', code: 500, message: error.message }));
 
-module.exports = router;
+app.listen(8080, () => {
+    console.log('Conso App API is running !');
+    db.connect('mongodb://mongodb/ConsoApp', (err) => {
+        if (err) {
+            throw new Error(err);
+        }
+        console.log('Connected to database');
+    });
+});
