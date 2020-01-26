@@ -6,7 +6,7 @@ networks:
 
 services:
   node:
-    image: node
+    image: node:latest
     container_name: node
     user: "node"
     working_dir: /app/client

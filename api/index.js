@@ -1,5 +1,6 @@
 const fetch = require('node-fetch');
 const router = require('express').Router();
+const crypto = require('crypto');
 const db = require('../lib/mongo');
 
 router.get('/', (req, res) => {
@@ -36,6 +37,17 @@ router.get('/bdd', (req, res) => {
         if (err) console.log(err);
         res.send(result);
     });
+});
+
+router.get('/signIn', (req, res) => {
+    // recuper les données du compte
+    const { user } = req.body;
+    // inserer dans la bdd
+    db.get('user').insert({
+        email: user.email,
+        password: crypto.createHmac('sha256', user.password).update('I love cupcakes').digest('hex'),
+    });
+    return res;
 });
 
 module.exports = router;

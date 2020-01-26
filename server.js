@@ -8,8 +8,6 @@ const client = require('./client');
 // API routing
 const api = require('./api');
 
-
-
 const app = express();
 
 // App setting
