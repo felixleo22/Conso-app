@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 /* eslint-disable no-underscore-dangle */
 const express = require('express');
 const bodyparser = require('body-parser');
@@ -95,19 +96,23 @@ app.post('/magasin', (req, res) => {
     });
 });
 
-app.get('/signIn', (req, res) => {
-    console.log(req.body);
-    // TODO verifier si c'est une adresse mail
-    // verifier s'il n'existe deja pas
-    // verifier si les 2 mdp identique
-    // recuper les données du compte
-    const { email, password1 } = req.body;
-    // inserer dans la bdd
-    db.get('user').insert({
-        email,
-        password: crypto.createHmac('sha256', password1).update('I love cupcakes').digest('hex'),
+app.post('/signIn', (req, res) => {
+    const { email, password1, password2 } = req.body;
+    db.get('user').findOne({ email }, (err, doc) => {
+        if (doc) {
+            return res.status(400).json(({ type: 'error', code: 400, message: 'Email déjà utilisé' }));
+        }
+        if (password1 !== password2) {
+            return res.status(400).json(({ type: 'error', code: 400, message: 'Mot de passe différent' }));
+        }
+        db.get('user').insert({
+            email,
+            password: crypto.createHmac('sha512', password1).update('I love cupcakes').digest('hex'),
+        }, (error, result) => {
+            if (error) throw error;
+            return res.status(201).json(({ type: 'success', code: 201, user: result }));
+        });
     });
-    return res.status(201).json(({ type: 'success', code: 201 }));
 });
 
 /* Errors and unknown routes */
