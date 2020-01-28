@@ -20,12 +20,18 @@ const routes = [
       return import(/* webpackChunkName: "about" */ '../views/About.vue');
     },
   },
-
   {
     path: '/signin',
     name: 'signIn',
     component() {
       return import('../views/SignIn.vue');
+    },
+  },
+  {
+    path: '/scan',
+    name: 'scan',
+    component() {
+      return import('../views/Scan.vue');
     },
   },
 ];
