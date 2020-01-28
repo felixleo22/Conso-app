@@ -2,6 +2,7 @@
 const express = require('express');
 const bodyparser = require('body-parser');
 const fetch = require('node-fetch');
+const cors = require('cors');
 const crypto = require('crypto');
 
 // eslint-disable-next-line import/no-unresolved
@@ -10,6 +11,7 @@ const db = require('./lib/mongo');
 const app = express();
 
 // middleware
+app.use(cors());
 app.use(bodyparser.json());
 
 // Routers
@@ -94,15 +96,15 @@ app.post('/magasin', (req, res) => {
 });
 
 app.get('/signIn', (req, res) => {
+    console.log(req.body);
     // TODO verifier si c'est une adresse mail
     // verifier s'il n'existe deja pas
     // verifier si les 2 mdp sont identfiques
-
     // recuper les données du compte
     const { email, password1, password2 } = req.body;
     // inserer dans la bdd
     db.get('user').insert({
-        email: email,
+        email,
         password: crypto.createHmac('sha256', password1).update('I love cupcakes').digest('hex'),
     });
     return res.status(201).json(({ type: 'success', code: 201 }));

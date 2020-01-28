@@ -1,6 +1,6 @@
 
 <template>
-  <form>
+  <form @submit.prevent="signIn">
     <label for="email">Adresse Email</label>
     <input v-model="email" id="email" type="email" placeholder="Email" />
 
@@ -9,11 +9,7 @@
 
     <label for="password2">Confirmez votre mot de passe</label>
     <input v-model="password2" id="password2" type="password" placeholder="Mot de passe" />
-    <button v-on:click="signIn" type="submit">S'inscrire</button>
-    <p>
-      Déjà un compte ?
-      <a>Se connecter</a>
-    </p>
+    <button v-on:click="signIn" role="button">S'inscrire</button>
   </form>
 </template>
 
@@ -30,15 +26,23 @@ export default {
   }),
   methods: {
     signIn() {
-      axios.post(`${location.host}:8080/signIn`,
+      axios.post(`//${location.host}:8080/signIn`,
         {
           email: this.email,
           password1: this.password1,
           password2: this.password2,
+        },
+        {
+          headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Content-Type': 'application/json',
+          },
         }).then((response) => {
         if (!response.status === 201) {
           console.log('not work');
+          return;
         }
+        this.$router.push('about');
       });
     },
   },
