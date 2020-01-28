@@ -5,16 +5,28 @@ networks:
     driver: bridge
 
 services:
-  node:
+  client:
     image: node
-    container_name: node
+    container_name: consoapp_client
     user: "node"
     working_dir: /app/client
     volumes:
-      - .:/app/client
+      - ./client:/app/client
     command: "npm run dev"
     ports:
       - "80:8080"
+    networks: 
+      - 'consoapp.net'
+  api:
+    image: node
+    container_name: consoapp_api
+    user: "node"
+    working_dir: /app/client
+    volumes:
+      - ./api:/app/client
+    command: "npm run dev"
+    ports:
+      - "8080:8080"
     networks: 
       - 'consoapp.net'
     links: 
