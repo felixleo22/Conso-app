@@ -99,9 +99,9 @@ app.get('/signIn', (req, res) => {
     console.log(req.body);
     // TODO verifier si c'est une adresse mail
     // verifier s'il n'existe deja pas
-    // verifier si les 2 mdp sont identfiques
+    // verifier si les 2 mdp identique
     // recuper les données du compte
-    const { email, password1, password2 } = req.body;
+    const { email, password1 } = req.body;
     // inserer dans la bdd
     db.get('user').insert({
         email,
