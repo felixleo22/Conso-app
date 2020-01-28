@@ -2,6 +2,7 @@
 const express = require('express');
 const bodyparser = require('body-parser');
 const fetch = require('node-fetch');
+const crypto = require('crypto');
 
 // eslint-disable-next-line import/no-unresolved
 const db = require('./lib/mongo');
@@ -90,6 +91,17 @@ app.post('/magasin', (req, res) => {
         code: 200,
         content: data,
     });
+});
+
+app.get('/signIn', (req, res) => {
+    // recuper les données du compte
+    const { user } = req.body;
+    // inserer dans la bdd
+    db.get('user').insert({
+        email: user.email,
+        password: crypto.createHmac('sha256', user.password).update('I love cupcakes').digest('hex'),
+    });
+    return res;
 });
 
 /* Errors and unknown routes */
