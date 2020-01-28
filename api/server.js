@@ -94,14 +94,18 @@ app.post('/magasin', (req, res) => {
 });
 
 app.get('/signIn', (req, res) => {
+    // TODO verifier si c'est une adresse mail
+    // verifier s'il n'existe deja pas
+    // verifier si les 2 mdp sont identfiques
+
     // recuper les données du compte
-    const { user } = req.body;
+    const { email, password1, password2 } = req.body;
     // inserer dans la bdd
     db.get('user').insert({
-        email: user.email,
-        password: crypto.createHmac('sha256', user.password).update('I love cupcakes').digest('hex'),
+        email: email,
+        password: crypto.createHmac('sha256', password1).update('I love cupcakes').digest('hex'),
     });
-    return res;
+    return res.status(201).json(({ type: 'success', code: 201 }));
 });
 
 /* Errors and unknown routes */
