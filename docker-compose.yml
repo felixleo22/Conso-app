@@ -46,3 +46,12 @@ services:
         - '27017:27017'
     networks: 
         - 'consoapp.net'
+
+  dbmanager:
+    image: mongo-express
+    networks:
+      - consoapp.net
+    ports:
+      - "8081:8081"
+    links:
+      - database:mongo
