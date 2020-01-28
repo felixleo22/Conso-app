@@ -1,6 +1,6 @@
 
 <template>
-  <form @submit.prevent="signIn">
+<div>
     <label for="email">Adresse Email</label>
     <input v-model="email" id="email" type="email" placeholder="Email" />
 
@@ -10,7 +10,7 @@
     <label for="password2">Confirmez votre mot de passe</label>
     <input v-model="password2" id="password2" type="password" placeholder="Mot de passe" />
     <button v-on:click="signIn" role="button">S'inscrire</button>
-  </form>
+</div>
 </template>
 
 <script>
@@ -39,9 +39,10 @@ export default {
           },
         }).then((response) => {
         if (!response.status === 201) {
-          console.log('not work');
+          // TODO afficher le message d'erreur
           return;
         }
+        console.log(response.data);
         this.$router.push('about');
       });
     },
