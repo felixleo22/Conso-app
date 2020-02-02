@@ -9,6 +9,9 @@
                 :readerTypes="['ean_reader']">
             </v-quagga>
         </div>
+        <div v-if="product">
+            {{product.name}}
+        </div>
     </div>
 </template>
 <script>
@@ -26,6 +29,7 @@ export default {
         height: 480,
       },
       barcode: '',
+      product: null,
       scanning: false,
     };
   },
