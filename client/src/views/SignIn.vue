@@ -40,8 +40,7 @@ export default {
           // TODO afficher le message d'erreur
           return;
         }
-        console.log(response.data);
-        this.$router.push('about');
+        this.$router.push('login');
       });
     },
   },
