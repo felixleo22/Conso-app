@@ -26,7 +26,7 @@ app.get('/', (req, res) => {
     res.json({ name: 'Conso App' });
 });
 
-app.use(RouterProducts);
+// app.use(RouterProducts);
 app.use(RouterShops);
 app.use(RouterUsers);
 

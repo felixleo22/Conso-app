@@ -51,9 +51,8 @@ router.put('/shop/:id', (req, res) => {
 
                 return res.status(201).json(newShop);
             });
-        } else {
-            return res.json(shop);
         }
+        return res.json(shop);
     });
 });
 
