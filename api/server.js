@@ -5,7 +5,7 @@ const bodyparser = require('body-parser');
 const cors = require('cors');
 
 // routers
-const RouterProducts = require('./routers/RouterProducts');
+// const RouterProducts = require('./routers/RouterProducts');
 const RouterShops = require('./routers/RouterShops');
 const RouterUsers = require('./routers/RouterUsers');
 
@@ -26,7 +26,7 @@ app.get('/', (req, res) => {
     res.json({ name: 'Conso App' });
 });
 
-app.use(RouterProducts);
+// app.use(RouterProducts);
 app.use(RouterShops);
 app.use(RouterUsers);
 
