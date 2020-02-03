@@ -3,9 +3,11 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyparser = require('body-parser');
 const cors = require('cors');
-const crypto = require('crypto');
 
+// routers
+const RouterProducts = require('./routers/RouterProducts');
 const RouterShops = require('./routers/RouterShops');
+const RouterUsers = require('./routers/RouterUsers');
 
 // create app
 const app = express();
@@ -24,38 +26,10 @@ app.get('/', (req, res) => {
     res.json({ name: 'Conso App' });
 });
 
+app.use(RouterProducts);
 app.use(RouterShops);
+app.use(RouterUsers);
 
-
-app.post('/magasin', (req, res) => {
-    const data = req.body;
-    db.get('shops').insert(data);
-    res.status(200).json({
-        type: 'success',
-        code: 200,
-        content: data,
-    });
-});
-
-// TODO change in router
-app.post('/signIn', (req, res) => {
-    const { email, password1, password2 } = req.body;
-    db.get('user').findOne({ email }, (err, doc) => {
-        if (doc) {
-            return res.status(400).json(({ type: 'error', code: 400, message: 'Email déjà utilisé' }));
-        }
-        if (password1 !== password2) {
-            return res.status(400).json(({ type: 'error', code: 400, message: 'Mot de passe différent' }));
-        }
-        db.get('user').insert({
-            email,
-            password: crypto.createHmac('sha512', password1).update('I love cupcakes').digest('hex'),
-        }, (error, result) => {
-            if (error) throw error;
-            return res.status(201).json(({ type: 'success', code: 201, user: result }));
-        });
-    });
-});
 
 /* Errors and unknown routes */
 app.all('*', (req, res) => res.status(400).json({ type: 'error', code: 400, message: 'bad request' }));
