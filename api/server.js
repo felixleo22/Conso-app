@@ -1,15 +1,20 @@
-/* eslint-disable consistent-return */
 /* eslint-disable no-underscore-dangle */
 const express = require('express');
+const mongoose = require('mongoose');
 const bodyparser = require('body-parser');
-const fetch = require('node-fetch');
 const cors = require('cors');
 const crypto = require('crypto');
 
 // eslint-disable-next-line import/no-unresolved
 const db = require('./lib/mongo');
 
+// create app
 const app = express();
+
+// database
+mongoose.connect('mongodb://mongodb/ConsoApp', {
+    useNewUrlParser: true,
+});
 
 // middleware
 app.use(cors());
