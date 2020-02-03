@@ -1,6 +1,6 @@
 const router = require('express').Router();
 
-const Shop = require('../models/Shop');
+const Shop = require('../models/Shop').default;
 
 router.get('/shop/:id', (req, res) => {
     const shopId = req.params.id;

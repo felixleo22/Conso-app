@@ -26,7 +26,7 @@ export default {
   }),
   methods: {
     signIn() {
-      axios.post(`//${location.host}:8080/signIn`,
+      axios.post(`//${location.host}:8080/user`,
         {
           email: this.email,
           password1: this.password1,

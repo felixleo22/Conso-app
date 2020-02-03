@@ -5,7 +5,7 @@ const bodyparser = require('body-parser');
 const cors = require('cors');
 
 // routers
-const RouterProducts = require('./routers/RouterProducts');
+// const RouterProducts = require('./routers/RouterProducts');
 const RouterShops = require('./routers/RouterShops');
 const RouterUsers = require('./routers/RouterUsers');
 
