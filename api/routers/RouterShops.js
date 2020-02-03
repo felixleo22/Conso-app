@@ -31,4 +31,30 @@ router.post('/shop', (req, res) => {
     });
 });
 
+router.put('/shop/:id', (req, res) => {
+    const shopId = req.params.id;
+    const data = req.body;
+
+    if (!data.name || !data.address || !data.position) {
+        res.status(400).json({ type: 'error', code: 400, message: 'Missing data' });
+        return;
+    }
+
+    Shop.findByIdAndUpdate(shopId, data, (err, shop) => {
+        if (err) throw err;
+
+        if (!shop) {
+            const newShop = new Shop(data);
+            newShop._id = shopId;
+            newShop.save((err2) => {
+                if (err2) throw err;
+
+                return res.status(201).json(newShop);
+            });
+        } else {
+            return res.json(shop);
+        }
+    });
+});
+
 module.exports = router;
