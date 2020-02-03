@@ -1,6 +1,6 @@
 const router = require('express').Router();
 
-const Shop = require('../models/Shop');
+const Shop = require('../models/Shop').default;
 
 router.get('/shop/:id', (req, res) => {
     const shopId = req.params.id;
@@ -51,9 +51,8 @@ router.put('/shop/:id', (req, res) => {
 
                 return res.status(201).json(newShop);
             });
-        } else {
-            return res.json(shop);
         }
+        return res.json(shop);
     });
 });
 
