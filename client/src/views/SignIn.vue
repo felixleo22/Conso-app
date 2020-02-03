@@ -1,4 +1,3 @@
-
 <template>
 <div>
     <label for="email">Adresse Email</label>
@@ -15,10 +14,9 @@
 
 <script>
 /* eslint-disable no-restricted-globals */
-import axios from 'axios';
 
 export default {
-  name: 'signIn',
+  name: 'signin',
   data: () => ({
     email: '',
     password1: '',
@@ -26,7 +24,7 @@ export default {
   }),
   methods: {
     signIn() {
-      axios.post(`//${location.host}:8080/user`,
+      this.$http.post(`//${location.host}:8080/user`,
         {
           email: this.email,
           password1: this.password1,

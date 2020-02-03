@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const jwt = require('jsonwebtoken');
 
 const User = require('../models/User');
 const Password = require('../utils/Password');
@@ -35,16 +36,22 @@ router.post('/user', (req, res) => {
     });
 });
 
-router.post('/connect', (req, res) => {
-    const { email, password1 } = req.body;
+router.post('/login', (req, res) => {
+    const { email, password } = req.body;
     User.findOne({ email }, (err, user) => {
         if (!user) {
-            res.status(400).json(({ type: 'error', code: 400, message: 'Email not exist' }));
+            res.status(400).json(({ auth: false }));
+            return;
         }
-        if (!Password.hash(password1, user.password)) {
-            res.status(400).json(({ type: 'error', code: 400, message: 'Password incorrect' }));
+        if (!Password.verify(password, user.password)) {
+            res.status(400).json(({ auth: false }));
+            return;
         }
-        // TODO mettre les infos dans le localstorage
+        // TODO mettre le secret à l'abri
+        const token = jwt.sign({ id: user._id }, 'test', {
+            expiresIn: 86400,
+        });
+        res.status(200).send({ auth: true, token, user });
     });
 });
 
