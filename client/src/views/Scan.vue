@@ -1,45 +1,51 @@
 <template>
     <div id="scan">
         <h1>Scann products</h1>
-        <input type="text" v-model="barcode"><button v-on:click="showScanner">Scanner</button>
-        <div v-if="scanning">
+        <shop-selector v-if="!shopSelected" @selected="onShopSelected"></shop-selector>
+        <template v-else>
+          <button @click="shopSelected = false">Changer de magasin</button>
             <v-quagga
-                :onDetected="scan"
+                :onDetected="scanned"
                 :readerSize="readerSize"
                 :readerTypes="['ean_reader']">
             </v-quagga>
-        </div>
-        <div v-if="product">
-            {{product.name}}
-        </div>
+        </template>
     </div>
 </template>
 <script>
 import Vue from 'vue';
 import VueQuagga from 'vue-quaggajs';
+import ShopSelector from '../components/scan/ShopSelector.vue';
 
 // register component 'v-quagga'
 Vue.use(VueQuagga);
 
 export default {
+  components: {
+    ShopSelector,
+  },
   data() {
     return {
       readerSize: {
         width: 640,
         height: 480,
       },
-      barcode: '',
-      product: null,
-      scanning: false,
+      shopSelected: !!this.shop,
     };
   },
   methods: {
-    scan(data) {
+    scanned(data) {
       this.barcode = data.codeResult.code;
-      this.scanning = false;
     },
-    showScanner() {
-      this.scanning = true;
+    onShopSelected(event) {
+      this.$store.dispatch('changeScanShop', event).then(() => {
+        this.shopSelected = true;
+      });
+    },
+  },
+  computed: {
+    shop() {
+      return this.$store.getters.shop;
     },
   },
 };
