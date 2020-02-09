@@ -2,9 +2,15 @@
   <div id="app">
     <div id="nav">
       <router-link to="/">Home</router-link> |
-      <router-link to="/scan">Scan</router-link> |
-      <span v-if="loggedIn"><a href="" @click="logout">Se déconnecter</a> |</span>
-      <span v-else><router-link to="/login">Se connecter</router-link> | </span>
+
+      <template v-if="loggedIn">
+        <router-link :to="{name : 'scan'}">Scan</router-link> |
+        <router-link :to="{name : 'logout'}">Déconnexion</router-link> |
+      </template>
+      <template v-else>
+        <router-link :to="{name : 'login'}">Connexion</router-link> |
+        <router-link :to="{name : 'signin'}">Inscription</router-link> |
+      </template>
     </div>
     <router-view/>
   </div>
@@ -18,11 +24,6 @@ export default {
     },
   },
   methods: {
-    logout() {
-      this.$store.dispatch('logout').then(() => {
-        this.$router.push('/login');
-      });
-    },
   },
 };
 </script>

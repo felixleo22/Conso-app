@@ -34,7 +34,10 @@ app.use(RouterUsers);
 /* Errors and unknown routes */
 app.all('*', (req, res) => res.status(400).json({ type: 'error', code: 400, message: 'bad request' }));
 // eslint-disable-next-line no-unused-vars
-app.use((error, req, res, next) => res.status(500).json({ type: 'error', code: 500, message: error.message }));
+app.use((error, req, res, next) => {
+    console.log(error);
+    return res.status(500).json({ type: 'error', code: 500, message: error.message });
+});
 
 app.listen(8080, () => {
     console.log('Conso App API is running !');
