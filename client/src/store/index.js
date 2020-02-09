@@ -1,11 +1,11 @@
 /* eslint-disable no-restricted-globals */
-
 import Vue from 'vue';
 import Vuex from 'vuex';
 import Axios from 'axios';
 
-Vue.use(Vuex);
 Axios.defaults.baseURL = `//${location.hostname}:8080`;
+Vue.prototype.$http = Axios;
+Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
