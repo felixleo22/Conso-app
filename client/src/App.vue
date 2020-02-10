@@ -2,10 +2,10 @@
   <div id="app">
     <div id="nav">
       <router-link to="/">Home</router-link> |
-
       <template v-if="loggedIn">
         <router-link :to="{name : 'scan'}">Scan</router-link> |
         <router-link :to="{name : 'logout'}">Déconnexion</router-link> |
+        <router-link :to="{name : 'basket'}">Panier</router-link> |
       </template>
       <template v-else>
         <router-link :to="{name : 'login'}">Connexion</router-link> |
