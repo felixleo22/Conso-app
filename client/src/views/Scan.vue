@@ -16,6 +16,8 @@
 </template>
 <script>
 import Vue from 'vue';
+// eslint-disable-next-line import/no-unresolved
+// TODO ISSOU ÇA MARCHE PAS POUR MOI
 import VueQuagga from 'vue-quaggajs';
 
 // register component 'v-quagga'

@@ -4,7 +4,11 @@
       <router-link to="/">Home</router-link> |
       <router-link to="/scan">Scan</router-link> |
       <span v-if="loggedIn"><a href="" @click="logout">Se déconnecter</a> |</span>
-      <span v-else><router-link to="/login">Se connecter</router-link> | </span>
+      <span v-if="loggedIn"><a href="" @click="basket">Mon panier</a> |</span>
+      <span v-else>
+        <router-link to="/login">Se connecter</router-link> |
+        <router-link to="/signin">S'inscrire</router-link> |
+      </span>
     </div>
     <router-view/>
   </div>
@@ -20,6 +24,11 @@ export default {
   methods: {
     logout() {
       this.$store.dispatch('logout').then(() => {
+        this.$router.push('/login');
+      });
+    },
+    basket() {
+      this.$store.dispatch('basket').then(() => {
         this.$router.push('/login');
       });
     },
