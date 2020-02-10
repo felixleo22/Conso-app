@@ -5,9 +5,9 @@ const bodyparser = require('body-parser');
 const cors = require('cors');
 
 // routers
-// const RouterProducts = require('./routers/RouterProducts');
 const RouterShops = require('./routers/RouterShops');
 const RouterUsers = require('./routers/RouterUsers');
+const RouterProducts = require('./routers/RouterProducts');
 
 // create app
 const app = express();
@@ -26,10 +26,9 @@ app.get('/', (req, res) => {
     res.json({ name: 'Conso App' });
 });
 
-// app.use(RouterProducts);
 app.use(RouterShops);
 app.use(RouterUsers);
-
+app.use(RouterProducts);
 
 /* Errors and unknown routes */
 app.all('*', (req, res) => res.status(400).json({ type: 'error', code: 400, message: 'bad request' }));
