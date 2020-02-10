@@ -24,7 +24,7 @@ export default {
   }),
   methods: {
     signIn() {
-      this.$http.post(`//${location.host}:8080/user`,
+      this.$http.post('/user',
         {
           email: this.email,
           password1: this.password1,

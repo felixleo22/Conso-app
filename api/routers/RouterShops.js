@@ -1,6 +1,6 @@
 const router = require('express').Router();
 
-const Shop = require('../models/Shop').default;
+const Shop = require('../models/Shop');
 
 router.get('/shop/:id', (req, res) => {
     const shopId = req.params.id;
@@ -54,6 +54,11 @@ router.put('/shop/:id', (req, res) => {
         }
         return res.json(shop);
     });
+});
+
+
+router.get('/shop/:idShop/product/:barCodeProduct', (req, res) => {
+    res.json({});
 });
 
 module.exports = router;

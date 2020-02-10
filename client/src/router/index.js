@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import Home from '../views/Home.vue';
-import store from '../store/index';
+import store from '../store';
 
 Vue.use(VueRouter);
 
@@ -9,13 +8,18 @@ const routes = [
   {
     path: '/',
     name: 'home',
-    component: Home,
+    component() {
+      return import('../views/Home.vue');
+    },
   },
   {
     path: '/signin',
     name: 'signin',
     component() {
       return import('../views/SignIn.vue');
+    },
+    meta: {
+      requiresVisitor: true,
     },
   },
   {
@@ -24,12 +28,28 @@ const routes = [
     component() {
       return import('../views/LogIn.vue');
     },
+    meta: {
+      requiresVisitor: true,
+    },
+  },
+  {
+    path: '/logout',
+    name: 'logout',
+    component() {
+      return import('../views/LogOut.vue');
+    },
+    meta: {
+      requiresAuth: true,
+    },
   },
   {
     path: '/scan',
     name: 'scan',
     component() {
       return import('../views/Scan.vue');
+    },
+    meta: {
+      requiresAuth: true,
     },
   },
 ];
@@ -42,12 +62,26 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   if (to.matched.some(record => record.meta.requiresAuth)) {
-    if (store.getters.loggedIn) {
+    // when route require to be logged in
+    if (!store.getters.loggedIn) {
+      next({
+        name: 'login',
+        query: { redirect: to.fullPath },
+      });
+    } else {
       next();
-      return;
     }
-    next('/login');
+  } else if (to.matched.some(record => record.meta.requiresVisitor)) {
+    // when route require to be anonymous
+    if (store.getters.loggedIn) {
+      next({
+        name: 'home',
+      });
+    } else {
+      next();
+    }
   } else {
+    // when no meta are specified
     next();
   }
 });

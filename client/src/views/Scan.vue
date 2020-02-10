@@ -1,47 +1,34 @@
 <template>
     <div id="scan">
         <h1>Scann products</h1>
-        <input type="text" v-model="barcode"><button v-on:click="showScanner">Scanner</button>
-        <div v-if="scanning">
-            <v-quagga
-                :onDetected="scan"
-                :readerSize="readerSize"
-                :readerTypes="['ean_reader']">
-            </v-quagga>
-        </div>
-        <div v-if="product">
-            {{product.name}}
-        </div>
+        <shop-selector v-if="!shopSelected" @selected="onShopSelected"></shop-selector>
+        <scanner v-else></scanner>
     </div>
 </template>
 <script>
-import Vue from 'vue';
-// eslint-disable-next-line import/no-unresolved
-// TODO ISSOU ÇA MARCHE PAS POUR MOI
-import VueQuagga from 'vue-quaggajs';
-
-// register component 'v-quagga'
-Vue.use(VueQuagga);
+import ShopSelector from '../components/scan/ShopSelector.vue';
+import Scanner from '../components/scan/Scanner.vue';
 
 export default {
+  components: {
+    ShopSelector,
+    Scanner,
+  },
   data() {
     return {
-      readerSize: {
-        width: 640,
-        height: 480,
-      },
-      barcode: '',
-      product: null,
-      scanning: false,
+      shopSelected: !!this.shop,
     };
   },
   methods: {
-    scan(data) {
-      this.barcode = data.codeResult.code;
-      this.scanning = false;
+    onShopSelected(event) {
+      this.$store.dispatch('changeScanShop', event).then(() => {
+        this.shopSelected = true;
+      });
     },
-    showScanner() {
-      this.scanning = true;
+  },
+  computed: {
+    shop() {
+      return this.$store.getters.shop;
     },
   },
 };

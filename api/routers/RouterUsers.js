@@ -48,10 +48,14 @@ router.post('/login', (req, res) => {
             return;
         }
         // TODO mettre le secret à l'abri
-        const token = jwt.sign({ id: user._id }, 'test', {
-            expiresIn: 86400,
-        });
-        res.status(200).send({ auth: true, token, user });
+        const token = jwt.sign({ id: user._id, email: user.email }, 'test');
+        res.status(200).send({ auth: true, token, user: { _id: user._id, email: user.email } });
+    });
+});
+
+router.get('/login/:token', (req, res) => {
+    jwt.verify(req.params.token, 'test', (err, decoded) => {
+        res.json(decoded);
     });
 });
 
