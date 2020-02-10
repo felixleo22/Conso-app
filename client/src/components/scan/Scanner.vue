@@ -3,8 +3,7 @@
         <v-quagga
             :onDetected="scanned"
             :readerSize="readerSize"
-            :readerTypes="['ean_reader']"
-        >
+            :readerTypes="['ean_reader']">
         </v-quagga>
     </div>
 </template>
@@ -24,18 +23,15 @@ export default {
         width: 640,
         height: 480,
       },
-      readyToScan: true,
     };
   },
   methods: {
     scanned(event) {
-      if (!this.readyToScan) return;
-      this.readyToScan = false;
-
       const barcode = event.codeResult.code;
       this.$http.get(`/product/${barcode}`)
         .then((response) => {
-          console.log(response);
+          const product = { code: response.data.code, name: response.data.product_name };
+          this.$emit('scanned', product, this.setReady);
         })
         .catch((error) => {
           console.log(error.response);
