@@ -22,9 +22,9 @@ router.post('/shoppinglist', (req, res) => {
             return;
         }
 
-        const indexOfCodebar = user.shoppingList.findIndex((item) => {
-            return item.codebar.toString() === data.codebar;
-        });
+        const indexOfCodebar = user.shoppingList.findIndex(
+            (item) => item.codebar.toString() === data.codebar,
+        );
         if (indexOfCodebar >= 0) {
             user.shoppingList[indexOfCodebar].quantity += 1;
         } else {
