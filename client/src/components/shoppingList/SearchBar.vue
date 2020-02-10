@@ -1,9 +1,9 @@
 <template>
 <div>
     <label>Nom de l'article</label>
-    <input v-model="name" @change="getResult" type="text" name="name" required />
+    <input v-model="name" @keyup="getResult" type="text" name="name" required />
     <div v-for="item in result" :key="item.name">
-      <p>{{item.name}}</p>
+      <p @click="add(item)">{{item.name}} </p>
     </div>
     <label>Quantité</label>
     <input v-model="quantity" type="number" name="quantity" min="1" required />
@@ -22,18 +22,18 @@ export default {
     };
   },
   methods: {
-    add() {
-      const item = {
-        // TODO code bar open food
-        codebar: new Date().getTime(),
-        name: this.name,
+    add(item) {
+      console.log(item.codebar);
+      const res = {
+        codebar: item.codebar,
+        name: item.name,
         quantity: this.quantity,
       };
-      this.$store.dispatch('addItem', item);
+      this.$store.dispatch('addItem', res);
     },
     getResult() {
-      console.log('ss');
-      this.$http.get(`/products?search?=${encodeURI(this.name)}`, { query: { search: this.name } }).then((response) => {
+      console.log(this.name);
+      this.$http.get(`/products?search=${encodeURI(this.name)}`).then((response) => {
         console.log(response.data);
         this.result = response.data;
       });
