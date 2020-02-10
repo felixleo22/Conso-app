@@ -34,6 +34,13 @@ const routes = [
       return import('../views/Scan.vue');
     },
   },
+  {
+    path: '/leaflet',
+    name: 'leaflet',
+    component() {
+      return import('../views/Leaflet.vue');
+    },
+  },
 ];
 
 const router = new VueRouter({
