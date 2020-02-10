@@ -3,7 +3,7 @@ const fetch = require('node-fetch');
 
 router.get('/product/:code', (req, res) => {
     const barcode = req.params.code;
-    const url = `https://world.openfoodfacts.org/api/v0/product/${barcode}.json`;
+    const url = `https://fr.openfoodfacts.org/api/v0/product/${barcode}.json`;
     fetch(url)
         .then((data) => data.json())
         .then((json) => {
@@ -17,6 +17,23 @@ router.get('/product/:code', (req, res) => {
                 error: 404,
                 message: error.message,
             });
+        });
+});
+
+router.get('/products', (req, res) => {
+    const { search } = req.query;
+    if (!search) {
+        res.json({});
+        return;
+    }
+    const url = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${search}&search_simple=1&json=1`;
+    fetch(url)
+        .then((data) => data.json())
+        .then((json) => {
+            res.json(json.products.slice(0, 5).map((elem) => ({
+                code: elem.code,
+                name: elem.product_name,
+            })));
         });
 });
 
