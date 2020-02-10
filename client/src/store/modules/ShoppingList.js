@@ -33,5 +33,25 @@ export default Axios => ({
         });
       });
     },
+    removeItem(context, item) {
+      return new Promise((resolve, reject) => {
+        Axios.delete('/shoppingList', { data: { codebar: item.codebar } }).then((response) => {
+          context.commit('getShoppingList', response.data);
+          resolve(response);
+        }).catch((err) => {
+          reject(err.response);
+        });
+      });
+    },
+    updateItem(context, item) {
+      return new Promise((resolve, reject) => {
+        Axios.put('/shoppingList', item).then((response) => {
+          context.commit('getShoppingList', response.data);
+          resolve(response);
+        }).catch((err) => {
+          reject(err.response);
+        });
+      });
+    },
   },
 });
