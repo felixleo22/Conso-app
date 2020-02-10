@@ -31,7 +31,7 @@ router.get('/products', (req, res) => {
         .then((data) => data.json())
         .then((json) => {
             res.json(json.products.slice(0, 5).map((elem) => ({
-                code: elem.code,
+                codebar: elem.code,
                 name: elem.product_name,
                 icone: elem.image_thumb_url,
             })));
