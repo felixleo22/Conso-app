@@ -8,6 +8,7 @@ const cors = require('cors');
 const RouterShops = require('./routers/RouterShops');
 const RouterUsers = require('./routers/RouterUsers');
 const RouterProducts = require('./routers/RouterProducts');
+const RouterShoppingList = require('./routers/RouterShoppingList');
 
 // create app
 const app = express();
@@ -29,6 +30,7 @@ app.get('/', (req, res) => {
 app.use(RouterShops);
 app.use(RouterUsers);
 app.use(RouterProducts);
+app.use(RouterShoppingList);
 
 /* Errors and unknown routes */
 app.all('*', (req, res) => res.status(400).json({ type: 'error', code: 400, message: 'bad request' }));

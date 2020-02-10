@@ -1,18 +1,24 @@
 export default Axios => ({
   state: {
     token: localStorage.getItem('access_token') || null,
+    user: JSON.parse(localStorage.getItem('user_logged')) || null,
   },
   getters: {
     loggedIn(state) {
       return !!state.token;
     },
+    loggedUser(state) {
+      return state.user;
+    },
   },
   mutations: {
-    retrieveToken(state, token) {
+    retrieveToken(state, token, user) {
       state.token = token;
+      state.user = user;
     },
     destroyToken(state) {
       state.token = null;
+      state.user = null;
     },
   },
   actions: {
@@ -23,9 +29,10 @@ export default Axios => ({
           password: credentials.password,
         })
           .then((response) => {
-            const { token } = response.data;
+            const { token, user } = response.data;
             localStorage.setItem('access_token', token);
-            context.commit('retrieveToken', token);
+            localStorage.setItem('user_logged', JSON.stringify(user));
+            context.commit('retrieveToken', token, user);
             resolve(response);
           })
           .catch((error) => {
@@ -38,6 +45,7 @@ export default Axios => ({
       return new Promise((resolve) => {
         if (context.getters.loggedIn) {
           localStorage.removeItem('access_token');
+          localStorage.removeItem('user_logged');
           context.commit('destroyToken');
           resolve();
         }

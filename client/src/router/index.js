@@ -52,6 +52,16 @@ const routes = [
       requiresAuth: true,
     },
   },
+  {
+    path: '/shoppingList',
+    name: 'shoppingList',
+    component() {
+      return import('../views/ShoppingList.vue');
+    },
+    meta: {
+      requiresAuth: true,
+    },
+  },
 ];
 
 const router = new VueRouter({
