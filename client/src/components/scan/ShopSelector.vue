@@ -1,7 +1,7 @@
 <template>
   <div>
     <label>Entrer l'id de votre magasin : </label>
-    <input type="text" placeholder="Magasin" v-model="shop">
+    <input type="text" placeholder="Magasin" v-model="shopId">
     <button @click="selectShop">Séléctionner</button>
   </div>
 </template>
@@ -11,12 +11,12 @@ export default {
   name: 'ShopSelector',
   data() {
     return {
-      shop: '',
+      shopId: '',
     };
   },
   methods: {
     selectShop() {
-      this.$emit('selected', { _id: this.shop });
+      this.$store.dispatch('changeScanShop', { _id: this.shopId });
     },
   },
 };
