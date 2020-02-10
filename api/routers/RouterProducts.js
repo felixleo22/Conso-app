@@ -33,6 +33,7 @@ router.get('/products', (req, res) => {
             res.json(json.products.slice(0, 5).map((elem) => ({
                 code: elem.code,
                 name: elem.product_name,
+                icone: elem.image_thumb_url,
             })));
         });
 });
