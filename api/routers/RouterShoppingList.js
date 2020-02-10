@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 const router = require('express').Router();
 
 const Auth = require('../utils/Auth');
@@ -16,12 +17,20 @@ router.post('/shoppinglist', (req, res) => {
     const auth = req.headers.authorization;
     const data = req.body;
     Auth(auth).then((user) => {
-        // TODO verifier code bar
         if (!Number(data.quantity)) {
             res.status(400).json(({ type: 'error', code: 400, message: 'invalid quantity' }));
             return;
         }
-        user.shoppingList.push(data);
+
+        const indexOfCodebar = user.shoppingList.findIndex((item) => {
+            return item.codebar.toString() === data.codebar;
+        });
+        if (indexOfCodebar >= 0) {
+            user.shoppingList[indexOfCodebar].quantity += 1;
+        } else {
+            user.shoppingList.push(data);
+        }
+
         user.save((error, newUser) => {
             if (error) throw error;
             res.status(200).json(newUser.shoppingList);
