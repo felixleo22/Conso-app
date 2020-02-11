@@ -1,45 +1,60 @@
 <template>
     <div id="scan">
         <h1>Scann products</h1>
-        <input type="text" v-model="barcode"><button v-on:click="showScanner">Scanner</button>
-        <div v-if="scanning">
-            <v-quagga
-                :onDetected="scan"
-                :readerSize="readerSize"
-                :readerTypes="['ean_reader']">
-            </v-quagga>
-        </div>
-        <div v-if="product">
-            {{product.name}}
-        </div>
+        <shop-selector v-if="!shop"></shop-selector>
+        <template v-else>
+          <button @click="deselectShop">Changer de magasin</button>
+          <scanner @scanned="onProductScanned" v-if="showScanner"></scanner>
+          <price-setter v-else
+            :product="product"
+            :shop="shop"
+            @canceled="onPriceCancel"
+            @updated="onPriceUpdated"
+            @errored="onPriceUpdateError">
+          </price-setter>
+        </template>
     </div>
 </template>
 <script>
-import Vue from 'vue';
-import VueQuagga from 'vue-quaggajs';
-
-// register component 'v-quagga'
-Vue.use(VueQuagga);
+import ShopSelector from '../components/scan/ShopSelector.vue';
+import Scanner from '../components/scan/Scanner.vue';
+import PriceSetter from '../components/scan/PriceSetter.vue';
 
 export default {
+  name: 'Scan',
+  components: {
+    ShopSelector,
+    Scanner,
+    PriceSetter,
+  },
   data() {
     return {
-      readerSize: {
-        width: 640,
-        height: 480,
-      },
-      barcode: '',
+      showScanner: true,
       product: null,
-      scanning: false,
     };
   },
   methods: {
-    scan(data) {
-      this.barcode = data.codeResult.code;
-      this.scanning = false;
+    onProductScanned(event) {
+      this.showScanner = false;
+      this.product = event;
     },
-    showScanner() {
-      this.scanning = true;
+    onPriceCancel() {
+      this.product = null;
+      this.showScanner = true;
+    },
+    onPriceUpdated() {
+      this.showScanner = true;
+    },
+    onPriceUpdateError(event) {
+      console.log(event);
+    },
+    deselectShop() {
+      this.$store.dispatch('unsetScanShop');
+    },
+  },
+  computed: {
+    shop() {
+      return this.$store.getters.shop;
     },
   },
 };
