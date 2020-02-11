@@ -98,7 +98,9 @@ router.put('/shop/:idShop/product/:barCodeProduct', (req, res) => {
             return;
         }
 
+        // eslint-disable-next-line no-param-reassign
         price.price = priceValue;
+        // eslint-disable-next-line no-param-reassign
         price.updated_at = new Date();
 
         price.save((err2, newPrice) => {
