@@ -27,7 +27,7 @@
         offset-md="2"
       >
         <v-text-field
-          v-model="password2"
+          v-model="password1"
           :append-icon="showPw1 ? 'fa-eye' : 'fa-eye-slash'"
           :type="showPw1 ? 'text' : 'password'"
           :rules="passwordRules"
@@ -42,7 +42,7 @@
         md="4"
       >
         <v-text-field
-          v-model="password1"
+          v-model="password2"
           :append-icon="showPw2 ? 'fa-eye' : 'fa-eye-slash'"
           :type="showPw2 ? 'text' : 'password'"
           :rules="[password1 === password2 || 'Les mots de passe doivent correspondre']"
