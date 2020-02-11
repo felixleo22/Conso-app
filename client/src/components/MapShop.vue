@@ -1,16 +1,13 @@
 <template>
-  <div id='app'>
-    <div id='mymap'>
-
-    </div>
+  <div>
+    <div id='mymap'></div>
   </div>
 </template>
-
 <script>
 import L from 'leaflet';
 
 export default {
-  name: 'app',
+  name: 'MapShop',
   data() {
     return {
       carte: '',
@@ -29,11 +26,10 @@ export default {
         attribution:
           "&copy; <a href='http://osm.org/copyright'>OpenStreetMap</a> contributors",
       }).addTo(this.carte);
-
-      this.air[0] = this.carte.getBounds().getNorthWest().toString().match(/\d+[.]?\d+/g)
-        .join(',');
-      this.air[1] = this.carte.getBounds().getSouthEast().toString().match(/\d+[.]?\d+/g)
-        .join(',');
+      this.initShops();
+    },
+    initShops() {
+      this.filterLatLng();
       this.$http.get(`/shops?NW=${this.air[0]}&SE=${this.air[1]}`).then((response) => {
         this.result = response.data.shops;
         const tab = [];
@@ -46,10 +42,7 @@ export default {
       this.carte.on('moveend', this.showShops);
     },
     showShops() {
-      this.air[0] = this.carte.getBounds().getNorthWest().toString().match(/\d+[.]?\d+/g)
-        .join(',');
-      this.air[1] = this.carte.getBounds().getSouthEast().toString().match(/\d+[.]?\d+/g)
-        .join(',');
+      this.filterLatLng();
       this.$http.get(`/shops?NW=${this.air[0]}&SE=${this.air[1]}`).then((response) => {
         this.result = response.data.shops;
         const tab = [];
@@ -59,6 +52,12 @@ export default {
           this.shops = L.layerGroup(tab).addTo(this.carte);
         });
       });
+    },
+    filterLatLng() {
+      this.air[0] = this.carte.getBounds().getNorthWest().toString().match(/\d+[.]?\d+/g)
+        .join(',');
+      this.air[1] = this.carte.getBounds().getSouthEast().toString().match(/\d+[.]?\d+/g)
+        .join(',');
     },
   },
 };

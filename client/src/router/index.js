@@ -63,10 +63,10 @@ const routes = [
     },
   },
   {
-    path: '/leaflet',
-    name: 'leaflet',
+    path: '/catalog',
+    name: 'catalog',
     component() {
-      return import('../views/Leaflet.vue');
+      return import('../views/Catalog.vue');
     },
   },
 ];
