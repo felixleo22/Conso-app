@@ -1,23 +1,41 @@
 <template>
-     <div>
-        <table>
+     <v-container>
+       <v-row>
+         <v-col
+          cols="12"
+          md="8"
+          offset-md="2"
+          offset-xl="3"
+          xl="6"
+         >
+          <v-simple-table fixed-header>
             <thead>
-            <tr>
-                <th>Nom</th>
-                <th>Quantité</th>
-                <th></th>
-            </tr>
+              <tr>
+                <th class="text-left">Produit</th>
+                <th class="text-left">Quantité</th>
+                <th class="text-left"></th>
+              </tr>
             </thead>
             <tbody>
-            <tr v-for="item in shoppingList" :key="item.id">
-                <td>{{item.name}}</td>
-                <td><input v-on:change="update(item)" v-model="item.quantity"
-                type="number" name="quantity" min="1" required/></td>
-                <td><button v-on:click="del(item)"> close </button></td>
-            </tr>
+              <tr v-for="item in shoppingList" :key="item.id">
+                <td>{{ item.name }}</td>
+                <td>
+                  <v-text-field
+                    @change="update(item)" v-model="item.quantity"
+                    type="number" name="quantity" min="1" required>
+                  </v-text-field>
+                </td>
+                <td>
+                  <v-btn color="red accent-4" v-on:click="del(item)">
+                    <v-icon color="white">fa-trash</v-icon>
+                  </v-btn>
+                </td>
+              </tr>
             </tbody>
-        </table>
-    </div>
+          </v-simple-table>
+        </v-col>
+      </v-row>
+    </v-container>
 </template>
 
 <script>
