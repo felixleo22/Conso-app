@@ -1,15 +1,67 @@
 <template>
-<div>
-    <label for="email">Adresse Email</label>
-    <input v-model="email" id="email" type="email" placeholder="Email" />
+<v-container>
+<h2 class="text-center">Rejoindre Conso App</h2>
 
-    <label for="password1">Mot de passe</label>
-    <input v-model="password1" id="password1" type="password" placeholder="Mot de passe" />
-
-    <label for="password2">Confirmez votre mot de passe</label>
-    <input v-model="password2" id="password2" type="password" placeholder="Mot de passe" />
-    <button v-on:click="signIn" role="button">S'inscrire</button>
-</div>
+<v-form
+  v-model="valid"
+  :lazy-validation="valid"
+>
+    <v-row>
+      <v-col
+        cols="12"
+        md="8"
+        offset-md="2"
+      >
+        <v-text-field
+          v-model="email"
+          :rules="emailRules"
+          label="Email"
+          requiered>
+        </v-text-field>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col
+        cols="12"
+        md="4"
+        offset-md="2"
+      >
+        <v-text-field
+          v-model="password2"
+          :append-icon="showPw1 ? 'fa-eye' : 'fa-eye-slash'"
+          :type="showPw1 ? 'text' : 'password'"
+          :rules="passwordRules"
+          @click:append="showPw1 = !showPw1"
+          label="Mot de passe"
+          requiered
+        >
+        </v-text-field>
+      </v-col>
+      <v-col
+        cols="12"
+        md="4"
+      >
+        <v-text-field
+          v-model="password1"
+          :append-icon="showPw2 ? 'fa-eye' : 'fa-eye-slash'"
+          :type="showPw2 ? 'text' : 'password'"
+          :rules="[password1 === password2 || 'Les mots de passe doivent correspondre']"
+          @click:append="showPw2 = !showPw2"
+          label="Confirmer le mot de passe"
+          requiered
+        >
+        </v-text-field>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="12" class="text-center">
+        <v-btn color="primary" :disabled="!valid" @click="signUp">
+          S'inscrire
+        </v-btn>
+      </v-col>
+    </v-row>
+</v-form>
+</v-container>
 </template>
 
 <script>
@@ -21,9 +73,19 @@ export default {
     email: '',
     password1: '',
     password2: '',
+    valid: true,
+    showPw1: false,
+    showPw2: false,
+    emailRules: [
+      v => !!v || 'L\'email est obligatoire',
+      v => /.+@.+\..+/.test(v) || 'L\'email n\'est pas valide',
+    ],
+    passwordRules: [
+      v => !!v || 'Le mot de passe est obligatoire',
+    ],
   }),
   methods: {
-    signIn() {
+    signUp() {
       this.$http.post('/user',
         {
           email: this.email,
