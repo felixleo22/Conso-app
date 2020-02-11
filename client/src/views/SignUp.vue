@@ -16,7 +16,7 @@
 /* eslint-disable no-restricted-globals */
 
 export default {
-  name: 'signin',
+  name: 'signUp',
   data: () => ({
     email: '',
     password1: '',

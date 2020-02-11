@@ -13,10 +13,10 @@ const routes = [
     },
   },
   {
-    path: '/signin',
-    name: 'signin',
+    path: '/signup',
+    name: 'signup',
     component() {
-      return import('../views/SignIn.vue');
+      return import('../views/SignUp.vue');
     },
     meta: {
       requiresVisitor: true,
