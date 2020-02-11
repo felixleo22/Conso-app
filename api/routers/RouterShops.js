@@ -109,4 +109,9 @@ router.put('/shop/:idShop/product/:barCodeProduct', (req, res) => {
     });
 });
 
+router.get('/shop', (req, res) => {
+    const { bound } = req.body;
+    res.json(bound);
+});
+
 module.exports = router;
