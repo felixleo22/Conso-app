@@ -5,14 +5,14 @@ networks:
     driver: bridge
 
 services:
-  node:
-    image: node:latest
-    container_name: node
+  client:
+    image: node
+    container_name: consoapp_client
     user: "node"
     working_dir: /app/client
     volumes:
       - ./client:/app/client
-    command: "npm run dev"
+    command: "npm run serve"
     ports:
       - "80:8080"
     networks: 
@@ -46,3 +46,12 @@ services:
         - '27017:27017'
     networks: 
         - 'consoapp.net'
+
+  dbmanager:
+    image: mongo-express
+    networks:
+      - consoapp.net
+    ports:
+      - "8081:8081"
+    links:
+      - database:mongo
