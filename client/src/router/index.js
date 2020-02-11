@@ -53,7 +53,7 @@ const routes = [
     },
   },
   {
-    path: '/shoppingList',
+    path: '/shoppinglist',
     name: 'shoppingList',
     component() {
       return import('../views/ShoppingList.vue');

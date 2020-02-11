@@ -30,12 +30,19 @@ router.get('/products', (req, res) => {
     fetch(url)
         .then((data) => data.json())
         .then((json) => {
-            res.json(json.products.slice(0, 5).map((elem) => ({
+            const array = json.products.slice(0, 5).map((elem) => ({
                 codebar: elem.code,
                 name: elem.product_name,
-                icone: elem.image_thumb_url,
-            })));
+                icon: elem.image_thumb_url,
+                brand: elem.brands,
+            }));
+            res.json({ products: array });
+        }).catch((error) => {
+            console.log(error);
+            // throw error;
         });
+
+// TODO prendre en compte les erreurs
 });
 
 module.exports = router;

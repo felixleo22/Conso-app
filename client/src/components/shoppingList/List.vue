@@ -3,31 +3,43 @@
        <v-row>
          <v-col
           cols="12"
-          md="8"
-          offset-md="2"
+          md="10"
+          offset-md="1"
           offset-xl="3"
           xl="6"
          >
           <v-simple-table fixed-header>
             <thead>
               <tr>
-                <th class="text-left">Produit</th>
+                <th class="text-left" width="66%">Produit</th>
                 <th class="text-left">Quantité</th>
                 <th class="text-left"></th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="item in shoppingList" :key="item.id">
-                <td>{{ item.name }}</td>
+                <td>
+                  <v-list-item>
+                    <v-list-item-avatar tile>
+                      <v-responsive :aspect-ratio="1/1">
+                        <img :src="item.icon">
+                      </v-responsive>
+                    </v-list-item-avatar>
+                    <v-list-item-content>
+                      <v-list-item-title>{{item.name}}</v-list-item-title>
+                      <v-list-item-subtitle>{{item.brand}}</v-list-item-subtitle>
+                    </v-list-item-content>
+                  </v-list-item>
+                </td>
                 <td>
                   <v-text-field
-                    @change="update(item)" v-model="item.quantity"
-                    type="number" name="quantity" min="1" required>
+                    @input="update(item)" v-model="item.quantity"
+                    type="number" name="quantity" min="1" required single-line>
                   </v-text-field>
                 </td>
                 <td>
-                  <v-btn color="red accent-4" v-on:click="del(item)">
-                    <v-icon color="white">fa-trash</v-icon>
+                  <v-btn color="red accent-4 text-white white--text" v-on:click="del(item)">
+                    <v-icon>fa-trash</v-icon>
                   </v-btn>
                 </td>
               </tr>
@@ -43,8 +55,6 @@ export default {
   name: 'list',
   data() {
     return {
-      name: '',
-      quantity: '1',
     };
   },
   mounted() {
@@ -52,19 +62,13 @@ export default {
     this.$store.dispatch('getShoppingList');
   },
   methods: {
-    add() {
-      const item = {
-        // TODO code bar open food
-        codebar: new Date().getTime(),
-        name: this.name,
-        quantity: this.quantity,
-      };
-      this.$store.dispatch('addItem', item);
-    },
     del(item) {
       this.$store.dispatch('removeItem', item);
     },
     update(item) {
+      if (item.quantity < 1) {
+        return;
+      }
       this.$store.dispatch('updateItem', item);
     },
   },
