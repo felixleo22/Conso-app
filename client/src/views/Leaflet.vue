@@ -1,6 +1,6 @@
 <template>
   <div id='app'>
-    <div id='mymap' @click="test"></div>
+    <div id='mymap'></div>
   </div>
 </template>
 
@@ -12,7 +12,7 @@ export default {
   data() {
     return {
       carte: '',
-      air: '',
+      air: [],
       shops: '',
     };
   },
@@ -28,16 +28,13 @@ export default {
       }).addTo(mymap);
       this.carte = mymap;
       this.carte.on('zoomend', () => {
-        this.air = this.carte.getBounds();
-        this.$http.get('/shop', {
-          bound: this.carte.getBounds(),
-        }).then((response) => {
+        this.air[0] = this.carte.getBounds().getNorthWest().toString();
+        this.air[1] = this.carte.getBounds().getSouthEast().toString();
+        this.$http.get(`/shops?NW=${this.air[0]}&SE=${this.air[0]}`).then((response) => {
           this.result = response.data;
+          console.log(`res = ${this.result}`);
         });
       });
-    },
-    test() {
-      console.log(this.air);
     },
   },
 };

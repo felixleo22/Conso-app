@@ -109,9 +109,15 @@ router.put('/shop/:idShop/product/:barCodeProduct', (req, res) => {
     });
 });
 
-router.get('/shop', (req, res) => {
-    const { bound } = req.body;
-    res.json(bound);
+router.get('/shops', (req, res) => {
+    const marker1 = req.query.NWnw.split(',');
+    const marker2 = req.query.SE.split(',');
+    Shop.find({
+        'position.lng': { $gt: marker1[0], $lt: marker2[0] },
+        'position.lat': { $gt: marker1[1], $lt: marker2[1] },
+    }, (error, result) => {
+        res.json(result);
+    });
 });
 
 module.exports = router;
