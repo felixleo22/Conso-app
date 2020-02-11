@@ -62,6 +62,13 @@ const routes = [
       requiresAuth: true,
     },
   },
+  {
+    path: '/leaflet',
+    name: 'leaflet',
+    component() {
+      return import('../views/Leaflet.vue');
+    },
+  },
 ];
 
 const router = new VueRouter({

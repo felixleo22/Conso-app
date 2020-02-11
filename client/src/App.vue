@@ -5,6 +5,7 @@
       <template v-if="loggedIn">
         <router-link :to="{name : 'scan'}">Scan</router-link> |
         <router-link :to="{name : 'logout'}">Déconnexion</router-link> |
+        <router-link :to="{name : 'leaflet'}">Map</router-link> |
         <router-link :to="{name : 'shoppingList'}">Liste</router-link> |
       </template>
       <template v-else>
