@@ -74,7 +74,7 @@ const routes = [
     path: '/leaflet',
     name: 'leaflet',
     component() {
-      return import('../components/leaflet/Map.vue');
+      return import('../views/ViewShops.vue');
     },
   },
 ];
