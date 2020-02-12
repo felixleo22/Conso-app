@@ -23,9 +23,9 @@ export default {
     }).addTo(this.carte);
 
     this.carte.on('zoomend', this.haveToBeRefresh);
-    this.carte.on('moveend', this.haveToBeRefresh);
+    this.carte.on('dragend', this.haveToBeRefresh);
 
-    this.$emit('ready', { map: this.carte, view: this.air });
+    this.$emit('ready', { map: this.carte, view: this.getAir() });
 
     this.showPoints();
   },
@@ -42,7 +42,15 @@ export default {
       this.$emit('pointsLoaded', this.points);
     },
     haveToBeRefresh() {
-      this.$emit('viewChange', { map: this.carte, view: this.air });
+      this.$emit('viewChange', { map: this.carte, view: this.getAir() });
+    },
+    getAir() {
+      const res = [];
+      res[0] = this.carte.getBounds().getNorthWest().toString().match(/\d+[.]?\d+/g)
+        .join(',');
+      res[1] = this.carte.getBounds().getSouthEast().toString().match(/\d+[.]?\d+/g)
+        .join(',');
+      return res;
     },
   },
   computed: {
@@ -54,14 +62,6 @@ export default {
       set() {
 
       },
-    },
-    air() {
-      const res = [];
-      res[0] = this.carte.getBounds().getNorthWest().toString().match(/\d+[.]?\d+/g)
-        .join(',');
-      res[1] = this.carte.getBounds().getSouthEast().toString().match(/\d+[.]?\d+/g)
-        .join(',');
-      return res;
     },
   },
   watch: {

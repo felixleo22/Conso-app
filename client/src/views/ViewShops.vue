@@ -19,6 +19,7 @@ export default {
   },
   methods: {
     getShops(event) {
+      console.log('get');
       this.$http.get(`/shops?NW=${event.view[0]}&SE=${event.view[1]}`).then((response) => {
         this.shops = response.data.shops;
       });
