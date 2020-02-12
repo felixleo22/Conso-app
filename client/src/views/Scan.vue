@@ -3,9 +3,9 @@
         <shop-selector v-if="!shop"></shop-selector>
         <template v-else>
           <v-toolbar flat dense width="100%">
-            <v-toolbar-title>Scan</v-toolbar-title>
+              Shop name
             <v-spacer></v-spacer>
-            <v-btn @click="deselectShop">Changer de magasin</v-btn>
+            <v-btn @click="deselectShop">Changer</v-btn>
           </v-toolbar>
           <scanner @scanned="onProductScanned" v-if="showScanner"></scanner>
           <price-setter v-else
