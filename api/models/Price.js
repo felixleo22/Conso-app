@@ -5,6 +5,7 @@ const price = new mongoose.Schema({
     product: String,
     price: Number,
     updated_at: Date,
+    updated_by: String,
 }, { versionKey: false });
 
 module.exports = mongoose.model('price', price);

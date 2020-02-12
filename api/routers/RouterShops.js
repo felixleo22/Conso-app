@@ -4,6 +4,9 @@ const router = require('express').Router();
 const Shop = require('../models/Shop');
 const Price = require('../models/Price');
 
+const Auth = require('../utils/Auth');
+
+
 router.get('/shop/:id', (req, res) => {
     const shopId = req.params.id;
     Shop.findById(shopId, (err, shop) => {
@@ -16,22 +19,22 @@ router.get('/shop/:id', (req, res) => {
 });
 
 // create a new shop
-router.post('/shop', (req, res) => {
-    const data = req.body;
+// router.post('/shop', (req, res) => {
+//     const data = req.body;
 
-    if (!data.name || !data.address || !data.position) {
-        res.status(400).json({ type: 'error', code: 400, message: 'Missing data' });
-        return;
-    }
-    const shop = new Shop(data);
-    shop.save((err) => {
-        if (err) {
-            throw err;
-        }
+//     if (!data.name || !data.address || !data.position) {
+//         res.status(400).json({ type: 'error', code: 400, message: 'Missing data' });
+//         return;
+//     }
+//     const shop = new Shop(data);
+//     shop.save((err) => {
+//         if (err) {
+//             throw err;
+//         }
 
-        res.status(201).send(shop);
-    });
-});
+//         res.status(201).send(shop);
+//     });
+// });
 
 router.put('/shop/:id', (req, res) => {
     const shopId = req.params.id;
@@ -75,37 +78,46 @@ router.get('/shop/:idShop/product/:barCodeProduct', (req, res) => {
     });
 });
 
+// Update price of a product in a shop (need auth)
 router.put('/shop/:idShop/product/:barCodeProduct', (req, res) => {
-    const barcode = req.params.barCodeProduct;
-    const shop = req.params.idShop;
+    const auth = req.headers.authorization;
 
-    const priceValue = req.body.price;
+    Auth(auth).then((user) => {
+        const barcode = req.params.barCodeProduct;
+        const shop = req.params.idShop;
+        const priceValue = req.body.price;
 
-    Price.findOne({ shop, product: barcode }, (err, price) => {
-        if (err) throw err;
+        Price.findOne({ shop, product: barcode }, (err, price) => {
+            if (err) throw err;
 
-        if (!price) {
-            const createdPrice = new Price({
-                shop,
-                product: barcode,
-                price: priceValue,
-                updated_at: new Date(),
-            });
+            if (!price) {
+                const createdPrice = new Price({
+                    shop,
+                    product: barcode,
+                    price: priceValue,
+                    updated_at: new Date(),
+                    updated_by: user._id,
+                });
 
-            createdPrice.save(err, (err2, newPrice) => {
+                createdPrice.save(err, (err2, newPrice) => {
+                    if (err2) throw err2;
+                    res.json(newPrice);
+                });
+                return;
+            }
+
+            price.price = priceValue;
+            price.updated_at = new Date();
+            price.updated_by = user._id;
+
+            price.save((err2, newPrice) => {
                 if (err2) throw err2;
                 res.json(newPrice);
             });
-            return;
-        }
-
-        price.price = priceValue;
-        price.updated_at = new Date();
-
-        price.save((err2, newPrice) => {
-            if (err2) throw err2;
-            res.json(newPrice);
         });
+    }).catch((error) => {
+        const err = JSON.parse(error.message);
+        res.status(err.code).json(err);
     });
 });
 
