@@ -35,7 +35,9 @@ export default {
       this.points.forEach((point) => {
         if (this.markers) this.markers.clearLayers();
 
-        tab.push(L.marker([point.position.lng, point.position.lat]).addTo(this.carte));
+        tab.push(L.marker([point.position.lng, point.position.lat]).on('click', () => {
+          this.$emit('markerClick', { map: this.carte, point });
+        }));
         this.markers = L.layerGroup(tab).addTo(this.carte);
       });
 
@@ -59,9 +61,7 @@ export default {
         if (!this.items) return [];
         return this.items;
       },
-      set() {
-
-      },
+      set() {},
     },
   },
   watch: {

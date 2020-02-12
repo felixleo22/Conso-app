@@ -1,6 +1,10 @@
 <template>
     <div>
-        <leaflet @ready="getShops" @viewChange="getShops" :items="shops"></leaflet>
+        <leaflet
+          @ready="getShops"
+          @viewChange="getShops"
+          @markerClick="onMarkerClick"
+          :items="shops"></leaflet>
     </div>
 </template>
 
@@ -19,10 +23,12 @@ export default {
   },
   methods: {
     getShops(event) {
-      console.log('get');
       this.$http.get(`/shops?NW=${event.view[0]}&SE=${event.view[1]}`).then((response) => {
         this.shops = response.data.shops;
       });
+    },
+    onMarkerClick(event) {
+      console.log(event.point);
     },
   },
 };
