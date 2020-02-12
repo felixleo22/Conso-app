@@ -16,12 +16,18 @@
             :search-input.sync="search"
             hide-details
             hide-selected
-            :hide-no-data="!result || !selection"
+            :hide-no-data="!search"
             label="Rechercher un produit ... "
             solo
             no-filter
             @keypress.enter="add"
           >
+            <template v-slot:no-data>
+              <v-list-item-content>
+                Aucun produit trouvé !
+              </v-list-item-content>
+            </template>
+
             <template v-slot:selection="{ item }">
               <v-list-item-avatar tile>
                  <v-responsive :aspect-ratio="1/1">
