@@ -79,6 +79,7 @@ export default {
   padding: 0;
   width: 100%;
   height: 600px;
+  z-index: 0;
 }
 
 </style>

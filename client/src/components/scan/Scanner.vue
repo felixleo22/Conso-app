@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="scanner-wrapper">
       <StreamBarcodeReader
         @decode="scanned"
       ></StreamBarcodeReader>
@@ -34,3 +34,14 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.scanner-wrapper {
+  display: inline-block;
+}
+
+.scanner-container {
+  max-width: 100%;
+  max-width: 100%;
+}
+</style>
