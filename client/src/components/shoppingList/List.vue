@@ -34,15 +34,6 @@ export default {
     this.$store.dispatch('getShoppingList');
   },
   methods: {
-    add() {
-      const item = {
-        // TODO code bar open food
-        codebar: new Date().getTime(),
-        name: this.name,
-        quantity: this.quantity,
-      };
-      this.$store.dispatch('addItem', item);
-    },
     del(item) {
       this.$store.dispatch('removeItem', item);
     },
