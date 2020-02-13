@@ -6,6 +6,8 @@ const user = new mongoose.Schema({
     shoppingList: [{
         codebar: { type: Number, required: true },
         name: { type: String, required: true },
+        brand: { type: String },
+        icon: { type: String },
         quantity: { type: Number, required: true },
     }],
 }, { versionKey: false });

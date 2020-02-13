@@ -1,9 +1,9 @@
 
 <template>
-  <div>
+  <v-container>
     <search-bar></search-bar>
     <list></list>
-  </div>
+  </v-container>
 </template>
 
 <script>

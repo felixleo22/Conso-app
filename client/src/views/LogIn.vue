@@ -1,15 +1,46 @@
 <template>
-  <div>
-    <form @submit.prevent="login">
-      <h1>Login in</h1>
-      <label>Email</label>
-      <input v-model="email" type="text" placeholder="Email" autofocus/>
-      <label>Mot de passe</label>
-      <input v-model="password" type="password" placeholder="Mot de passe" />
-      <hr />
-      <button type="submit">Se connecter</button>
-    </form>
-  </div>
+  <v-container>
+    <h2 class="text-center">Se connecter à Conso App</h2>
+
+    <v-form>
+      <v-row>
+        <v-col
+          cols="12"
+          md="8"
+          offset-md="2"
+        >
+          <v-text-field
+            v-model="email"
+            label="Email"
+          >
+          </v-text-field>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col
+          cols="12"
+          md="8"
+          offset-md="2"
+        >
+          <v-text-field
+            v-model="password"
+            :append-icon="showPw ? 'fa-eye' : 'fa-eye-slash'"
+            :type="showPw ? 'text' : 'password'"
+            @click:append="showPw = !showPw"
+            label="Mot de passe"
+          >
+          </v-text-field>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="12" class="text-center">
+          <v-btn color="primary" @click="login">
+            Se connecter
+          </v-btn>
+        </v-col>
+      </v-row>
+    </v-form>
+  </v-container>
 </template>
 
 <script>
@@ -19,6 +50,7 @@ export default {
     return {
       email: '',
       password: '',
+      showPw: false,
     };
   },
   methods: {

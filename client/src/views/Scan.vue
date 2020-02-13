@@ -1,9 +1,12 @@
 <template>
     <div id="scan">
-        <h1>Scann products</h1>
         <shop-selector v-if="!shop"></shop-selector>
         <template v-else>
-          <button @click="deselectShop">Changer de magasin</button>
+          <v-toolbar flat dense width="100%">
+              Shop name
+            <v-spacer></v-spacer>
+            <v-btn @click="deselectShop">Changer</v-btn>
+          </v-toolbar>
           <scanner @scanned="onProductScanned" v-if="showScanner"></scanner>
           <price-setter v-else
             :product="product"

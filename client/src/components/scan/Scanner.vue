@@ -1,33 +1,27 @@
 <template>
     <div>
-        <v-quagga
-            :onDetected="scanned"
-            :readerSize="readerSize"
-            :readerTypes="['ean_reader']">
-        </v-quagga>
+      <StreamBarcodeReader
+        @decode="scanned"
+      ></StreamBarcodeReader>
     </div>
 </template>
 
 <script>
-import Vue from 'vue';
-import VueQuagga from 'vue-quaggajs';
-
-// register component 'v-quagga'
-Vue.use(VueQuagga);
+import { StreamBarcodeReader } from 'vue-barcode-reader';
 
 export default {
   name: 'scanner',
+  components: {
+    StreamBarcodeReader,
+  },
   data() {
     return {
-      readerSize: {
-        width: 640,
-        height: 480,
-      },
+
     };
   },
   methods: {
     scanned(event) {
-      const barcode = event.codeResult.code;
+      const barcode = event;
       this.$http.get(`/product/${barcode}`)
         .then((response) => {
           const product = { code: response.data.code, name: response.data.product_name };
