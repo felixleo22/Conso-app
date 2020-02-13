@@ -35,7 +35,7 @@ export default {
       this.points.forEach((point) => {
         if (this.markers) this.markers.clearLayers();
 
-        tab.push(L.marker([point.position.lng, point.position.lat]).on('click', () => {
+        tab.push(L.marker([point.position.lat, point.position.lng]).on('click', () => {
           this.$emit('markerClick', { map: this.carte, point });
         }));
         this.markers = L.layerGroup(tab).addTo(this.carte);
