@@ -3,9 +3,9 @@
     <leaflet
       @ready="getLocation"
       :items="position"
+      :radius="radius"
     ></leaflet>
     <v-select v-model="selected" :items="options" />
-    <!-- <button @click="createCircle" type="submit">Valider</button> -->
   </div>
 </template>
 
@@ -44,6 +44,12 @@ export default {
         // eslint-disable-next-line no-console
         console.log('Geolocation is not supported by this browser.');
       }
+    },
+  },
+  computed: {
+    radius() {
+      if (!this.position) return null;
+      return { position: this.position[0].position, radius: 1000 };
     },
   },
 };

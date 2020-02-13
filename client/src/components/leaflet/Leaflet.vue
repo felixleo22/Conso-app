@@ -33,8 +33,10 @@ export default {
   methods: {
     createCircle() {
       if (this.circle) this.circle.clearLayers();
-      this.circle = L.circle([this.radius.position.lat, this.radius.position.long],
-        { radius: this.radius.radius, metric: true });
+      this.circle = L.circle(
+        [this.radius.position.lat, this.radius.position.lng],
+        { radius: this.radius.radius, metric: true },
+      );
       L.layerGroup([this.circle]).addTo(this.carte);
     },
     showPoints() {
@@ -77,6 +79,7 @@ export default {
       this.showPoints();
     },
     radius(radius) {
+      console.log(radius);
       if (!radius) return;
       this.createCircle();
     },
