@@ -6,6 +6,13 @@ Vue.use(VueRouter);
 
 const routes = [
   {
+    path: '/current',
+    name: 'current',
+    component() {
+      return import('../views/CurrentPosition.vue');
+    },
+  },
+  {
     path: '/',
     name: 'home',
     component() {
