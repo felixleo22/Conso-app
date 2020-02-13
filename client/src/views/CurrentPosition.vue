@@ -1,19 +1,18 @@
 <template>
   <div id='app'>
-    <div v-bind="getLocation(this.carte)" id='mymap' ></div>
-    <!-- <v-select v-model="selected" :options="options" /> -->
-    <button @click="createCircle" type="submit">Valider</button>
+    <leaflet @ready="getLocation" :items="position"></leaflet>
+    <v-select v-model="selected" :items="options" />
+    <!-- <button @click="createCircle" type="submit">Valider</button> -->
   </div>
 </template>
 
 <script>
-import L from 'leaflet';
-// import vSelect from 'vue-select';
+import Leaflet from '../components/leaflet/Leaflet.vue';
 
 export default {
   name: 'app',
   components: {
-    // 'v-select': vSelect,
+    Leaflet,
   },
   data() {
     return {
@@ -23,8 +22,7 @@ export default {
       circle2: null,
       circle3: null,
       circleLayer: null,
-      lat: null,
-      long: null,
+      position: null,
       options: [
         '5km',
         '10km',
@@ -34,45 +32,36 @@ export default {
   },
   methods: {
     // eslint-disable-next-line consistent-return
-    createCircle() {
-      this.circle1 = L.circle([this.lat, this.long], { radius: 5000, metric: true });
-      this.circle2 = L.circle([this.lat, this.long], { radius: 10000, metric: true });
-      this.circle3 = L.circle([this.lat, this.long], { radius: 15000, metric: true });
-      if (this.selected === '5km') {
-        if (this.circleLayer) {
-          this.circleLayer.clearLayers();
-        }
-        this.circleLayer = L.layerGroup([this.circle1]).addTo(this.carte);
-      } if (this.selected === '10km') {
-        if (this.circleLayer) {
-          this.circleLayer.clearLayers();
-        }
-        this.circleLayer = L.layerGroup([this.circle2]).addTo(this.carte);
-      } if (this.selected === '15km') {
-        if (this.circleLayer) {
-          this.circleLayer.clearLayers();
-        }
-        this.circleLayer = L.layerGroup([this.circle3]).addTo(this.carte);
-      }
-    },
-    initMap() {
-      this.carte = L.map('mymap').setView([this.lat, this.long, this.long], 13);
-      L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-        attribution:
-          "&copy; <a href='http://osm.org/copyright'>OpenStreetMap</a> contributors",
-      }).addTo(this.carte);
-      L.marker([this.lat, this.long]).addTo(this.carte);
-      // eslint-disable-next-line no-unused-expressions
-      L.control.scale().addTo(this.carte);
-    },
-    getLocation(carte) {
+    // createCircle() {
+    //   this.circle1 = L.circle([this.lat, this.long], { radius: 5000, metric: true });
+    //   this.circle2 = L.circle([this.lat, this.long], { radius: 10000, metric: true });
+    //   this.circle3 = L.circle([this.lat, this.long], { radius: 15000, metric: true });
+    //   if (this.selected === '5km') {
+    //     if (this.circleLayer) {
+    //       this.circleLayer.clearLayers();
+    //     }
+    //     this.circleLayer = L.layerGroup([this.circle1]).addTo(this.carte);
+    //   } if (this.selected === '10km') {
+    //     if (this.circleLayer) {
+    //       this.circleLayer.clearLayers();
+    //     }
+    //     this.circleLayer = L.layerGroup([this.circle2]).addTo(this.carte);
+    //   } if (this.selected === '15km') {
+    //     if (this.circleLayer) {
+    //       this.circleLayer.clearLayers();
+    //     }
+    //     this.circleLayer = L.layerGroup([this.circle3]).addTo(this.carte);
+    //   }
+    // },
+    getLocation() {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition((position) => {
           // eslint-disable-next-line no-console
-          this.lat = position.coords.latitude;
+          const lat = position.coords.latitude;
           // eslint-disable-next-line no-console
-          this.long = position.coords.longitude;
-          this.initMap(carte);
+          const lng = position.coords.longitude;
+
+          this.position = [{ position: { lng, lat } }];
         });
       } else {
         // eslint-disable-next-line no-console
