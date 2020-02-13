@@ -8,11 +8,12 @@ import L from 'leaflet';
 
 export default {
   name: 'Leaflet',
-  props: ['items'],
+  props: ['items', 'radius'],
   data() {
     return {
       carte: '',
       markers: null,
+      circle: null,
     };
   },
   mounted() {
@@ -30,6 +31,12 @@ export default {
     this.showPoints();
   },
   methods: {
+    createCircle() {
+      if (this.circle) this.circle.clearLayers();
+      this.circle = L.circle([this.radius.position.lat, this.radius.position.long],
+        { radius: this.radius.radius, metric: true });
+      L.layerGroup([this.circle]).addTo(this.carte);
+    },
     showPoints() {
       const tab = [];
       this.points.forEach((point) => {
@@ -65,8 +72,13 @@ export default {
     },
   },
   watch: {
-    items() {
+    items(items) {
+      if (!items) return;
       this.showPoints();
+    },
+    radius(radius) {
+      if (!radius) return;
+      this.createCircle();
     },
   },
 };
