@@ -2,10 +2,11 @@
   <div id='app'>
     <leaflet
       @ready="getLocation"
-      :items="position"
+      :items="allPoints"
       :radius="radius"
+      @viewChange="getAir"
     ></leaflet>
-    <v-select v-model="selected" :items="options" />
+   <input v-model="distance" min="1" max="500" placeholder="en km">
   </div>
 </template>
 
@@ -19,14 +20,9 @@ export default {
   },
   data() {
     return {
-      selected: null,
-      carte: null,
       position: null,
-      options: [
-        '5km',
-        '10km',
-        '15km',
-      ],
+      distance: 10,
+      shops: [],
     };
   },
   methods: {
@@ -45,12 +41,24 @@ export default {
         console.log('Geolocation is not supported by this browser.');
       }
     },
+    getAir(event) {
+      this.$http.get(`/shops?NW=${event.view[0]}&SE=${event.view[1]}`).then((response) => {
+        this.shops = response.data.shops;
+      });
+    },
   },
   computed: {
     radius() {
       if (!this.position) return null;
-      return { position: this.position[0].position, radius: 1000 };
+      return { position: this.position[0].position, radius: this.distance * 1000 };
     },
+    allPoints() {
+      if (!this.shops) {
+        return this.position;
+      }
+      return this.shops.concat(this.position);
+    },
+
   },
 };
 </script>
