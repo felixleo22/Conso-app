@@ -70,13 +70,6 @@ const routes = [
     },
   },
   {
-    path: '/catalog',
-    name: 'catalog',
-    component() {
-      return import('../views/Catalog.vue');
-    },
-  },
-  {
     // TODO a supprimer
     path: '/leaflet',
     name: 'leaflet',

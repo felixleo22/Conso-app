@@ -8,11 +8,12 @@ import L from 'leaflet';
 
 export default {
   name: 'Leaflet',
-  props: ['items'],
+  props: ['items', 'radius'],
   data() {
     return {
       carte: '',
       markers: null,
+      circle: null,
     };
   },
   mounted() {
@@ -26,16 +27,24 @@ export default {
     this.carte.on('dragend', this.haveToBeRefresh);
 
     this.$emit('ready', { map: this.carte, view: this.getAir() });
-
-    this.showPoints();
+    this.haveToBeRefresh();
   },
   methods: {
+    createCircle() {
+      if (this.circle) this.circle.clearLayers();
+      const circle = L.circle(
+        [this.radius.position.lat, this.radius.position.lng],
+        { radius: this.radius.radius, metric: true },
+      );
+      this.circle = L.layerGroup([circle]).addTo(this.carte);
+      this.haveToBeRefresh();
+    },
     showPoints() {
       const tab = [];
       this.points.forEach((point) => {
         if (this.markers) this.markers.clearLayers();
 
-        tab.push(L.marker([point.position.lng, point.position.lat]).on('click', () => {
+        tab.push(L.marker([point.position.lat, point.position.lng]).on('click', () => {
           this.$emit('markerClick', { map: this.carte, point });
         }));
         this.markers = L.layerGroup(tab).addTo(this.carte);
@@ -65,7 +74,13 @@ export default {
     },
   },
   watch: {
-    items() {
+    items(items) {
+      if (!items) return;
+      this.showPoints();
+    },
+    radius(radius) {
+      if (!radius) return;
+      this.createCircle();
       this.showPoints();
     },
   },
@@ -79,6 +94,7 @@ export default {
   padding: 0;
   width: 100%;
   height: 600px;
+  z-index: 0;
 }
 
 </style>
