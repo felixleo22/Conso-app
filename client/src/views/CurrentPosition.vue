@@ -1,19 +1,19 @@
 <template>
   <div id='app'>
     <div v-bind="getLocation(this.carte)" id='mymap' ></div>
-    <v-select v-model="selected" :options="options" />
+    <!-- <v-select v-model="selected" :options="options" /> -->
     <button @click="createCircle" type="submit">Valider</button>
   </div>
 </template>
 
 <script>
 import L from 'leaflet';
-import vSelect from 'vue-select';
+// import vSelect from 'vue-select';
 
 export default {
   name: 'app',
   components: {
-    'v-select': vSelect,
+    // 'v-select': vSelect,
   },
   data() {
     return {
