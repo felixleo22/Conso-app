@@ -42,7 +42,10 @@ export default {
       }
     },
     getAir(event) {
-      this.$http.get(`/shops?NW=${event.view[0]}&SE=${event.view[1]}`).then((response) => {
+      const url = this.position
+        ? `&center=${this.position[0].position.lat},${this.position[0].position.lng}
+      &radius=${this.distance}` : '';
+      this.$http.get(`/shops?NW=${event.view[0]}&SE=${event.view[1]}${url}`).then((response) => {
         this.shops = response.data.shops;
       });
     },
@@ -53,7 +56,10 @@ export default {
       return { position: this.position[0].position, radius: this.distance * 1000 };
     },
     allPoints() {
-      if (!this.shops) {
+      if (!this.position) {
+        return null;
+      }
+      if (this.shops.lenght === 0) {
         return this.position;
       }
       return this.shops.concat(this.position);

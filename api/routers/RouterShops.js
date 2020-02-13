@@ -1,5 +1,6 @@
 /* eslint-disable no-param-reassign */
 const router = require('express').Router();
+const geolib = require('geolib');
 
 const Shop = require('../models/Shop');
 const Price = require('../models/Price');
@@ -122,21 +123,38 @@ router.put('/shop/:idShop/product/:barCodeProduct', (req, res) => {
 });
 
 router.get('/shops', (req, res) => {
-    const marker1 = req.query.NW.split(',');
-    const marker2 = req.query.SE.split(',');
-    const latMin = marker2[0];
-    const latMax = marker1[0];
-    const lngMin = marker1[1];
-    const lngMax = marker2[1];
+    let query = Shop.find();
+    // filter by bounds
+    if (req.query.NW && req.query.SE) {
+        const marker1 = req.query.NW.split(',');
+        const marker2 = req.query.SE.split(',');
+        const latMin = marker2[0];
+        const latMax = marker1[0];
+        const lngMin = marker1[1];
+        const lngMax = marker2[1];
+        query = query.where('position.lng').gt(lngMin).lt(lngMax);
+        query = query.where('position.lat').gt(latMin).lt(latMax);
+    }
+    // filter when inside circle
 
-    Shop.find({
-        'position.lng': { $gt: lngMin, $lt: lngMax },
-        'position.lat': { $gt: latMin, $lt: latMax },
-    }, (error, result) => {
-        const shops = {
+    query.exec((error, result) => {
+        const tab = {
             shops: result,
         };
-        res.json(shops);
+        if (req.query.center && req.query.radius) {
+            const center = req.query.center.split(',');
+            tab.shops = tab.shops.filter((elem) => {
+                const dist = geolib.getDistance({
+                    latitude: Number(elem.position.lat),
+                    longitude: Number(elem.position.lng),
+                }, {
+                    latitude: Number(center[0]),
+                    longitude: Number(center[1]),
+                });
+                return dist <= req.query.radius * 1000;
+            });
+        }
+        res.json(tab);
     });
 });
 

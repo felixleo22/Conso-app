@@ -27,8 +27,7 @@ export default {
     this.carte.on('dragend', this.haveToBeRefresh);
 
     this.$emit('ready', { map: this.carte, view: this.getAir() });
-
-    this.showPoints();
+    this.haveToBeRefresh();
   },
   methods: {
     createCircle() {
@@ -38,6 +37,7 @@ export default {
         { radius: this.radius.radius, metric: true },
       );
       this.circle = L.layerGroup([circle]).addTo(this.carte);
+      this.haveToBeRefresh();
     },
     showPoints() {
       const tab = [];
@@ -81,6 +81,7 @@ export default {
     radius(radius) {
       if (!radius) return;
       this.createCircle();
+      this.showPoints();
     },
   },
 };
