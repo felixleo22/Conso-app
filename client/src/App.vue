@@ -7,6 +7,8 @@
         <router-link :to="{name : 'logout'}">Déconnexion</router-link> |
         <router-link :to="{name : 'basket'}">Panier</router-link> |
         <router-link :to="{name: 'current'}">Géolocalisation</router-link>
+        <router-link :to="{name : 'catalog'}">Map</router-link> |
+        <router-link :to="{name : 'shoppingList'}">Liste</router-link> |
       </template>
       <template v-else>
         <router-link :to="{name : 'login'}">Connexion</router-link> |

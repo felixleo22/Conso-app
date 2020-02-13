@@ -28,6 +28,7 @@ router.post('/user', (req, res) => {
         const account = new User({
             email,
             password: Password.hash(password1),
+            shoppingList: [],
         });
         account.save((err2) => {
             if (err2) throw err2;
@@ -49,13 +50,7 @@ router.post('/login', (req, res) => {
         }
         // TODO mettre le secret à l'abri
         const token = jwt.sign({ id: user._id, email: user.email }, 'test');
-        res.status(200).send({ auth: true, token, user: { _id: user._id, email: user.email } });
-    });
-});
-
-router.get('/login/:token', (req, res) => {
-    jwt.verify(req.params.token, 'test', (err, decoded) => {
-        res.json(decoded);
+        res.status(200).json({ auth: true, token, user: { _id: user._id, email: user.email } });
     });
 });
 

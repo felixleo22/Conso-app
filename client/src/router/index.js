@@ -59,6 +59,31 @@ const routes = [
       requiresAuth: true,
     },
   },
+  {
+    path: '/shoppingList',
+    name: 'shoppingList',
+    component() {
+      return import('../views/ShoppingList.vue');
+    },
+    meta: {
+      requiresAuth: true,
+    },
+  },
+  {
+    path: '/catalog',
+    name: 'catalog',
+    component() {
+      return import('../views/Catalog.vue');
+    },
+  },
+  {
+    // TODO a supprimer
+    path: '/leaflet',
+    name: 'leaflet',
+    component() {
+      return import('../views/ViewShops.vue');
+    },
+  },
 ];
 
 const router = new VueRouter({

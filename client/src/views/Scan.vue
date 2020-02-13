@@ -1,8 +1,9 @@
 <template>
     <div id="scan">
         <h1>Scann products</h1>
-        <shop-selector v-if="!shopSelected" @selected="onShopSelected"></shop-selector>
+        <shop-selector v-if="!shop"></shop-selector>
         <template v-else>
+          <button @click="deselectShop">Changer de magasin</button>
           <scanner @scanned="onProductScanned" v-if="showScanner"></scanner>
           <price-setter v-else
             :product="product"
@@ -28,17 +29,11 @@ export default {
   },
   data() {
     return {
-      shopSelected: !!this.shop,
       showScanner: true,
       product: null,
     };
   },
   methods: {
-    onShopSelected(event) {
-      this.$store.dispatch('changeScanShop', event).then(() => {
-        this.shopSelected = true;
-      });
-    },
     onProductScanned(event) {
       this.showScanner = false;
       this.product = event;
@@ -52,6 +47,9 @@ export default {
     },
     onPriceUpdateError(event) {
       console.log(event);
+    },
+    deselectShop() {
+      this.$store.dispatch('unsetScanShop');
     },
   },
   computed: {

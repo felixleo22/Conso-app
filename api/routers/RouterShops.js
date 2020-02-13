@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 const router = require('express').Router();
 
 const Shop = require('../models/Shop');
@@ -107,6 +108,20 @@ router.put('/shop/:idShop/product/:barCodeProduct', (req, res) => {
             if (err2) throw err2;
             res.json(newPrice);
         });
+    });
+});
+
+router.get('/shops', (req, res) => {
+    const marker1 = req.query.NW.split(',');
+    const marker2 = req.query.SE.split(',');
+    Shop.find({
+        'position.lng': { $gt: marker2[0], $lt: marker1[0] },
+        'position.lat': { $gt: marker1[1], $lt: marker2[1] },
+    }, (error, result) => {
+        const shops = {
+            shops: result,
+        };
+        res.json(shops);
     });
 });
 

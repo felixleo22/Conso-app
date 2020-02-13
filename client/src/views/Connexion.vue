@@ -24,7 +24,6 @@ export default {
   }),
   methods: {
     Connexion() {
-      // TODO la bonne route
       axios.get(`//${location.host}:8080/login`,
         {
           email: this.email,
