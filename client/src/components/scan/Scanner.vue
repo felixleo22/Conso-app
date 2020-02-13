@@ -1,9 +1,12 @@
 <template>
+  <div>
+    <input type="text" v-model="barcode" placeholder="tapez votre code barre">
     <div class="scanner-wrapper">
       <StreamBarcodeReader
-        @decode="scanned"
+        @decode="onScanned"
       ></StreamBarcodeReader>
     </div>
+  </div>
 </template>
 
 <script>
@@ -16,20 +19,27 @@ export default {
   },
   data() {
     return {
-
+      barcode: '',
     };
   },
   methods: {
-    scanned(event) {
+    onScanned(event) {
       const barcode = event;
       this.$http.get(`/product/${barcode}`)
         .then((response) => {
           const product = { code: response.data.code, name: response.data.product_name };
           this.$emit('scanned', product, this.setReady);
+          this.barcode = '';
         })
         .catch((error) => {
           console.log(error.response);
         });
+    },
+  },
+  watch: {
+    barcode(code) {
+      if (code.length < 13) return;
+      this.onScanned(code);
     },
   },
 };
