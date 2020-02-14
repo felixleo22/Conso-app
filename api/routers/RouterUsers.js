@@ -50,7 +50,9 @@ router.post('/login', (req, res) => {
         }
         // TODO mettre le secret à l'abri
         const token = jwt.sign({ id: user._id, email: user.email }, 'test');
-        res.status(200).json({ auth: true, token, user: { _id: user._id, email: user.email } });
+        setTimeout(() => {
+            res.status(200).json({ auth: true, token, user: { _id: user._id, email: user.email } });
+        }, 2000);
     });
 });
 

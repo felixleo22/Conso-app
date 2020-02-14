@@ -86,6 +86,8 @@ export default {
   }),
   methods: {
     signUp() {
+      if (this.$store.getters.isLoading) return;
+      this.$store.dispatch('setLoading', true);
       this.$http.post('/user',
         {
           email: this.email,
@@ -97,13 +99,17 @@ export default {
             'Access-Control-Allow-Origin': '*',
             'Content-Type': 'application/json',
           },
-        }).then((response) => {
-        if (!response.status === 201) {
+        })
+        .then((response) => {
+          if (!response.status === 201) {
           // TODO afficher le message d'erreur
-          return;
-        }
-        this.$router.push('login');
-      });
+            return;
+          }
+          this.$router.push('login');
+        })
+        .finally(() => {
+          this.$store.dispatch('setLoading', false);
+        });
     },
   },
 };

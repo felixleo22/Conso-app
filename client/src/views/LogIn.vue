@@ -55,6 +55,9 @@ export default {
   },
   methods: {
     login() {
+      if (this.$store.getters.isLoading) return;
+      this.$store.dispatch('setLoading', true);
+
       this.$store.dispatch('retrieveToken', {
         email: this.email,
         password: this.password,
@@ -70,6 +73,9 @@ export default {
           if (error.status === 400) {
             console.log('Email ou mot de passe incorrecte ! ');
           }
+        })
+        .finally(() => {
+          this.$store.dispatch('setLoading', false);
         });
     },
   },
