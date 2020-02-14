@@ -52,7 +52,7 @@ router.post('/login', (req, res) => {
         const token = jwt.sign({ id: user._id, email: user.email }, 'test');
         setTimeout(() => {
             res.status(200).json({ auth: true, token, user: { _id: user._id, email: user.email } });
-        }, 2000);
+        }, 2500);
     });
 });
 

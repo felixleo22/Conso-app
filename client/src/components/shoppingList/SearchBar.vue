@@ -59,7 +59,7 @@
           xl="2"
         >
           <v-btn icon @click="add()">
-            <v-icon color="blue accent-4">fa-plus</v-icon>
+            <v-icon color="red accent-4" title="Ajouter">fa-plus</v-icon>
           </v-btn>
         </v-col>
       </v-row>

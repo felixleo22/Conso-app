@@ -13,7 +13,7 @@
               <tr>
                 <th class="text-left" width="66%">Produit</th>
                 <th class="text-left">Quantité</th>
-                <th class="text-left"></th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
@@ -45,6 +45,17 @@
               </tr>
             </tbody>
           </v-simple-table>
+          <v-container v-if="!shoppingList">
+            <v-row>
+              <v-spacer></v-spacer>
+                <v-progress-circular
+                  indeterminate
+                  color="red accent-4"
+                >
+                </v-progress-circular>
+              <v-spacer></v-spacer>
+            </v-row>
+          </v-container>
         </v-col>
       </v-row>
     </v-container>
@@ -74,7 +85,7 @@ export default {
   },
   computed: {
     shoppingList() {
-      return this.$store.getters.shoppingList || [];
+      return this.$store.getters.shoppingList;
     },
   },
 };
