@@ -1,7 +1,5 @@
 <template>
-  <div>
-    <div id='mymap'></div>
-  </div>
+    <div id="leaflet"></div>
 </template>
 <script>
 import L from 'leaflet';
@@ -17,7 +15,7 @@ export default {
     };
   },
   mounted() {
-    this.carte = L.map('mymap').setView([48.6880756, 6.1384176, 6.1384176], 13);
+    this.carte = L.map('leaflet').setView([48.6880756, 6.1384176, 6.1384176], 13);
     L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
       attribution:
           "&copy; <a href='http://osm.org/copyright'>OpenStreetMap</a> contributors",
@@ -88,8 +86,7 @@ export default {
 </script>
 
 <style>
-#app,
-#mymap {
+#leaflet {
   position: relative;
   padding: 0;
   width: 100%;

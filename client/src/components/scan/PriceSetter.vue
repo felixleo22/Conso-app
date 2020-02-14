@@ -1,16 +1,58 @@
 <template>
-    <div>
-        <h4>Produit scanné :</h4>
-        <p>Code barre : {{product.code}}</p>
-        <p>Nom : {{product.name}}</p>
+<div>
 
-        <label>Entrez le prix du produit : </label>
-        <input type="number" step="0.01" min="0" v-model="price">
-        <div>
-          <button @click="onCancel">Annuler</button>
-          <button @click="onSave">Valider</button>
-        </div>
-    </div>
+    <v-row>
+      <v-spacer></v-spacer>
+      <h4>Produit trouvé</h4>
+      <v-spacer></v-spacer>
+    </v-row>
+    <v-row>
+      <v-spacer></v-spacer>
+      <small>{{product.code}}</small>
+      <v-spacer></v-spacer>
+    </v-row>
+    <v-row>
+      <v-container>
+        <v-row>
+          <v-spacer></v-spacer>
+          <img :src="product.image" height="150px">
+          <v-spacer></v-spacer>
+        </v-row>
+      </v-container>
+    </v-row>
+    <v-row>
+      <v-spacer></v-spacer>
+       <h3>{{product.name}}</h3>
+      <v-spacer></v-spacer>
+    </v-row>
+
+
+    <v-row>
+      <v-container>
+        <v-row>
+          <v-spacer></v-spacer>
+          <v-col cols="12" sm="6">
+            <v-text-field
+              label="Prix du produit"
+              type="number"
+              step="0.01"
+              suffix="€"
+              outlined
+              v-model="price"
+            ></v-text-field>
+          </v-col>
+          <v-spacer></v-spacer>
+        </v-row>
+        <v-row>
+          <v-spacer></v-spacer>
+            <v-btn outlined @click="onCancel">Annuler</v-btn>
+          <v-spacer></v-spacer>
+          <v-btn color="red accent-4 white--text" @click="onSave">Valider</v-btn>
+          <v-spacer></v-spacer>
+        </v-row>
+      </v-container>
+    </v-row>
+</div>
 </template>
 
 <script>
@@ -37,6 +79,9 @@ export default {
           this.$emit('errored', error.response);
         });
     },
+  },
+  mounted() {
+    console.log(this.product);
   },
 };
 </script>
