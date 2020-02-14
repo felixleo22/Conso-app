@@ -7,6 +7,7 @@ import Axios from 'axios';
 import AuthModule from './modules/Auth';
 import ScanModule from './modules/Scan';
 import ShoppingList from './modules/ShoppingList';
+import UI from './modules/UI';
 
 Axios.defaults.baseURL = `//${location.hostname}:8080`;
 
@@ -32,5 +33,6 @@ export default new Vuex.Store({
     auth: AuthModule(Axios),
     scan: ScanModule(),
     shoppingList: ShoppingList(Axios),
+    UI: UI(),
   },
 });
