@@ -53,5 +53,16 @@ export default Axios => ({
         });
       });
     },
+    setSetting(context, setting) {
+      console.log(setting);
+      return new Promise((resolve, reject) => {
+        Axios.post('/shoppingList/setting', setting).then((response) => {
+          context.commit('getShoppingList', response.data);
+          resolve(response);
+        }).catch((err) => {
+          reject(err.response);
+        });
+      });
+    },
   },
 });

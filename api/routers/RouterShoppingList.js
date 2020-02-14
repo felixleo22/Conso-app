@@ -41,6 +41,32 @@ router.post('/shoppinglist', (req, res) => {
     });
 });
 
+router.post('/shoppinglist/setting', (req, res) => {
+    const auth = req.headers.authorization;
+    const data = req.body;
+    console.log(data);
+    Auth(auth).then((user) => {
+        if (!Number(data.radius)) {
+            res.status(400).json(({ type: 'error', code: 400, message: 'invalid radius' }));
+            return;
+        }
+        if (!Number(data.center.position.lat) || !Number(data.center.position.lat)) {
+            res.status(400).json(({ type: 'error', code: 400, message: 'invalid coordinates' }));
+            return;
+        }
+
+        user.settings = data;
+
+        user.save((error, newUser) => {
+            if (error) throw error;
+            res.status(200).json(newUser.shoppingList);
+        });
+    }).catch((error) => {
+        const err = JSON.parse(error.message);
+        res.status(err.code).json(err);
+    });
+});
+
 router.put('/shoppinglist', (req, res) => {
     const auth = req.headers.authorization;
     const data = req.body;
@@ -49,7 +75,6 @@ router.put('/shoppinglist', (req, res) => {
             res.status(400).json(({ type: 'error', code: 400, message: 'invalid quantity' }));
             return;
         }
-        // eslint-disable-next-line no-param-reassign
         user.shoppingList.find((item) => item.codebar === data.codebar).quantity = data.quantity;
         user.save((error, newUser) => {
             if (error) throw error;
@@ -65,7 +90,6 @@ router.delete('/shoppinglist', (req, res) => {
     const auth = req.headers.authorization;
     const data = req.body;
     Auth(auth).then((user) => {
-        // eslint-disable-next-line no-param-reassign
         user.shoppingList = user.shoppingList.filter((item) => item.codebar !== data.codebar);
         user.save((error, newUser) => {
             if (error) throw error;

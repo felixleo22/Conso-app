@@ -6,13 +6,6 @@ Vue.use(VueRouter);
 
 const routes = [
   {
-    path: '/current',
-    name: 'current',
-    component() {
-      return import('../views/CurrentPosition.vue');
-    },
-  },
-  {
     path: '/',
     name: 'home',
     component() {
@@ -75,6 +68,13 @@ const routes = [
     name: 'leaflet',
     component() {
       return import('../views/ViewShops.vue');
+    },
+  },
+  {
+    path: '/zoneshoppinglist',
+    name: 'zoneshoppinglist',
+    component() {
+      return import('../views/ZoneShoppingList.vue');
     },
   },
 ];
