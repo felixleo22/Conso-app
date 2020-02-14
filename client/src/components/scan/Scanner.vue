@@ -1,12 +1,33 @@
 <template>
-  <div>
-    <input type="text" v-model="barcode" placeholder="tapez votre code barre">
-    <div class="scanner-wrapper">
-      <StreamBarcodeReader
-        @decode="onScanned"
-      ></StreamBarcodeReader>
-    </div>
-  </div>
+<div>
+  <v-container>
+    <v-row>
+      <v-spacer></v-spacer>
+      <v-text-field
+        v-model="barcode"
+        outlined
+        dense
+        label="Tapez code barre"
+        :append-icon="barcode ? 'fa-arrow-circle-right' : ''"
+        @click:append="onScanned(barcode)"
+        @keypress.enter="onScanned(barcode)"
+        hide-details
+      ></v-text-field>
+      <v-spacer></v-spacer>
+    </v-row>
+  </v-container>
+  <v-container>
+    <v-row>
+      <v-spacer></v-spacer>
+        <div class="scanner-wrapper">
+          <StreamBarcodeReader
+            @decode="onScanned"
+          ></StreamBarcodeReader>
+        </div>
+      <v-spacer></v-spacer>
+    </v-row>
+  </v-container>
+</div>
 </template>
 
 <script>
@@ -36,12 +57,6 @@ export default {
         });
     },
   },
-  watch: {
-    barcode(code) {
-      if (code.length < 13) return;
-      this.onScanned(code);
-    },
-  },
 };
 </script>
 
@@ -51,7 +66,6 @@ export default {
 }
 
 .scanner-container {
-  max-width: 100%;
   max-width: 100%;
 }
 </style>

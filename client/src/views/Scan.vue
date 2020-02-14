@@ -11,15 +11,19 @@
             <v-spacer></v-spacer>
             <v-btn @click="deselectShop" outlined color="red accent-4">Changer</v-btn>
           </v-toolbar>
-          <v-container>
-            <scanner @scanned="onProductScanned" v-if="showScanner"></scanner>
-            <price-setter v-else
-              :product="product"
-              :shop="shop"
-              @canceled="onPriceCancel"
-              @updated="onPriceUpdated"
-              @errored="onPriceUpdateError">
-            </price-setter>
+          <v-container style="max-height: calc(95vh - 56px);">
+            <template v-if="!showScanner">
+              <price-setter
+                :product="product"
+                :shop="shop"
+                @canceled="onPriceCancel"
+                @updated="onPriceUpdated"
+                @errored="onPriceUpdateError">
+              </price-setter>
+            </template>
+            <template v-else>
+              <scanner @scanned="onProductScanned"></scanner>
+            </template>
           </v-container>
         </template>
     </div>
