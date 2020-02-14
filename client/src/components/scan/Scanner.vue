@@ -48,7 +48,11 @@ export default {
       const barcode = event;
       this.$http.get(`/product/${barcode}`)
         .then((response) => {
-          const product = { code: response.data.code, name: response.data.product_name };
+          const product = {
+            code: response.data.code,
+            name: response.data.product_name,
+            image: response.data.image_front_url,
+          };
           this.$emit('scanned', product, this.setReady);
           this.barcode = '';
         })

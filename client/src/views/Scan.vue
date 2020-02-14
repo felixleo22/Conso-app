@@ -5,7 +5,7 @@
           <v-toolbar flat dense width="100%" style="border-bottom: 1px solid #ffcdd2">
               <v-icon left>fa-map-marker-alt</v-icon>
               <div class="text-truncate" style="padding-right: 1em;">
-                <div style="margin-bottom: -0.5em">{{ this.shop.name }}</div>
+                <div class="text-truncate" style="margin-bottom: -0.5em">{{ this.shop.name }}</div>
                 <small>{{ this.shop.address }}</small>
               </div>
             <v-spacer></v-spacer>
