@@ -45,6 +45,9 @@ export default {
   },
   methods: {
     onScanned(event) {
+      if (this.$store.getters.isLoading) return;
+      this.$store.dispatch('setLoading', true);
+
       const barcode = event;
       this.$http.get(`/product/${barcode}`)
         .then((response) => {
@@ -58,6 +61,9 @@ export default {
         })
         .catch((error) => {
           console.log(error.response);
+        })
+        .finally(() => {
+          this.$store.dispatch('setLoading', false);
         });
     },
   },
