@@ -101,7 +101,7 @@ export default {
   },
   watch: {
     search(val) {
-      if (this.isLoading || this.selection) return;
+      if (this.selection) return;
       this.isLoading = true;
 
       this.$http.get(`/products?search=${encodeURI(val)}`)
