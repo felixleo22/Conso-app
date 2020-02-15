@@ -74,13 +74,23 @@ export default {
   },
   methods: {
     del(item) {
-      this.$store.dispatch('removeItem', item);
+      this.$store.dispatch('setLoading', true);
+
+      this.$store.dispatch('removeItem', item)
+        .finally(() => {
+          this.$store.dispatch('setLoading', false);
+        });
     },
     update(item) {
       if (item.quantity < 1) {
+        // eslint-disable-next-line no-param-reassign
         return;
       }
-      this.$store.dispatch('updateItem', item);
+      this.$store.dispatch('setLoading', true);
+      this.$store.dispatch('updateItem', item)
+        .finally(() => {
+          this.$store.dispatch('setLoading', false);
+        });
     },
   },
   computed: {

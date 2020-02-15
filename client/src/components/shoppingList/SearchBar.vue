@@ -21,6 +21,7 @@
             solo
             no-filter
             @keypress.enter="add"
+            append-icon="fa-caret-down"
           >
             <template v-slot:no-data>
               <v-list-item-content>
@@ -59,7 +60,7 @@
           xl="2"
         >
           <v-btn icon @click="add()">
-            <v-icon color="red accent-4" title="Ajouter">fa-plus</v-icon>
+            <v-icon color="primary" title="Ajouter">fa-plus</v-icon>
           </v-btn>
         </v-col>
       </v-row>
@@ -81,6 +82,7 @@ export default {
   methods: {
     add() {
       if (!this.selection) return;
+      this.$store.dispatch('setLoading', true);
       const res = {
         codebar: this.selection.codebar,
         name: this.selection.name,
@@ -88,9 +90,13 @@ export default {
         brand: this.selection.brand,
         quantity: 1,
       };
-      this.$store.dispatch('addItem', res).then(() => {
-        this.selection = null;
-      });
+      this.$store.dispatch('addItem', res)
+        .then(() => {
+          this.selection = null;
+        })
+        .finally(() => {
+          this.$store.dispatch('setLoading', false);
+        });
     },
   },
   watch: {
