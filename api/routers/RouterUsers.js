@@ -39,21 +39,22 @@ router.post('/user', (req, res) => {
 
 router.post('/login', (req, res) => {
     const { email, password } = req.body;
-    User.findOne({ email }, (err, user) => {
-        if (!user) {
-            res.status(400).json(({ auth: false }));
-            return;
-        }
-        if (!Password.verify(password, user.password)) {
-            res.status(400).json(({ auth: false }));
-            return;
-        }
-        // TODO mettre le secret à l'abri
-        const token = jwt.sign({ id: user._id, email: user.email }, 'test');
-        setTimeout(() => {
+    setTimeout(() => {
+        User.findOne({ email }, (err, user) => {
+            if (!user) {
+                res.status(401).json(({ auth: false }));
+                return;
+            }
+            if (!Password.verify(password, user.password)) {
+                res.status(401).json(({ auth: false }));
+                return;
+            }
+            // TODO mettre le secret à l'abri
+            const token = jwt.sign({ id: user._id, email: user.email }, 'test');
+
             res.status(200).json({ auth: true, token, user: { _id: user._id, email: user.email } });
-        }, 2500);
-    });
+        });
+    }, 2500);
 });
 
 module.exports = router;
