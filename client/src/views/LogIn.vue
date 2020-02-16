@@ -2,7 +2,7 @@
   <v-container>
     <h2 class="text-center">Se connecter à Conso App</h2>
 
-    <v-form>
+    <v-form @submit.prevent="login">
       <v-row>
         <v-col
           cols="12"
@@ -34,7 +34,7 @@
       </v-row>
       <v-row>
         <v-col cols="12" class="text-center">
-          <v-btn color="primary" @click="login">
+          <v-btn color="primary" type="submit">
             Se connecter
           </v-btn>
         </v-col>
