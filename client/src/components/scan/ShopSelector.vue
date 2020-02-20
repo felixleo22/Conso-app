@@ -8,6 +8,18 @@
     >
     </leaflet>
 
+    <v-btn
+      fixed
+      fab
+      bottom
+      right
+      title="Ajouter un magasin"
+      color="red accent-4"
+      style="bottom: 6vh; right: 24px;"
+    >
+      <v-icon color="white">fa-plus</v-icon>
+    </v-btn>
+
     <v-dialog
       v-model="dialog"
       max-width="500"
@@ -57,6 +69,7 @@ export default {
       shopId: '',
       shops: [],
       selected: null,
+      create: false,
     };
   },
   methods: {
