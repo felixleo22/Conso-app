@@ -1,10 +1,10 @@
 <template>
   <div class="leaflet-wrapper">
     <leaflet
-      @ready="getShops"
-      @viewChange="getShops"
-      :items="shops"
-      @markerClick="selectShop"
+      :options=" {view : {lat: 48.5,lng: 0.5, zoom: 3}}"
+      :markers="shops"
+      @viewchanged="getShops"
+      @markerclick="selectShop"
     >
     </leaflet>
 
@@ -56,7 +56,7 @@
 </template>
 
 <script>
-import Leaflet from '../leaflet/Leaflet.vue';
+import Leaflet from 'easy-vue-leaflet';
 
 export default {
   name: 'ShopSelector',
@@ -74,13 +74,13 @@ export default {
   },
   methods: {
     selectShop(event) {
-      const { point } = event;
-      this.selected = point;
+      const { marker } = event;
+      this.selected = marker;
 
       this.dialog = true;
     },
     getShops(event) {
-      this.$http.get(`/shops?NW=${event.view[0]}&SE=${event.view[1]}`).then((response) => {
+      this.$http.get(`/shops?NW=${event.view.NW}&SE=${event.view.SE}`).then((response) => {
         this.shops = response.data.shops;
       });
     },
@@ -98,6 +98,7 @@ export default {
 </script>
 
 <style scoped>
+  @import url('https://unpkg.com/leaflet@1.6.0/dist/leaflet.css');
   #leaflet {
     height: calc(95vh - 56px) !important;
   }
