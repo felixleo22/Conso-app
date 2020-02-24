@@ -39,6 +39,7 @@
               suffix="€"
               outlined
               v-model="price"
+              @keypress.enter="onSave"
             ></v-text-field>
           </v-col>
           <v-spacer></v-spacer>
