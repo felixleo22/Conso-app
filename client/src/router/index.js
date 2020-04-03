@@ -62,6 +62,20 @@ const routes = [
       requiresAuth: true,
     },
   },
+  {
+    path: '/leaflet',
+    name: 'leaflet',
+    component() {
+      return import('../views/ViewShops.vue');
+    },
+  },
+  {
+    path: '/zoneshoppinglist',
+    name: 'zoneshoppinglist',
+    component() {
+      return import('../views/ZoneShoppingList.vue');
+    },
+  },
 ];
 
 const router = new VueRouter({

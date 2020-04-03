@@ -58,7 +58,6 @@ export default {
     };
   },
   mounted() {
-    // eslint-disable-next-line no-return-assign
     this.$store.dispatch('getShoppingList');
   },
   methods: {

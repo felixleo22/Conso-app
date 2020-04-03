@@ -20,10 +20,11 @@ export default {
       attribution:
           "&copy; <a href='http://osm.org/copyright'>OpenStreetMap</a> contributors",
     }).addTo(this.carte);
-
     this.carte.on('zoomend', this.haveToBeRefresh);
     this.carte.on('dragend', this.haveToBeRefresh);
-
+    this.carte.on('click', (event) => {
+      this.$emit('click', event);
+    });
     this.$emit('ready', { map: this.carte, view: this.getAir() });
     this.haveToBeRefresh();
   },
