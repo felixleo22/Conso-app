@@ -1,15 +1,22 @@
 export default Axios => ({
   state: {
     shoppingList: null,
+    settings: null,
   },
   getters: {
     shoppingList(state) {
       return state.shoppingList;
     },
+    settings(state) {
+      return state.settings;
+    },
   },
   mutations: {
     getShoppingList(state, list) {
       state.shoppingList = list;
+    },
+    getSettings(state, settings) {
+      state.settings = settings;
     },
   },
   actions: {
@@ -53,11 +60,20 @@ export default Axios => ({
         });
       });
     },
-    setSetting(context, setting) {
-      console.log(setting);
+    setSettings(context, setting) {
       return new Promise((resolve, reject) => {
-        Axios.post('/shoppingList/setting', setting).then((response) => {
-          context.commit('getShoppingList', response.data);
+        Axios.post('/shoppingList/settings', setting).then((response) => {
+          context.commit('getSettings', response.data);
+          resolve(response);
+        }).catch((err) => {
+          reject(err.response);
+        });
+      });
+    },
+    getSettings(context, setting) {
+      return new Promise((resolve, reject) => {
+        Axios.get('/shoppingList/settings', setting).then((response) => {
+          context.commit('getSettings', response.data);
           resolve(response);
         }).catch((err) => {
           reject(err.response);

@@ -25,7 +25,7 @@ export default {
     return {
       position: null,
       center: null,
-      distance: 10,
+      distance: 2,
       shops: [],
     };
   },
@@ -57,8 +57,14 @@ export default {
       this.center = { position: event.latlng };
     },
     saveSetting() {
-      this.$store.dispatch('setSetting', { center: this.center, radius: this.distance });
+      this.$store.dispatch('setSettings', { center: this.center, radius: this.distance });
     },
+  },
+  mounted() {
+    this.$store.dispatch('getSettings').then(() => {
+      this.distance = this.$store.getters.settings.radius;
+      this.center = this.$store.getters.settings.center;
+    });
   },
   computed: {
     radius() {
