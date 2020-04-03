@@ -20,22 +20,21 @@ router.get('/shop/:id', (req, res) => {
 });
 
 // create a new shop
-// router.post('/shop', (req, res) => {
-//     const data = req.body;
+router.post('/shop', (req, res) => {
+    const data = req.body;
 
-//     if (!data.name || !data.address || !data.position) {
-//         res.status(400).json({ type: 'error', code: 400, message: 'Missing data' });
-//         return;
-//     }
-//     const shop = new Shop(data);
-//     shop.save((err) => {
-//         if (err) {
-//             throw err;
-//         }
-
-//         res.status(201).send(shop);
-//     });
-// });
+    if (!data.name || !data.address || !data.position) {
+        res.status(400).json({ type: 'error', code: 400, message: 'Missing data' });
+        return;
+    }
+    const shop = new Shop(data);
+    shop.save((err) => {
+        if (err) {
+            throw err;
+        }
+        res.status(201).send(shop);
+    });
+});
 
 router.put('/shop/:id', (req, res) => {
     const shopId = req.params.id;
