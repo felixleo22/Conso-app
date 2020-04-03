@@ -38,6 +38,17 @@
               </v-list-item-title>
             </v-list-item-content>
           </v-list-item>
+          <!-- Public basket -->
+          <v-list-item link :to="{name: 'publicBasket'}">
+            <v-list-item-action>
+              <v-icon>fa-globe-europe</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>
+                Paniers publics
+              </v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
           <!-- Route scan -->
           <v-list-item link :to="{name: 'logout'}">
             <v-list-item-action>

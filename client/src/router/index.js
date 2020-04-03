@@ -63,6 +63,13 @@ const routes = [
     },
   },
   {
+    path: '/publicBasket',
+    name: 'publicBasket',
+    component() {
+      return import('../views/publicBasket.vue');
+    },
+  },
+  {
     path: '/zoneshoppinglist',
     name: 'zoneshoppinglist',
     component() {

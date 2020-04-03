@@ -6,7 +6,6 @@ const PublicBasket = require('../models/PublicBasket');
 router.post('/publicBasket', (req, res) => {
     const auth = req.headers.authorization;
     const tokenSplited = auth.split(' ');
-    console.log(tokenSplited[1]);
     Auth(tokenSplited[1]).then((user) => {
         const shoppingListUser = user.shoppingList;
         const publicBasket = new PublicBasket({

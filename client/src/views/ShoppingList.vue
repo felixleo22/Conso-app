@@ -1,9 +1,48 @@
 
 <template>
   <v-container>
-    <v-btn link :to="{name: 'zoneshoppinglist'}">
+    <v-row>
+      <v-dialog
+        v-model="dialog"
+        width="500">
+        <template v-slot:activator="{ on }">
+          <v-btn v-on="on">Rendre public</v-btn>
+        </template>
+        <v-card>
+          <v-card-title
+            class="headline grey lighten-2"
+            primary-title>
+            Rendre votre liste de course public
+          </v-card-title>
+          <v-card-text>
+            Etes-vous sur de mettre votre liste de couse en panier public ?
+            Si vous le faites, le panier sera anonyme et les autres utilisateurs
+            pourront indiqué les prix de chaque produits dans les magasins de la
+            zone de recherche que vous avez parametré
+          </v-card-text>
+          <v-divider></v-divider>
+          <v-card-actions>
+            <v-btn
+              color="primary"
+              text
+              @click="dialog=false">
+              Je refuse
+            </v-btn>
+            <v-spacer></v-spacer>
+            <v-btn
+              color="primary"
+              text
+              @click="dialog=false">
+              Je le plublie
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+      <v-spacer></v-spacer>
+      <v-btn link :to="{name: 'zoneshoppinglist'}">
         <v-icon>fas fa-map-marked-alt</v-icon>
-    </v-btn>
+      </v-btn>
+    </v-row>
     <search-bar></search-bar>
     <list></list>
   </v-container>
@@ -20,7 +59,9 @@ export default {
     List,
   },
   data() {
-    return {};
+    return {
+      dialog: false,
+    };
   },
   mounted() {
   },
