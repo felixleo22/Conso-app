@@ -34,4 +34,22 @@ module.exports = {
             resolve(newPrice);
         });
     },
+    searchItem(product) {
+        return new Promise((resolve, reject) => {
+            if (!product) {
+                reject(new Error(JSON.stringify({ type: 'error', code: 401, message: 'Missing parameter' })));
+            }
+            Price.find({ product }).then((prices) => {
+                if (!prices) {
+                    resolve(null);
+                }
+                if (prices.length > 1) {
+                    prices.sort((a, b) => a.price - b.price);
+                    resolve(prices[0]);
+                } else {
+                    resolve(prices);
+                }
+            });
+        });
+    },
 };
