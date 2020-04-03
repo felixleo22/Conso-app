@@ -63,7 +63,6 @@ const routes = [
     },
   },
   {
-    // TODO a supprimer
     path: '/leaflet',
     name: 'leaflet',
     component() {
