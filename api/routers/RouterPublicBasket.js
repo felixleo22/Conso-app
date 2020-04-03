@@ -53,11 +53,5 @@ router.get('/publicBasket', (req, res) => {
     });
 });
 
-router.post('/publicBasket/product/:id', (req) => {
-    const auth = req.headers.authorization;
-    const tokenSplited = auth.split(' ');
-    console.log(tokenSplited[1]);
-});
-
 
 module.exports = router;
