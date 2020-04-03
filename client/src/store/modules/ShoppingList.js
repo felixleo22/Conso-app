@@ -80,5 +80,14 @@ export default Axios => ({
         });
       });
     },
+    createPublicBasket() {
+      return new Promise((resolve, reject) => {
+        Axios.post('publicBasket').then((response) => {
+          resolve(response);
+        }).catch((err) => {
+          reject(err.response);
+        });
+      });
+    },
   },
 });

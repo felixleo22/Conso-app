@@ -32,8 +32,8 @@
             <v-btn
               color="primary"
               text
-              @click="dialog=false">
-              Je le plublie
+              @click="createPublicBasket">
+              Je l'a publie
             </v-btn>
           </v-card-actions>
         </v-card>
@@ -66,8 +66,10 @@ export default {
   mounted() {
   },
   methods: {
-  },
-  computed: {
+    createPublicBasket() {
+      this.$store.dispatch('createPublicBasket');
+      this.dialog = false;
+    },
   },
 };
 

@@ -5,20 +5,20 @@ const PublicBasket = require('../models/PublicBasket');
 
 router.post('/publicBasket', (req, res) => {
     const auth = req.headers.authorization;
-    const tokenSplited = auth.split(' ');
-    Auth(tokenSplited[1]).then((user) => {
+    Auth(auth).then((user) => {
         const shoppingListUser = user.shoppingList;
         const publicBasket = new PublicBasket({
             shoppingList: shoppingListUser,
         });
+        // expiration token
         const token = jwt.sign(
             { id: user._id, email: user.email },
             'test',
             { expiresIn: '100000' },
         );
         publicBasket.expiredToken = token;
-        // eslint-disable-next-line prefer-destructuring
-        publicBasket.user = tokenSplited[1];
+        // token user
+        publicBasket.user = auth;
         publicBasket.save((err, publicB) => {
             if (err) throw err;
             res.status(200).json(publicB);
