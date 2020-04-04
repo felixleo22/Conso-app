@@ -7,8 +7,12 @@ router.post('/publicBasket', (req, res) => {
     const auth = req.headers.authorization;
     Auth(auth).then((user) => {
         const shoppingListUser = user.shoppingList;
+        const settingPublicBasket = user.settings;
         const publicBasket = new PublicBasket({
-            shoppingList: shoppingListUser,
+            shoppingList: {
+                list: shoppingListUser,
+                settings: settingPublicBasket,
+            },
         });
         // expiration token
         const token = jwt.sign(
