@@ -1,6 +1,24 @@
 
 <template>
   <v-container>
+    <v-alert
+      v-if="success"
+      v-model="success"
+      border="left"
+      close-text="Close Alert"
+      type=success
+      dismissible>
+    Le panier public a été créé
+    </v-alert>
+    <v-alert
+      v-if="error"
+      v-model="error"
+      border="left"
+      close-text="Close Alert"
+      type="error"
+      dismissible>
+      Votre liste de course est vide ou n'a pas de paramètres
+    </v-alert>
     <v-row>
       <v-dialog
         v-model="dialog"
@@ -60,6 +78,8 @@ export default {
   },
   data() {
     return {
+      success: false,
+      error: false,
       dialog: false,
     };
   },
@@ -67,8 +87,14 @@ export default {
   },
   methods: {
     createPublicBasket() {
-      this.$store.dispatch('createPublicBasket');
-      this.dialog = false;
+      this.$store.dispatch('createPublicBasket').then(() => {
+        this.success = true;
+      }).catch((err) => {
+        this.error = true;
+        console.log(err);
+      }).finally(() => {
+        this.dialog = false;
+      });
     },
   },
 };

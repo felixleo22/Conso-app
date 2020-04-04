@@ -135,7 +135,6 @@ router.get('/shops', (req, res) => {
         query = query.where('position.lat').gt(latMin).lt(latMax);
     }
     // filter when inside circle
-
     query.exec((error, result) => {
         const tab = {
             shops: result,

@@ -8,7 +8,7 @@
       @click="enableClick"
     ></leaflet>
    <input type='number' v-model="distance" min="1" max="500" placeholder="en km">
-   <v-btn @click="saveSetting" link :to="{name: 'shoppingList'}">Valider la zone</v-btn>
+   <v-btn @click="saveSetting">Valider la zone</v-btn>
   </div>
 </template>
 
@@ -51,13 +51,16 @@ export default {
       &radius=${this.distance}` : '';
       this.$http.get(`/shops?NW=${event.view[0]}&SE=${event.view[1]}${url}`).then((response) => {
         this.shops = response.data.shops;
+        console.log(this.shops);
       });
     },
     enableClick(event) {
       this.center = { position: event.latlng };
     },
     saveSetting() {
-      this.$store.dispatch('setSettings', { center: this.center, radius: this.distance });
+      this.$store.dispatch('setSettings', { center: this.center, radius: this.distance }).then(() => {
+        this.$router.push({ path: 'shoppingList' });
+      });
     },
   },
   mounted() {

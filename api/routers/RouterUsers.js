@@ -30,7 +30,15 @@ router.post('/user', (req, res) => {
             password: Password.hash(password1),
             shoppingList: {
                 list: [],
-                settings: {},
+                settings: {
+                    center: {
+                        position: {
+                            lat: 0,
+                            lng: 0,
+                        },
+                    },
+                    radius: 2,
+                },
             },
         });
         account.save((err2) => {

@@ -6,9 +6,14 @@ const PublicBasket = require('../models/PublicBasket');
 router.post('/publicBasket', (req, res) => {
     const auth = req.headers.authorization;
     Auth(auth).then((user) => {
-        const shoppingListUser = user.shoppingList;
+        if (user.shoppingList.list.length === 0) {
+            res.status(400).json({ type: 'error', code: 400, message: 'Empty list' });
+        }
+        if (user.shoppingList.settings.radius === 0) {
+            res.status(400).json({ type: 'error', code: 400, message: 'Empty settings' });
+        }
         const publicBasket = new PublicBasket({
-            shoppingList: shoppingListUser,
+            shoppingList: user.shoppingList,
         });
         // expiration token
         const token = jwt.sign(
@@ -31,10 +36,8 @@ router.post('/publicBasket', (req, res) => {
 
 router.get('/publicBasket', (req, res) => {
     const auth = req.headers.authorization;
-    const tokenSplited = auth.split(' ');
-    console.log(tokenSplited[1]);
     const publicBasketReturn = [];
-    Auth(tokenSplited[1]).then(() => {
+    Auth(auth).then(() => {
         PublicBasket.find({}, (err, publicBasket) => {
             if (err) throw err;
             publicBasket.forEach((pb) => {
