@@ -17,10 +17,12 @@ router.post('/publicBasket', (req, res) => {
         });
 
         if (user.shoppingList.list.length === 0) {
-            return res.status(400).json({ type: 'error', code: 400, message: 'Empty list' });
+            res.status(400).json({ type: 'error', code: 400, message: 'Empty list' });
+            return;
         }
         if (user.shoppingList.settings.radius === 0) {
-            return res.status(400).json({ type: 'error', code: 400, message: 'Empty settings' });
+            res.status(400).json({ type: 'error', code: 400, message: 'Empty settings' });
+            return;
         }
         // expiration token
         const token = jwt.sign(
