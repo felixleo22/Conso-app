@@ -5,6 +5,7 @@ const PublicBasket = require('../models/PublicBasket');
 
 router.post('/publicBasket', (req, res) => {
     const auth = req.headers.authorization;
+    // eslint-disable-next-line consistent-return
     Auth(auth).then((user) => {
         const shoppingListUser = user.shoppingList;
         const settingPublicBasket = user.settings;
@@ -14,6 +15,13 @@ router.post('/publicBasket', (req, res) => {
                 settings: settingPublicBasket,
             },
         });
+
+        if (user.shoppingList.list.length === 0) {
+            return res.status(400).json({ type: 'error', code: 400, message: 'Empty list' });
+        }
+        if (user.shoppingList.settings.radius === 0) {
+            return res.status(400).json({ type: 'error', code: 400, message: 'Empty settings' });
+        }
         // expiration token
         const token = jwt.sign(
             { id: user._id, email: user.email },
@@ -25,20 +33,18 @@ router.post('/publicBasket', (req, res) => {
         publicBasket.user = auth;
         publicBasket.save((err, publicB) => {
             if (err) throw err;
-            res.status(200).json(publicB);
+            return res.status(200).json(publicB);
         });
     }).catch((error) => {
         const err = JSON.parse(error.message);
-        res.status(err.code).json(err);
+        return res.status(err.code).json(err);
     });
 });
 
 router.get('/publicBasket', (req, res) => {
     const auth = req.headers.authorization;
-    const tokenSplited = auth.split(' ');
-    console.log(tokenSplited[1]);
     const publicBasketReturn = [];
-    Auth(tokenSplited[1]).then(() => {
+    Auth(auth).then(() => {
         PublicBasket.find({}, (err, publicBasket) => {
             if (err) throw err;
             publicBasket.forEach((pb) => {
