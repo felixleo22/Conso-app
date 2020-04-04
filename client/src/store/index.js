@@ -33,6 +33,6 @@ export default new Vuex.Store({
     auth: AuthModule(Axios),
     scan: ScanModule(),
     shoppingList: ShoppingList(Axios),
-    PublicBasket: PublicBasket(Axios),
+    publicBasket: PublicBasket(Axios),
   },
 });

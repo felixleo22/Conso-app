@@ -56,18 +56,16 @@ export default {
   },
 
   mounted() {
-    this.$store.dispatch('getPublicBasket').then(() => {
-      this.publicBasket = this.store.getters.publicBasket;
-    });
     this.$store.dispatch('getSettingsPublicBasket').then(() => {
       this.distance = this.$store.getters.settings.radius;
       this.center = this.$store.getters.settings.center;
     });
+
+    // this.$store.dispatch('getPublicBasket').then(() => {
+    //   this.publicBasket = this.$store.getters.publicBaskets;
+    // });
   },
   computed: {
-    publicBaskets() {
-      return this.publicBasket;
-    },
     radius() {
       if (!this.center) return null;
       return { position: this.center.position, radius: this.distance * 1000 };

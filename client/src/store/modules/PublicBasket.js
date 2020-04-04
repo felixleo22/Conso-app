@@ -20,20 +20,20 @@ export default Axios => ({
     },
   },
   actions: {
-    getSettingsPublicBasket(context, setting) {
+    getSettingsPublicBasket(context) {
       return new Promise((resolve, reject) => {
-        Axios.get('/publicBasket/settings', setting).then((response) => {
+        Axios.get('/publicBasket/settings').then((response) => {
           context.commit('getSettingsPublic', response.data);
           resolve(response);
         }).catch((err) => {
-          reject(err.response);
+          reject(err);
         });
       });
     },
     getPublicBasket(context) {
       return new Promise((resolve, reject) => {
         Axios.get('/publicBasket').then((response) => {
-          context.commit('getPublicBaskets');
+          context.commit('getPublicBaskets', response.data);
           resolve(response.data);
         }).catch((err) => {
           reject(err);
