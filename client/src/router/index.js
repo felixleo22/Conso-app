@@ -63,17 +63,24 @@ const routes = [
     },
   },
   {
-    path: '/publicBasket',
-    name: 'publicBasket',
-    component() {
-      return import('../views/publicBasket.vue');
-    },
-  },
-  {
     path: '/zoneshoppinglist',
     name: 'zoneshoppinglist',
     component() {
       return import('../views/ZoneShoppingList.vue');
+    },
+  },
+  {
+    path: '/publicBasket',
+    name: 'publicBasket',
+    component() {
+      return import('../views/PublicBasketOfUser.vue');
+    },
+  },
+  {
+    path: '/publicBaskets',
+    name: 'publicBaskets',
+    component() {
+      return import('../views/PublicBaskets.vue');
     },
   },
 ];

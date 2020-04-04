@@ -24,7 +24,7 @@
         v-model="dialog"
         width="500">
         <template v-slot:activator="{ on }">
-          <v-btn v-on="on">Rendre public</v-btn>
+          <v-btn v-on="on">Publier</v-btn>
         </template>
         <v-card>
           <v-card-title
@@ -56,6 +56,10 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
+      <v-spacer></v-spacer>
+      <v-btn link :to="{name: 'publicBasket'}">
+       Vos paniers publics
+      </v-btn>
       <v-spacer></v-spacer>
       <v-btn link :to="{name: 'zoneshoppinglist'}">
         <v-icon>fas fa-map-marked-alt</v-icon>

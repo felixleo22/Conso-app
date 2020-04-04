@@ -7,15 +7,6 @@ router.post('/publicBasket', (req, res) => {
     const auth = req.headers.authorization;
     // eslint-disable-next-line consistent-return
     Auth(auth).then((user) => {
-        const shoppingListUser = user.shoppingList;
-        const settingPublicBasket = user.settings;
-        const publicBasket = new PublicBasket({
-            shoppingList: {
-                list: shoppingListUser,
-                settings: settingPublicBasket,
-            },
-        });
-
         if (user.shoppingList.list.length === 0) {
             res.status(400).json({ type: 'error', code: 400, message: 'Empty list' });
             return;
@@ -24,6 +15,14 @@ router.post('/publicBasket', (req, res) => {
             res.status(400).json({ type: 'error', code: 400, message: 'Empty settings' });
             return;
         }
+        const shoppingListUser = user.shoppingList.list;
+        const settingPublicBasket = user.shoppingList.settings;
+        const publicBasket = new PublicBasket({
+            shoppingList: {
+                list: shoppingListUser,
+                settings: settingPublicBasket,
+            },
+        });
         // expiration token
         const token = jwt.sign(
             { id: user._id, email: user.email },
@@ -32,7 +31,7 @@ router.post('/publicBasket', (req, res) => {
         );
         publicBasket.expiredToken = token;
         // token user
-        publicBasket.user = auth;
+        publicBasket.user = user._id;
         publicBasket.save((err, publicB) => {
             if (err) throw err;
             return res.status(200).json(publicB);
@@ -64,5 +63,26 @@ router.get('/publicBasket', (req, res) => {
     });
 });
 
+router.get('/publicBasket', (req, res) => {
+    const idUser = req.body.id;
+    const auth = req.headers.authorization;
+    const publicBasketReturn = [];
+    Auth(auth).then(() => {
+        PublicBasket.find({ user: idUser }, (err, publicBasket) => {
+            if (err) throw err;
+            publicBasket.forEach((pb) => {
+                jwt.verify(pb.expiredToken, 'test', (err2, decoded) => {
+                    if (err2) {
+                        PublicBasket.findByIdAndDelete(publicBasket._id);
+                    }
+                    if (decoded) {
+                        publicBasketReturn.push(pb);
+                    }
+                });
+            });
+            res.status(200).json(publicBasketReturn);
+        });
+    });
+});
 
 module.exports = router;

@@ -40,5 +40,15 @@ export default Axios => ({
         });
       });
     },
+    getPublicBasketOfUser(context, id) {
+      return new Promise((resolve, reject) => {
+        Axios.get('/publicBasket', id).then((response) => {
+          context.commit('getPublicBaskets');
+          resolve(response.data);
+        }).catch((err) => {
+          reject(err);
+        });
+      });
+    },
   },
 });

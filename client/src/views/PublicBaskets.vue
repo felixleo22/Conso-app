@@ -5,7 +5,6 @@
       :items="allPoints"
       :radius="radius"
       @viewChange="getAir"
-      @click="enableClick"
     ></leaflet>
     <div>
       <p>Vous n'avez pas de pannier public veuillez en créer un avec votre liste de course</p>
