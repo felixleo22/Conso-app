@@ -37,7 +37,7 @@ router.post('/user', (req, res) => {
                             lng: 0,
                         },
                     },
-                    radius: 2,
+                    radius: 0,
                 },
             },
         });

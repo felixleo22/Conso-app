@@ -8,9 +8,11 @@ router.post('/publicBasket', (req, res) => {
     Auth(auth).then((user) => {
         if (user.shoppingList.list.length === 0) {
             res.status(400).json({ type: 'error', code: 400, message: 'Empty list' });
+            return;
         }
         if (user.shoppingList.settings.radius === 0) {
             res.status(400).json({ type: 'error', code: 400, message: 'Empty settings' });
+            return;
         }
         const publicBasket = new PublicBasket({
             shoppingList: user.shoppingList,
