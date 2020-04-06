@@ -52,7 +52,7 @@
       :options="options"
       @ready="ready"
       :circles="[circle]"
-      @viewChange="getAir"
+      @viewchanged="getAir"
       draggable="false"
     ></leaflet>
   </v-container>
@@ -124,10 +124,11 @@ export default {
     },
     getAir(event) {
       const url = this.circle
-        ? `&center=${this.circle.position.lat},${this.circle.position.lng}
-      &radius=${this.distance}` : '';
+        ? `&position=${this.circle.position.lat},${this.circle.position.lng}&radius=${this.distance}` : '';
       this.$http.get(`/shops?NW=${event.view[0]}&SE=${event.view[1]}${url}`).then((response) => {
         this.shops = response.data.shops;
+        console.log(url);
+        console.log(`zinzin${this.shops}`);
       });
     },
   },

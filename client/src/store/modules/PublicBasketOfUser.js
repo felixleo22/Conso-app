@@ -35,7 +35,8 @@ export default Axios => ({
       console.log(id);
       return new Promise((resolve, reject) => {
         Axios.get('/publicBasketOfUser/settings', id).then((response) => {
-          console.log(response.data);
+          console.log('zinzin');
+          console.log(response);
           context.commit('getSettingsBasketOfUser', response.data);
           resolve(response.data);
         }).catch((err) => {
