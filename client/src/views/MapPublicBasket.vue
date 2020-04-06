@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-row
+    <v-row class="pa-3"
       align="start"
       justify="center">
       <v-dialog
@@ -47,13 +47,13 @@
         </v-card>
       </v-dialog>
     </v-row>
-
     <leaflet
       v-if="circle"
       :options="options"
       @ready="ready"
       :circles="[circle]"
       @viewChange="getAir"
+      draggable="false"
     ></leaflet>
   </v-container>
 </template>
