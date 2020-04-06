@@ -32,6 +32,7 @@ export default Axios => ({
       });
     },
     getSettingsOfUser(context, id) {
+      console.log(id);
       return new Promise((resolve, reject) => {
         Axios.get('/publicBasketOfUser/settings', id).then((response) => {
           console.log(response.data);

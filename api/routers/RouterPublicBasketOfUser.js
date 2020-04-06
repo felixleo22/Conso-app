@@ -29,5 +29,24 @@ router.get('/publicBasketOfUser/:id', (req, res) => {
     });
 });
 
+router.get('/publicBasketOfUser/settings', (req, res) => {
+    const auth = req.headers.authorization;
+    console.log('tttttt');
+    Auth(auth).then((user) => {
+        const { id } = req.body;
+        console.log(id);
+        PublicBasket.findById(id).then((basket) => {
+            if (basket.user !== user._id) {
+                res.status(401).json({ type: 'error', message: 'Not authorized' });
+            }
+            res.status(200).json(basket.shoppingList.settings);
+        }).catch((err) => {
+            res.status(500).json(err);
+        });
+    }).catch((error) => {
+        const err = JSON.parse(error.message);
+        res.status(err.code).json(err);
+    });
+});
 
 module.exports = router;

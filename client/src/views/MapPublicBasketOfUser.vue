@@ -34,6 +34,9 @@ export default {
         },
       };
     },
+    idPublicBasket() {
+      return this.$route.params.id;
+    },
   },
   methods: {
     ready() {
@@ -61,8 +64,7 @@ export default {
     },
   },
   mounted() {
-    this.$store.dispatch('getSettings', this.idPublicBasket).then(() => {
-      console.log(this.$store.getters.getSettingsBasketOfUser);
+    this.$store.dispatch('getSettingsOfUser', { id: this.idPublicBasket }).then(() => {
       this.circle = {
         position: {
           lat: this.$store.getters.getSettingsBasketOfUser.position.lat,
