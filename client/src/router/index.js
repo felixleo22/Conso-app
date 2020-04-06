@@ -70,15 +70,15 @@ const routes = [
     },
   },
   {
-    path: '/publicBasket',
-    name: 'publicBasket',
+    path: '/publicBasketOfUser',
+    name: 'publicBasketOfUser',
     component() {
       return import('../views/PublicBasketOfUser.vue');
     },
   },
   {
-    path: '/mapPublicBasket/:id',
-    name: 'mapPublicBasket',
+    path: '/mapPublicBasketOfUser/:id',
+    name: 'mapPublicBasketOfUser',
     component() {
       return import('../views/MapPublicBasketOfUser.vue');
     },
@@ -88,6 +88,13 @@ const routes = [
     name: 'publicBaskets',
     component() {
       return import('../views/PublicBaskets.vue');
+    },
+  },
+  {
+    path: '/mapPublicBasket/:id',
+    name: 'mapPublicBasket',
+    component() {
+      return import('../views/MapPublicBasket.vue');
     },
   },
 ];

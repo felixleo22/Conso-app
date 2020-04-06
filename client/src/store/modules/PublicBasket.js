@@ -2,6 +2,7 @@ export default Axios => ({
   state: {
     settingsPublic: null,
     publicBasket: null,
+    publicBasketById: null,
   },
   getters: {
     settingsPublicBasket(state) {
@@ -10,6 +11,9 @@ export default Axios => ({
     publicBasket(state) {
       return state.publicBasket;
     },
+    publicBasketById(state) {
+      return state.publicBasketById;
+    },
   },
   mutations: {
     getSettingsPublic(state, settings) {
@@ -17,6 +21,9 @@ export default Axios => ({
     },
     getPublicBaskets(state, settings) {
       state.publicBasket = settings;
+    },
+    getPublicBasketById(state, settings) {
+      state.publicBasketById = settings;
     },
   },
   actions: {
@@ -29,20 +36,21 @@ export default Axios => ({
         });
       });
     },
-    getSettingsPublicBasket(context) {
+    getPublicBaskets(context) {
       return new Promise((resolve, reject) => {
-        Axios.get('/publicBasket/settings').then((response) => {
-          context.commit('getSettingsPublic', response.data);
-          resolve(response);
+        Axios.get('/publicBaskets').then((response) => {
+          context.commit('getPublicBaskets', response.data);
+          resolve(response.data);
         }).catch((err) => {
           reject(err);
         });
       });
     },
-    getPublicBasket(context) {
+    getPublicBasketsById(context, params) {
       return new Promise((resolve, reject) => {
-        Axios.get('/publicBasket').then((response) => {
-          context.commit('getPublicBaskets', response.data);
+        console.log(params.id);
+        Axios.get(`/publicBasket/${params.id}`).then((response) => {
+          context.commit('getPublicBasketById', response.data);
           resolve(response.data);
         }).catch((err) => {
           reject(err);
