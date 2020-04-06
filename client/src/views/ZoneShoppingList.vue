@@ -60,10 +60,24 @@ export default {
       }];
     },
     getAir(event) {
-      console.log(event);
       if (event) {
         this.$http.get(`/shops?NW=${event.view.NW}&SE=${event.view.SE}`).then((response) => {
+          const tab1 = [];
           this.shops = response.data.shops;
+          this.shops.forEach((shop) => {
+            const shopWithPopup = {
+              position: {
+                lat: shop.position.lat,
+                lng: shop.position.lng,
+              },
+              popup: {
+                content: shop.name,
+                show: false,
+              },
+            };
+            tab1.push(shopWithPopup);
+          });
+          this.shops = tab1;
         });
       }
     },
