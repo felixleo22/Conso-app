@@ -53,7 +53,7 @@
       @ready="ready"
       :circles="[circle]"
       @viewchanged="getAir"
-      draggable="false"
+      :markers="shops"
     ></leaflet>
   </v-container>
 </template>
@@ -127,8 +127,6 @@ export default {
         ? `&position=${this.circle.position.lat},${this.circle.position.lng}&radius=${this.distance}` : '';
       this.$http.get(`/shops?NW=${event.view[0]}&SE=${event.view[1]}${url}`).then((response) => {
         this.shops = response.data.shops;
-        console.log(url);
-        console.log(`zinzin${this.shops}`);
       });
     },
   },
