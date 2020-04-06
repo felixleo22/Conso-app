@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import Leaflet from '../components/leaflet/Leaflet.vue';
+import Leaflet from 'easy-vue-leaflet';
 
 export default {
   components: {
@@ -33,7 +33,7 @@ export default {
     },
     radius() {
       if (!this.settings) return null;
-      return { position: this.settings.center.position, radius: this.settings.radius * 1000 };
+      return { position: this.settings.position, radius: this.settings.radius * 1000 };
     },
   },
   methods: {

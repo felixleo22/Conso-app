@@ -31,11 +31,9 @@ router.post('/user', (req, res) => {
             shoppingList: {
                 list: [],
                 settings: {
-                    center: {
-                        position: {
-                            lat: 0,
-                            lng: 0,
-                        },
+                    position: {
+                        lat: 48.5,
+                        lng: 0.5,
                     },
                     radius: 0,
                 },

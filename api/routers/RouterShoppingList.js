@@ -87,7 +87,7 @@ router.post('/shoppinglist/settings', (req, res) => {
             res.status(400).json(({ type: 'error', code: 400, message: 'invalid radius' }));
             return;
         }
-        if (!Number(data.center.position.lat) || !Number(data.center.position.lat)) {
+        if (!Number(data.position.lat) || !Number(data.position.lat)) {
             res.status(400).json(({ type: 'error', code: 400, message: 'invalid coordinates' }));
             return;
         }

@@ -13,8 +13,7 @@
 </template>
 
 <script>
-//
-import Leaflet from '../components/leaflet/Leaflet.vue';
+import Leaflet from 'easy-vue-leaflet';
 
 export default {
   name: 'app',
@@ -24,7 +23,6 @@ export default {
   data() {
     return {
       position: null,
-      center: null,
       shops: [],
       publicBasket: null,
     };

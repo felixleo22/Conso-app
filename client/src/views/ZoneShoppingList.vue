@@ -1,20 +1,22 @@
 <template>
   <div id='app'>
     <leaflet
+      v-if="circle"
+      :options="options"
       @ready="ready"
-      :items="allPoints"
-      :radius="radius"
+      :circles="[circle]"
       @viewChange="getAir"
-      @click="enableClick"
+      @mapclick="saveLatLngClick"
     ></leaflet>
-   <input type='number' v-model="distance" min="1" max="500" placeholder="en km">
+   <input v-if="circle" type='number' @keyup="updateRadiusCircle"
+   v-model="distance" min="1" max="500" placeholder="en km">
    <v-btn @click="saveSetting">Valider la zone</v-btn>
   </div>
 </template>
 
 <script>
-//
-import Leaflet from '../components/leaflet/Leaflet.vue';
+
+import Leaflet from 'easy-vue-leaflet';
 
 export default {
   name: 'app',
@@ -23,22 +25,33 @@ export default {
   },
   data() {
     return {
-      position: null,
-      center: null,
-      distance: 2,
+      positionUser: null,
       shops: [],
+      distance: 1,
+      circle: null,
     };
+  },
+  computed: {
+    options() {
+      return {
+        view: {
+          lat: this.circle.position.lat,
+          lng: this.circle.position.lng,
+          zoom: 12,
+        },
+      };
+    },
   },
   methods: {
     ready() {
       if (navigator.geolocation) {
-        navigator.geolocation.watchPosition(this.watchLoc);
+        navigator.geolocation.watchPosition(this.watchLocation);
       } else {
         console.log('impossible to get position');
       }
     },
-    watchLoc(e) {
-      this.position = [{
+    watchLocation(e) {
+      this.positionUser = [{
         position: {
           lat: e.coords.latitude,
           lng: e.coords.longitude,
@@ -46,47 +59,52 @@ export default {
       }];
     },
     getAir(event) {
-      const url = this.center
-        ? `&center=${this.center.position.lat},${this.center.position.lng}
+      const url = this.circle
+        ? `&center=${this.circle.position.lat},${this.circle.position.lng}
       &radius=${this.distance}` : '';
       this.$http.get(`/shops?NW=${event.view[0]}&SE=${event.view[1]}${url}`).then((response) => {
         this.shops = response.data.shops;
       });
     },
-    enableClick(event) {
-      this.center = { position: event.latlng };
+    saveLatLngClick(event) {
+      this.circle = {
+        position: {
+          lat: event.position.lat,
+          lng: event.position.lng,
+        },
+        radius: this.circle.radius,
+      };
+    },
+    updateRadiusCircle() {
+      this.circle = {
+        position: {
+          lat: this.circle.position.lat,
+          lng: this.circle.position.lng,
+        },
+        radius: this.distance * 1000,
+      };
     },
     saveSetting() {
-      this.$store.dispatch('setSettings', { center: this.center, radius: this.distance }).then(() => {
+      this.$store.dispatch('setSettings', { position: this.circle.position, radius: this.circle.radius }).then(() => {
         this.$router.push({ path: 'shoppingList' });
       });
     },
   },
   mounted() {
     this.$store.dispatch('getSettings').then(() => {
-      this.distance = this.$store.getters.settings.radius;
-      this.center = this.$store.getters.settings.center;
+      this.circle = {
+        position: {
+          lat: this.$store.getters.settings.position.lat,
+          lng: this.$store.getters.settings.position.lng,
+        },
+        radius: this.$store.getters.settings.radius,
+      };
+      this.distance = this.$store.getters.settings.radius / 1000;
     });
-  },
-  computed: {
-    radius() {
-      if (!this.center) return null;
-      return { position: this.center.position, radius: this.distance * 1000 };
-    },
-    allPoints() {
-      if (this.position) return this.shops.concat(this.position);
-      return this.shops;
-    },
   },
 };
 </script>
 
 <style>
-  #mymap {
-    position: relative;
-    padding: 0;
-    width: 100%;
-    height: 600px;
-    z-index: 0;
-  }
+  @import url('https://unpkg.com/leaflet@1.6.0/dist/leaflet.css');
 </style>

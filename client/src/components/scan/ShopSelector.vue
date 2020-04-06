@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import Leaflet from '../leaflet/Leaflet.vue';
+import Leaflet from 'easy-vue-leaflet';
 
 export default {
   name: 'ShopSelector',

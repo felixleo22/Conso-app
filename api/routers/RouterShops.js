@@ -139,15 +139,15 @@ router.get('/shops', (req, res) => {
         const tab = {
             shops: result,
         };
-        if (req.query.center && req.query.radius) {
-            const center = req.query.center.split(',');
+        if (req.query.position && req.query.radius) {
+            const position = req.query.position.split(',');
             tab.shops = tab.shops.filter((elem) => {
                 const dist = geolib.getDistance({
                     latitude: Number(elem.position.lat),
                     longitude: Number(elem.position.lng),
                 }, {
-                    latitude: Number(center[0]),
-                    longitude: Number(center[1]),
+                    latitude: Number(position[0]),
+                    longitude: Number(position[1]),
                 });
                 return dist <= req.query.radius * 1000;
             });
