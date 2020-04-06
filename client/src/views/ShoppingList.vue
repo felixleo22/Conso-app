@@ -57,7 +57,7 @@
         </v-card>
       </v-dialog>
       <v-spacer></v-spacer>
-      <v-btn link :to="{name: 'publicBasket'}">
+      <v-btn link :to="{name: 'publicBasketOfUser'}">
        Vos paniers publics
       </v-btn>
       <v-spacer></v-spacer>

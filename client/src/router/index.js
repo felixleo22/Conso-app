@@ -70,8 +70,8 @@ const routes = [
     },
   },
   {
-    path: '/publicBasket',
-    name: 'publicBasket',
+    path: '/publicBasketOfUser',
+    name: 'publicBasketOfUser',
     component() {
       return import('../views/PublicBasketOfUser.vue');
     },
