@@ -32,7 +32,7 @@ export default {
   mounted() {
     this.$store
       // eslint-disable-next-line no-underscore-dangle
-      .dispatch('getPublicBasketOfUser', this.$store.getters.loggedUser._id)
+      .dispatch('getPublicBasketsOfUser', this.$store.getters.loggedUser._id)
       .then((response) => {
         this.publicBasket = response;
       });
