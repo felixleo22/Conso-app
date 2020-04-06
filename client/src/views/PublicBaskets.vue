@@ -1,89 +1,52 @@
 <template>
-  <div id='app'>
-    <leaflet
-      @ready="ready"
-      :items="allPoints"
-      :radius="radius"
-      @viewChange="getAir"
-    ></leaflet>
-    <div>
-      <p>Vous n'avez pas de pannier public veuillez en créer un avec votre liste de course</p>
-    </div>
+  <div>
+    Les panniers publics des utilisateurs
+    <v-container>
+      <v-row>
+        <v-col
+          md=4
+          lg=3
+          v-for="basket in publicBasket" :key="basket._id">
+          <v-card>
+            <v-card-title>{{basket._id}}</v-card-title>
+            <v-card-actions>
+              <v-btn color="red"
+                     link :to="{name: 'mapPublicBasket', params: {id: basket._id}}"
+                     text
+              >Voir</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-col>
+      </v-row>
+    </v-container>
   </div>
 </template>
 
 <script>
-//
-import Leaflet from '../components/leaflet/Leaflet.vue';
+import MapPublicBasket from './MapPublicBasket.vue';
 
 export default {
-  name: 'app',
   components: {
-    Leaflet,
+    // eslint-disable-next-line vue/no-unused-components
+    MapPublicBasket,
   },
   data() {
     return {
-      position: null,
-      center: null,
-      shops: [],
       publicBasket: null,
     };
   },
   methods: {
-    ready() {
-      if (navigator.geolocation) {
-        navigator.geolocation.watchPosition(this.watchLoc);
-      } else {
-        console.log('impossible to get position');
-      }
-    },
-    watchLoc(e) {
-      this.position = [{
-        position: {
-          lat: e.coords.latitude,
-          lng: e.coords.longitude,
-        },
-      }];
-    },
-    getAir(event) {
-      const url = this.center
-        ? `&center=${this.center.position.lat},${this.center.position.lng}
-    &radius=${this.distance}` : '';
-      this.$http.get(`/shops?NW=${event.view[0]}&SE=${event.view[1]}${url}`).then((response) => {
-        this.shops = response.data.shops;
-      });
-    },
   },
-
   mounted() {
-    this.$store.dispatch('getSettingsPublicBasket').then(() => {
-      this.distance = this.$store.getters.settings.radius;
-      this.center = this.$store.getters.settings.center;
+    this.$store.dispatch('getPublicBaskets').then(() => {
+      this.publicBasket = this.$store.getters.publicBasket;
+      console.log(this.publicBasket);
     });
-
-    // this.$store.dispatch('getPublicBasket').then(() => {
-    //   this.publicBasket = this.$store.getters.publicBaskets;
-    // });
   },
   computed: {
-    radius() {
-      if (!this.center) return null;
-      return { position: this.center.position, radius: this.distance * 1000 };
-    },
-    allPoints() {
-      if (this.position) return this.shops.concat(this.position);
-      return this.shops;
-    },
   },
 };
 </script>
 
 <style>
-  #mymap {
-    position: relative;
-    padding: 0;
-    width: 100%;
-    height: 600px;
-    z-index: 0;
-  }
 </style>

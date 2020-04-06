@@ -39,7 +39,7 @@
             </v-list-item-content>
           </v-list-item>
           <!-- Public basket -->
-          <v-list-item link :to="{name: 'publicBasket'}">
+          <v-list-item link :to="{name: 'publicBaskets'}">
             <v-list-item-action>
               <v-icon>fa-globe-europe</v-icon>
             </v-list-item-action>

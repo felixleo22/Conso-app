@@ -83,6 +83,13 @@ const routes = [
       return import('../views/PublicBaskets.vue');
     },
   },
+  {
+    path: '/mapPublicBasket/:id',
+    name: 'mapPublicBasket',
+    component() {
+      return import('../views/MapPublicBasket.vue');
+    },
+  },
 ];
 
 const router = new VueRouter({

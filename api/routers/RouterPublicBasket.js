@@ -27,7 +27,7 @@ router.post('/publicBasket', (req, res) => {
         const token = jwt.sign(
             { id: user._id, email: user.email },
             'test',
-            { expiresIn: '100000' },
+            { expiresIn: '10000000' },
         );
         publicBasket.expiredToken = token;
         // token user
@@ -42,42 +42,40 @@ router.post('/publicBasket', (req, res) => {
     });
 });
 
-router.get('/publicBasket', (req, res) => {
+router.get('/publicBaskets', (req, res) => {
     const auth = req.headers.authorization;
-    Auth(auth).then((user) => {
-        PublicBasket.findById({}, (err, publicBasket) => {
+    Auth(auth).then(() => {
+        const tab = [];
+        PublicBasket.find({}, (err, publicBasket) => {
             if (err) throw err;
-            if (publicBasket.user !== user._id) {
-                res.status(401).json({ type: 'error', message: 'Not authorized' });
-                return;
-            }
-            jwt.verify(publicBasket.expiredToken, 'test', (err2, decoded) => {
-                if (err2) {
-                    PublicBasket.findByIdAndDelete(publicBasket._id);
-                    res.status(500).json(err2);
-                } if (decoded) {
-                    res.status(200).json(publicBasket);
-                }
+            publicBasket.forEach((pb) => {
+                jwt.verify(pb.expiredToken, 'test', (err2, decoded) => {
+                    if (err2) {
+                        PublicBasket.findByIdAndDelete(pb._id).then(() => {
+                            console.log('deleted');
+                        });
+                    } if (decoded) {
+                        tab.push(pb);
+                    }
+                });
             });
-        });
-    });
-});
-
-router.get('/publicBasket/settings/:id', (req, res) => {
-    const auth = req.headers.authorization;
-    Auth(auth).then((user) => {
-        const { id } = req.params;
-        PublicBasket.findById(id).then((basket) => {
-            if (basket.user !== user._id) {
-                res.status(401).json({ type: 'error', message: 'Not authorized' });
-            }
-            res.status(200).json(basket.shoppingList.settings);
-        }).catch((err) => {
-            res.status(500).json(err);
+            res.status(200).json(tab);
         });
     }).catch((error) => {
         const err = JSON.parse(error.message);
-        res.status(err.code).json(err);
+        return res.status(err.code).json(err);
+    });
+});
+
+router.get('/publicBasket/:idBasket', (req, res) => {
+    const auth = req.headers.authorization;
+    const { idBasket } = req.params;
+    Auth(auth).then(() => {
+        PublicBasket.findById(idBasket).then((publicBasket) => res.status(200).json(publicBasket))
+            .catch((err) => res.status(500).json(err));
+    }).catch((error) => {
+        const err = JSON.parse(error.message);
+        return res.status(err.code).json(err);
     });
 });
 
