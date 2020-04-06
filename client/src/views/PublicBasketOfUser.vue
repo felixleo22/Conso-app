@@ -28,6 +28,9 @@ export default {
     };
   },
   mounted() {
+    console.log('vue');
+    // eslint-disable-next-line no-underscore-dangle
+    console.log(this.$store.getters.loggedUser._id);
     this.$store
       // eslint-disable-next-line no-underscore-dangle
       .dispatch('getPublicBasketOfUser', this.$store.getters.loggedUser._id)

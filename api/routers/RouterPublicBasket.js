@@ -42,7 +42,7 @@ router.post('/publicBasket', (req, res) => {
     });
 });
 
-router.get('/publicBasket/:id', (req, res) => {
+router.get('/publicBasket', (req, res) => {
     const auth = req.headers.authorization;
     Auth(auth).then((user) => {
         PublicBasket.findById({}, (err, publicBasket) => {
@@ -63,31 +63,6 @@ router.get('/publicBasket/:id', (req, res) => {
     });
 });
 
-router.get('/publicBasket', (req, res) => {
-    const idUser = req.body.id;
-    if (!idUser) {
-        res.status(400).json({ type: 'error', code: 401, message: 'Missing id' });
-        return;
-    }
-    const auth = req.headers.authorization;
-    const publicBasketReturn = [];
-    Auth(auth).then(() => {
-        PublicBasket.find({ user: idUser }, (err, publicBasket) => {
-            if (err) throw err;
-            publicBasket.forEach((pb) => {
-                jwt.verify(pb.expiredToken, 'test', (err2, decoded) => {
-                    if (err2) {
-                        PublicBasket.findByIdAndDelete(publicBasket._id);
-                    }
-                    if (decoded) {
-                        publicBasketReturn.push(pb);
-                    }
-                });
-            });
-            res.status(200).json(publicBasketReturn);
-        });
-    });
-});
 router.get('/publicBasket/settings/:id', (req, res) => {
     const auth = req.headers.authorization;
     Auth(auth).then((user) => {

@@ -10,6 +10,7 @@ const RouterUsers = require('./routers/RouterUsers');
 const RouterProducts = require('./routers/RouterProducts');
 const RouterShoppingList = require('./routers/RouterShoppingList');
 const RouterPublicBasket = require('./routers/RouterPublicBasket');
+const RouterPublicBasketOfUser = require('./routers/RouterPublicBasketOfUser');
 
 // create app
 const app = express();
@@ -33,6 +34,7 @@ app.use(RouterUsers);
 app.use(RouterProducts);
 app.use(RouterShoppingList);
 app.use(RouterPublicBasket);
+app.use(RouterPublicBasketOfUser);
 
 /* Errors and unknown routes */
 app.all('*', (req, res) => res.status(400).json({ type: 'error', code: 400, message: 'bad request' }));

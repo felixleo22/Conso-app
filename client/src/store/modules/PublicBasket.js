@@ -20,6 +20,15 @@ export default Axios => ({
     },
   },
   actions: {
+    createPublicBasket() {
+      return new Promise((resolve, reject) => {
+        Axios.post('publicBasket').then(() => {
+          resolve();
+        }).catch((err) => {
+          reject(err.response);
+        });
+      });
+    },
     getSettingsPublicBasket(context) {
       return new Promise((resolve, reject) => {
         Axios.get('/publicBasket/settings').then((response) => {
@@ -34,16 +43,6 @@ export default Axios => ({
       return new Promise((resolve, reject) => {
         Axios.get('/publicBasket').then((response) => {
           context.commit('getPublicBaskets', response.data);
-          resolve(response.data);
-        }).catch((err) => {
-          reject(err);
-        });
-      });
-    },
-    getPublicBasketOfUser(context, id) {
-      return new Promise((resolve, reject) => {
-        Axios.get('/publicBasket', id).then((response) => {
-          context.commit('getPublicBaskets');
           resolve(response.data);
         }).catch((err) => {
           reject(err);
