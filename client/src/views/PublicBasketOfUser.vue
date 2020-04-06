@@ -11,7 +11,8 @@
             <v-card-title>{{basket._id}}</v-card-title>
             <v-card-actions>
               <v-btn color="red" text>Supprimer</v-btn>
-              <v-btn color="red" link :to="{name: 'mapPublicBasket', params: { id: basket._id } }"
+              <v-btn color="red"
+                     link :to="{name: 'mapPublicBasketOfUser', params: { id: basket._id } }"
               text>Voir</v-btn>
             </v-card-actions>
           </v-card>
