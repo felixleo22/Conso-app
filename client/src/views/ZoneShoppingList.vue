@@ -51,7 +51,6 @@ export default {
       &radius=${this.distance}` : '';
       this.$http.get(`/shops?NW=${event.view[0]}&SE=${event.view[1]}${url}`).then((response) => {
         this.shops = response.data.shops;
-        console.log(this.shops);
       });
     },
     enableClick(event) {

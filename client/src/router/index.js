@@ -77,6 +77,13 @@ const routes = [
     },
   },
   {
+    path: '/mapPublicBasket/:id',
+    name: 'mapPublicBasket',
+    component() {
+      return import('../views/MapPublicBasketOfUser.vue');
+    },
+  },
+  {
     path: '/publicBaskets',
     name: 'publicBaskets',
     component() {
