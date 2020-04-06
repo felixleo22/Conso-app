@@ -47,18 +47,33 @@
         </v-card>
       </v-dialog>
     </v-row>
+
+    <leaflet
+      v-if="circle"
+      :options="options"
+      @ready="ready"
+      :circles="[circle]"
+      @viewChange="getAir"
+    ></leaflet>
   </v-container>
 </template>
 
 <script>
+import Leaflet from 'easy-vue-leaflet';
+
 export default {
   data() {
     return {
       publicBasketId: null,
       dialog: false,
+      positionUser: null,
+      shops: [],
+      distance: 1,
+      circle: null,
     };
   },
   components: {
+    Leaflet,
   },
   computed: {
     idPublicBasket() {
@@ -68,13 +83,56 @@ export default {
       console.log(this.$store.getters.publicBasketById);
       return this.$store.getters.publicBasketById;
     },
-  },
-  created() {
+    options() {
+      return {
+        view: {
+          lat: this.circle.position.lat,
+          lng: this.circle.position.lng,
+          zoom: 12,
+        },
+      };
+    },
   },
   mounted() {
-    this.$store.dispatch('getPublicBasketsById', { id: this.idPublicBasket });
+    this.$store.dispatch('getPublicBasketsById', { id: this.idPublicBasket })
+      .then(() => {
+        this.circle = {
+          position: {
+            lat: this.$store.getters.publicBasketById.shoppingList.settings.position.lat,
+            lng: this.$store.getters.publicBasketById.shoppingList.settings.position.lng,
+          },
+          radius: this.$store.getters.publicBasketById.shoppingList.settings.radius,
+        };
+        this.distance = this.$store.getters.publicBasketById.shoppingList.settings.radius / 1000;
+      });
   },
   methods: {
+    ready() {
+      if (navigator.geolocation) {
+        navigator.geolocation.watchPosition(this.watchLocation);
+      } else {
+        console.log('impossible to get position');
+      }
+    },
+    watchLocation(e) {
+      this.positionUser = [{
+        position: {
+          lat: e.coords.latitude,
+          lng: e.coords.longitude,
+        },
+      }];
+    },
+    getAir(event) {
+      const url = this.circle
+        ? `&center=${this.circle.position.lat},${this.circle.position.lng}
+      &radius=${this.distance}` : '';
+      this.$http.get(`/shops?NW=${event.view[0]}&SE=${event.view[1]}${url}`).then((response) => {
+        this.shops = response.data.shops;
+      });
+    },
   },
 };
 </script>
+<style>
+  @import url('https://unpkg.com/leaflet@1.6.0/dist/leaflet.css');
+</style>
