@@ -79,5 +79,18 @@ router.get('/publicBasket/:idBasket', (req, res) => {
     });
 });
 
+router.get('/publicBasket/:idBasket/settings', (req, res) => {
+    const auth = req.headers.authorization;
+    const { idBasket } = req.params;
+    Auth(auth).then(() => {
+        // eslint-disable-next-line max-len
+        PublicBasket.findById(idBasket).then((publicBasket) => res.status(200).json(publicBasket.shoppingList.settings))
+            .catch((err) => res.status(500).json(err));
+    }).catch((error) => {
+        const err = JSON.parse(error.message);
+        return res.status(err.code).json(err);
+    });
+});
+
 
 module.exports = router;
