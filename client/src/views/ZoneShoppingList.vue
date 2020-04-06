@@ -3,6 +3,7 @@
     <leaflet
       v-if="circle"
       :options="options"
+      :markers="shops"
       @ready="ready"
       :circles="[circle]"
       @viewchanged="getAir"
@@ -59,12 +60,12 @@ export default {
       }];
     },
     getAir(event) {
-      const url = `&position=${this.circle.position.lat},${this.circle.position.lng}&radius=${this.distance * 1000}`;
-      console.log(url);
-      this.$http.get(`/shops?NW=${event.view[0]}&SE=${event.view[1]}${url}`).then((response) => {
-        console.log(response.data);
-        this.shops = response.data.shops;
-      });
+      console.log(event);
+      if (event) {
+        this.$http.get(`/shops?NW=${event.view.NW}&SE=${event.view.SE}`).then((response) => {
+          this.shops = response.data.shops;
+        });
+      }
     },
     saveLatLngClick(event) {
       this.circle = {
@@ -74,6 +75,7 @@ export default {
         },
         radius: this.circle.radius,
       };
+      this.getAir();
     },
     updateRadiusCircle() {
       this.circle = {
