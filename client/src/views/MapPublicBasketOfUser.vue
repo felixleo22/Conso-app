@@ -64,13 +64,13 @@ export default {
     },
   },
   mounted() {
-    this.$store.dispatch('getSettingsOfUser', { id: this.idPublicBasket }).then(() => {
+    this.$store.dispatch('getSettingsBasketOfUser', this.idPublicBasket).then(() => {
       this.circle = {
         position: {
-          lat: this.$store.getters.getSettingsBasketOfUser.position.lat,
-          lng: this.$store.getters.getSettingsBasketOfUser.position.lng,
+          lat: this.$store.getters.settingsBasketOfUser.position.lat,
+          lng: this.$store.getters.settingsBasketOfUser.position.lng,
         },
-        radius: this.$store.getters.settings.radius,
+        radius: this.$store.getters.settingsBasketOfUser.radius,
       };
     });
   },

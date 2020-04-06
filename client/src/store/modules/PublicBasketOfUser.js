@@ -4,15 +4,15 @@ export default Axios => ({
     settingsBasketOfUser: null,
   },
   getters: {
-    publicBasketOfUser(state) {
-      return state.publicBpublicBasketOfUserasket;
+    publicBasketsOfUser(state) {
+      return state.publicBasketsOfUser;
     },
     settingsBasketOfUser(state) {
       return state.settingsBasketOfUser;
     },
   },
   mutations: {
-    getPublicBasketOfUser(state, publicBasket) {
+    getPublicBasketsOfUser(state, publicBasket) {
       state.publicBasketOfUser = publicBasket;
     },
     getSettingsBasketOfUser(state, settingsBasketOfUser) {
@@ -21,22 +21,21 @@ export default Axios => ({
   },
   actions: {
     // TODO i didn't know why with idUser in body that doesn't work
-    getPublicBasketOfUser(context, idUser) {
+    getPublicBasketsOfUser(context, idUser) {
       return new Promise((resolve, reject) => {
-        Axios.get(`/publicBasketOfUser/${idUser}`).then((response) => {
-          context.commit('getPublicBasketOfUser', response.data);
+        Axios.get(`/publicBasketsOfUser/${idUser}`).then((response) => {
+          context.commit('getPublicBasketsOfUser', response.data);
           resolve(response.data);
         }).catch((err) => {
           reject(err);
         });
       });
     },
-    getSettingsOfUser(context, id) {
-      console.log(id);
+    getSettingsBasketOfUser(context, id) {
       return new Promise((resolve, reject) => {
-        Axios.get('/publicBasketOfUser/settings', id).then((response) => {
-          console.log('zinzin');
-          console.log(response);
+        // TODO if with put /publicBasketsOfUser/settings/:id that doesn't work
+        Axios.get(`/aladin/${id}`).then((response) => {
+          console.log(response.data);
           context.commit('getSettingsBasketOfUser', response.data);
           resolve(response.data);
         }).catch((err) => {

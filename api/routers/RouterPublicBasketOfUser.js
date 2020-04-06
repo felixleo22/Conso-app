@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const Auth = require('../utils/Auth');
 const PublicBasket = require('../models/PublicBasket');
 
-router.get('/publicBasketOfUser/:id', (req, res) => {
+router.get('/publicBasketsOfUser/:id', (req, res) => {
     const idUser = req.params.id;
     if (!idUser) {
         res.status(400).json({ type: 'error', code: 401, message: 'Missing id' });
@@ -29,15 +29,19 @@ router.get('/publicBasketOfUser/:id', (req, res) => {
     });
 });
 
-router.get('/publicBasketOfUser/settings', (req, res) => {
+// TODO if with put /publicBasketsOfUser/settings/:id that doesn't work
+router.get('/aladin/:id', (req, res) => {
+    const { id } = req.params;
+    if (!id) {
+        res.status(400).json({ type: 'error', code: 401, message: 'Missing id' });
+        return;
+    }
     const auth = req.headers.authorization;
-    console.log('tttttt');
     Auth(auth).then((user) => {
-        const { id } = req.body;
-        console.log(id);
         PublicBasket.findById(id).then((basket) => {
-            if (basket.user !== user._id) {
+            if (String(basket.user) !== String(user._id)) {
                 res.status(401).json({ type: 'error', message: 'Not authorized' });
+                return;
             }
             res.status(200).json(basket.shoppingList.settings);
         }).catch((err) => {
