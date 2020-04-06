@@ -49,6 +49,7 @@ router.get('/publicBasket/:id', (req, res) => {
             if (err) throw err;
             if (publicBasket.user !== user._id) {
                 res.status(401).json({ type: 'error', message: 'Not authorized' });
+                return;
             }
             jwt.verify(publicBasket.expiredToken, 'test', (err2, decoded) => {
                 if (err2) {
@@ -64,6 +65,10 @@ router.get('/publicBasket/:id', (req, res) => {
 
 router.get('/publicBasket', (req, res) => {
     const idUser = req.body.id;
+    if (!idUser) {
+        res.status(400).json({ type: 'error', code: 401, message: 'Missing id' });
+        return;
+    }
     const auth = req.headers.authorization;
     const publicBasketReturn = [];
     Auth(auth).then(() => {
