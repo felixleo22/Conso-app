@@ -12,7 +12,7 @@ export default Axios => ({
     },
   },
   mutations: {
-    getPublicBasketsOfUser(state, publicBasket) {
+    getPublicBasketOfUser(state, publicBasket) {
       state.publicBasketOfUser = publicBasket;
     },
     getSettingsBasketOfUser(state, settingsBasketOfUser) {
@@ -24,7 +24,7 @@ export default Axios => ({
     getPublicBasketOfUser(context, idUser) {
       return new Promise((resolve, reject) => {
         Axios.get(`/publicBasketOfUser/${idUser}`).then((response) => {
-          context.commit('getPublicBasketsOfUser');
+          context.commit('getPublicBasketOfUser', response.data);
           resolve(response.data);
         }).catch((err) => {
           reject(err);
@@ -34,7 +34,8 @@ export default Axios => ({
     getSettingsOfUser(context, id) {
       return new Promise((resolve, reject) => {
         Axios.get('/publicBasketOfUser/settings', id).then((response) => {
-          context.commit('getSettingsBasketOfUser');
+          console.log(response.data);
+          context.commit('getSettingsBasketOfUser', response.data);
           resolve(response.data);
         }).catch((err) => {
           reject(err);

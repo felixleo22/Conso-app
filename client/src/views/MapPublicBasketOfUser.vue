@@ -1,10 +1,10 @@
 <template>
   <div>
     <leaflet
-      v-if="settings"
+      v-if="circle"
+      :options="options"
       @ready="ready"
-      :items="allPoints"
-      :radius="radius"
+      :circles="[circle]"
       @viewChange="getAir"
     ></leaflet>
   </div>
@@ -19,33 +19,32 @@ export default {
   },
   data() {
     return {
-      settings: null,
-      shops: null,
+      positionUser: null,
+      shops: [],
+      circle: null,
     };
   },
   computed: {
-    idPublicBasket() {
-      return this.$route.params.id;
-    },
-    allPoints() {
-      if (this.position) return this.shops.concat(this.position);
-      return this.shops;
-    },
-    radius() {
-      if (!this.settings) return null;
-      return { position: this.settings.position, radius: this.settings.radius * 1000 };
+    options() {
+      return {
+        view: {
+          lat: this.circle.position.lat,
+          lng: this.circle.position.lng,
+          zoom: 12,
+        },
+      };
     },
   },
   methods: {
     ready() {
       if (navigator.geolocation) {
-        navigator.geolocation.watchPosition(this.watchLoc);
+        navigator.geolocation.watchPosition(this.watchLocation);
       } else {
         console.log('impossible to get position');
       }
     },
-    watchLoc(e) {
-      this.position = [{
+    watchLocation(e) {
+      this.positionUser = [{
         position: {
           lat: e.coords.latitude,
           lng: e.coords.longitude,
@@ -53,31 +52,29 @@ export default {
       }];
     },
     getAir(event) {
-      const url = this.center
-        ? `&center=${this.settings.position.lat},${this.settings.position.lng}
-      &radius=${this.settings.radius}` : '';
+      const url = this.circle
+        ? `&center=${this.circle.position.lat},${this.circle.position.lng}
+      &radius=${this.distance}` : '';
       this.$http.get(`/shops?NW=${event.view[0]}&SE=${event.view[1]}${url}`).then((response) => {
         this.shops = response.data.shops;
       });
     },
   },
   mounted() {
-    this.$store
-      // eslint-disable-next-line no-underscore-dangle
-      .dispatch('getSettings', this.idPublicBasket)
-      .then((response) => {
-        this.settings = response.data;
-      });
+    this.$store.dispatch('getSettings', this.idPublicBasket).then(() => {
+      console.log(this.$store.getters.getSettingsBasketOfUser);
+      this.circle = {
+        position: {
+          lat: this.$store.getters.getSettingsBasketOfUser.position.lat,
+          lng: this.$store.getters.getSettingsBasketOfUser.position.lng,
+        },
+        radius: this.$store.getters.settings.radius,
+      };
+    });
   },
 };
 </script>
 
 <style>
-  #mymap {
-    position: relative;
-    padding: 0;
-    width: 100%;
-    height: 600px;
-    z-index: 0;
-  }
+  @import url('https://unpkg.com/leaflet@1.6.0/dist/leaflet.css');
 </style>
