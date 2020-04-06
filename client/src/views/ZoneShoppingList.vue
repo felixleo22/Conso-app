@@ -5,7 +5,7 @@
       :options="options"
       @ready="ready"
       :circles="[circle]"
-      @viewChange="getAir"
+      @viewchanged="getAir"
       @mapclick="saveLatLngClick"
     ></leaflet>
    <input v-if="circle" type='number' @keyup="updateRadiusCircle"
@@ -59,10 +59,10 @@ export default {
       }];
     },
     getAir(event) {
-      const url = this.circle
-        ? `&center=${this.circle.position.lat},${this.circle.position.lng}
-      &radius=${this.distance}` : '';
+      const url = `&position=${this.circle.position.lat},${this.circle.position.lng}&radius=${this.distance * 1000}`;
+      console.log(url);
       this.$http.get(`/shops?NW=${event.view[0]}&SE=${event.view[1]}${url}`).then((response) => {
+        console.log(response.data);
         this.shops = response.data.shops;
       });
     },
