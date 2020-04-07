@@ -52,8 +52,8 @@
       :options="options"
       @ready="ready"
       :circles="[circle]"
-      @viewChange="getAir"
-      draggable="false"
+      @viewchanged="getAir"
+      :markers="shops"
     ></leaflet>
   </v-container>
 </template>
@@ -124,10 +124,25 @@ export default {
     },
     getAir(event) {
       const url = this.circle
-        ? `&center=${this.circle.position.lat},${this.circle.position.lng}
-      &radius=${this.distance}` : '';
+        ? `&position=${this.circle.position.lat},${this.circle.position.lng}&radius=${this.distance}` : '';
       this.$http.get(`/shops?NW=${event.view[0]}&SE=${event.view[1]}${url}`).then((response) => {
         this.shops = response.data.shops;
+        const tab1 = [];
+        console.log(this.shops);
+        this.shops.forEach((shop) => {
+          const shopWithPopup = {
+            position: {
+              lat: shop.position.lat,
+              lng: shop.position.lng,
+            },
+            popup: {
+              content: shop.name,
+              show: false,
+            },
+          };
+          tab1.push(shopWithPopup);
+        });
+        this.shops = tab1;
       });
     },
   },

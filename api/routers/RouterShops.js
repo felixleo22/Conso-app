@@ -122,24 +122,24 @@ router.put('/shop/:idShop/product/:barCodeProduct', (req, res) => {
 });
 
 router.get('/shops', (req, res) => {
-    let query = Shop.find();
+    const query = Shop.find();
     // filter by bounds
-    if (req.query.NW && req.query.SE) {
-        const marker1 = req.query.NW.split(',');
-        const marker2 = req.query.SE.split(',');
-        const latMin = marker2[0];
-        const latMax = marker1[0];
-        const lngMin = marker1[1];
-        const lngMax = marker2[1];
-        query = query.where('position.lng').gt(lngMin).lt(lngMax);
-        query = query.where('position.lat').gt(latMin).lt(latMax);
-    }
+    // if (req.query.NW && req.query.SE) {
+    //     const marker1 = req.query.NW.split(',');
+    //     const marker2 = req.query.SE.split(',');
+    //     const latMin = marker2[0];
+    //     const latMax = marker1[0];
+    //     const lngMin = marker1[1];
+    //     const lngMax = marker2[1];
+    //     query = query.where('position.lng').gt(lngMin).lt(lngMax);
+    //     query = query.where('position.lat').gt(latMin).lt(latMax);
+    // }
     // filter when inside circle
     query.exec((error, result) => {
-        if (error) throw error;
         const tab = {
             shops: result,
         };
+        console.log(tab.shops);
         if (req.query.position && req.query.radius) {
             const position = req.query.position.split(',');
             tab.shops = tab.shops.filter((elem) => {
@@ -150,7 +150,7 @@ router.get('/shops', (req, res) => {
                     latitude: Number(position[0]),
                     longitude: Number(position[1]),
                 });
-                return dist <= req.query.radius;
+                return dist <= req.query.radius * 1000;
             });
         }
         res.json(tab);
