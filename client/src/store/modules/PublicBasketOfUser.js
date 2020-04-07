@@ -21,9 +21,9 @@ export default Axios => ({
   },
   actions: {
     // TODO i didn't know why with idUser in body that doesn't work
-    getPublicBasketsOfUser(context, idUser) {
+    getPublicBasketsOfUser(context) {
       return new Promise((resolve, reject) => {
-        Axios.get(`/publicBasketsOfUser/${idUser}`).then((response) => {
+        Axios.get('/publicBaskets/user').then((response) => {
           context.commit('getPublicBasketsOfUser', response.data);
           resolve(response.data);
         }).catch((err) => {
@@ -34,8 +34,7 @@ export default Axios => ({
     getSettingsBasketOfUser(context, id) {
       return new Promise((resolve, reject) => {
         // TODO if with put /publicBasketsOfUser/settings/:id that doesn't work
-        Axios.get(`/aladin/${id}`).then((response) => {
-          console.log(response.data);
+        Axios.get(`/publicBasket/settings/${id}/user`).then((response) => {
           context.commit('getSettingsBasketOfUser', response.data);
           resolve(response.data);
         }).catch((err) => {
