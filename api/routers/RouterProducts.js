@@ -1,5 +1,8 @@
 const router = require('express').Router();
 const fetch = require('node-fetch');
+const Auth = require('../utils/Auth');
+const Price = require('../models/Price');
+
 
 router.get('/product/:code', (req, res) => {
     const barcode = req.params.code;
@@ -45,4 +48,40 @@ router.get('/products', (req, res) => {
 // TODO prendre en compte les erreurs
 });
 
+router.get('/products/shop/publicBasket/', (req, res) => {
+    const shopsItem = req.query.shops;
+    const { list } = req.query;
+    const auth = req.headers.authorization;
+    const prices = {};
+    Auth(auth).then(() => {
+        shopsItem.forEach((shop) => {
+            const shopParsed = JSON.parse(shop);
+            console.log(shopParsed.name);
+            const shopItems = [];
+            let name = '';
+            if (shopParsed.name.indexOf(' ') !== -1) {
+                console.log('zinzin');
+                name = (shopParsed.name).replace(/\s/g, '').toLowerCase();
+            } else {
+                console.log('zinzin');
+                name = (shopParsed.name).toLowerCase();
+            }
+            list.forEach((priceList) => {
+                console.log(typeof priceList);
+                const priceParsed = JSON.parse(priceList);
+                Price.find({ barcode: priceParsed.barcode, shop: shopParsed._id }).then((price) => {
+                    prices[name] = shopItems.push(price);
+                }).catch((err) => {
+                    prices[name] = shopItems.push(priceParsed);
+                    console.log(err);
+                });
+            });
+        });
+        console.log(prices);
+        return res.status(200).json({ prices });
+    }).catch((error) => {
+        const err = JSON.parse(error.message);
+        return res.status(err.code).json(err);
+    });
+});
 module.exports = router;

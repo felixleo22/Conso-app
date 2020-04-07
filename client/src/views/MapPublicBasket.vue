@@ -128,7 +128,17 @@ export default {
       this.$http.get(`/shops?NW=${event.view[0]}&SE=${event.view[1]}${url}`).then((response) => {
         this.shops = response.data.shops;
         const tab1 = [];
-        console.log(this.shops);
+        const body = {
+          params: {
+            shops: this.shops,
+            list: {
+              items: this.$store.getters.publicBasketById.shoppingList.list,
+            },
+          },
+        };
+        this.$store.dispatch('getPricesInShop', body).then((response1) => {
+          console.log(response1);
+        });
         this.shops.forEach((shop) => {
           const shopWithPopup = {
             position: {

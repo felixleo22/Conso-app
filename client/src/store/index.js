@@ -9,6 +9,7 @@ import ScanModule from './modules/Scan';
 import ShoppingList from './modules/ShoppingList';
 import PublicBasket from './modules/PublicBasket';
 import PublicBasketOfUser from './modules/PublicBasketOfUser';
+import Price from './modules/Price';
 
 Axios.defaults.baseURL = `//${location.hostname}:8080`;
 
@@ -36,5 +37,6 @@ export default new Vuex.Store({
     shoppingList: ShoppingList(Axios),
     publicBasket: PublicBasket(Axios),
     publicBasketOfUser: PublicBasketOfUser(Axios),
+    price: Price(Axios),
   },
 });
