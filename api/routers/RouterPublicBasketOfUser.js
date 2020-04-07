@@ -3,6 +3,17 @@ const jwt = require('jsonwebtoken');
 const Auth = require('../utils/Auth');
 const PublicBasket = require('../models/PublicBasket');
 
+/**
+ * @api {get} /publicBasketsOfUser/:id get publicBasketOfUser with the id
+ * @apiName getPublicBasketOfUserWithId
+ * @apiGroup publicBasketsOfUser
+ *
+ * @ApiHeader (Authorisation) {String} token Token Authorization value
+ *
+ * @apiError 404 id does not exist
+ * @apiSuccess (201) {publicBasketsOfUser} publicBasketsOfUser Return publicBasketsOfUser
+ */
+// TODO verify if this public basket is created by his user
 router.get('/publicBasketsOfUser/:id', (req, res) => {
     const idUser = req.params.id;
     if (!idUser) {
@@ -29,6 +40,17 @@ router.get('/publicBasketsOfUser/:id', (req, res) => {
     });
 });
 
+/**
+ * @api {get} /publicBasketsOfUser/:idBasket/settings get settings of publicBasketsOfUser
+ * with the id where the token has not expired
+ * @apiName getSettingOfPublicBasketOfUserWithId
+ * @apiGroup publicBasketsOfUser
+ *
+ * @ApiHeader (Authorisation) {String} token Token Authorization value
+ *
+ * @apiError 404 idBasket does not exist
+ * @apiSuccess (201) {Settings} Setting Return Settings of publicBasketsOfUser
+ */
 // TODO if with put /publicBasketsOfUser/settings/:id that doesn't work
 router.get('/aladin/:id', (req, res) => {
     const { id } = req.params;

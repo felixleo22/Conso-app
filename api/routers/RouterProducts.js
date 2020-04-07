@@ -1,6 +1,16 @@
 const router = require('express').Router();
 const fetch = require('node-fetch');
 
+/**
+ * @api {get} /product/:code get a product with barcode and a call to openfoodfacts
+ * @apiName GetProductWithBarCode
+ * @apiGroup Product
+ *
+ * @apiParam (URI) {Number} code Barcode of product
+ *
+ * @apiSuccess (201) {Product} product Return a product with all informations
+ * @apiError 404 the barcode does not exist
+ */
 router.get('/product/:code', (req, res) => {
     const barcode = req.params.code;
     const url = `https://fr.openfoodfacts.org/api/v0/product/${barcode}.json`;
@@ -20,6 +30,15 @@ router.get('/product/:code', (req, res) => {
         });
 });
 
+/**
+ * @api {get} /product get 5 products with String and a call to openfoodfacts
+ * @apiName Get5ProductsWithString
+ * @apiGroup Product
+ *
+ * @apiParam (Query) {String} search String for research
+ *
+ * @apiSuccess (201) {Products} products Return 5 products with barcode, name, icon, brand
+ */
 router.get('/products', (req, res) => {
     const { search } = req.query;
     if (!search) {

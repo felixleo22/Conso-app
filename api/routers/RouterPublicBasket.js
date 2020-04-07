@@ -3,9 +3,17 @@ const jwt = require('jsonwebtoken');
 const Auth = require('../utils/Auth');
 const PublicBasket = require('../models/PublicBasket');
 
+/**
+ * @api {post} /publicBasket make a private shopping list on public basket
+ * @apiName PostPublicBasket
+ * @apiGroup publicBasket
+ *
+ * @ApiHeader (Authorisation) {String} token Token Authorization value
+ *
+ * @apiSuccess (201) {PublicBasket} PublicBasket Return PublicBasket
+ */
 router.post('/publicBasket', (req, res) => {
     const auth = req.headers.authorization;
-    // eslint-disable-next-line consistent-return
     Auth(auth).then((user) => {
         if (user.shoppingList.list.length === 0) {
             res.status(400).json({ type: 'error', code: 400, message: 'Empty list' });
@@ -42,6 +50,15 @@ router.post('/publicBasket', (req, res) => {
     });
 });
 
+/**
+ * @api {get} /publicBaskets get all publicBasket where the token has not expired
+ * @apiName getPublicBasket
+ * @apiGroup publicBasket
+ *
+ * @ApiHeader (Authorisation) {String} token Token Authorization value
+ *
+ * @apiSuccess (201) {PublicBasket} PublicBasket Return PublicBasket
+ */
 router.get('/publicBaskets', (req, res) => {
     const auth = req.headers.authorization;
     Auth(auth).then(() => {
@@ -67,6 +84,16 @@ router.get('/publicBaskets', (req, res) => {
     });
 });
 
+/**
+ * @api {get} /publicBasket/:idBasket get publicBasket with the id
+ * @apiName getPublicBasketWithId
+ * @apiGroup publicBasket
+ *
+ * @ApiHeader (Authorisation) {String} token Token Authorization value
+ *
+ * @apiError 404 idBasket does not exist
+ * @apiSuccess (201) {PublicBasket} PublicBasket Return PublicBasket
+ */
 router.get('/publicBasket/:idBasket', (req, res) => {
     const auth = req.headers.authorization;
     const { idBasket } = req.params;
@@ -79,6 +106,17 @@ router.get('/publicBasket/:idBasket', (req, res) => {
     });
 });
 
+/**
+ * @api {get} /publicBasket/:idBasket/settings get settings of publicBasket
+ * with the id where the token has not expired
+ * @apiName getSettingsOfPublicBasketWithId
+ * @apiGroup publicBasket
+ *
+ * @ApiHeader (Authorisation) {String} token Token Authorization value
+ *
+ * @apiError 404 idBasket does not exist
+ * @apiSuccess (201) {Settings} Setting Return Settings of publicBasket
+ */
 router.get('/publicBasket/:idBasket/settings', (req, res) => {
     const auth = req.headers.authorization;
     const { idBasket } = req.params;
