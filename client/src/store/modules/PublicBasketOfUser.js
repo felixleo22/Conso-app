@@ -20,7 +20,6 @@ export default Axios => ({
     },
   },
   actions: {
-    // TODO i didn't know why with idUser in body that doesn't work
     getPublicBasketsOfUser(context) {
       return new Promise((resolve, reject) => {
         Axios.get('/publicBaskets/user').then((response) => {
@@ -33,9 +32,18 @@ export default Axios => ({
     },
     getSettingsBasketOfUser(context, id) {
       return new Promise((resolve, reject) => {
-        // TODO if with put /publicBasketsOfUser/settings/:id that doesn't work
         Axios.get(`/publicBasket/settings/${id}/user`).then((response) => {
           context.commit('getSettingsBasketOfUser', response.data);
+          resolve(response.data);
+        }).catch((err) => {
+          reject(err);
+        });
+      });
+    },
+    deletePublicBasketOfUser(id) {
+      console.log(id);
+      return new Promise((resolve, reject) => {
+        Axios.delete(`/publicBasket/${id}/user`).then((response) => {
           resolve(response.data);
         }).catch((err) => {
           reject(err);
