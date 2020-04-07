@@ -1,24 +1,8 @@
 
 <template>
   <v-container>
-    <v-alert
-      v-if="success"
-      v-model="success"
-      border="left"
-      close-text="Close Alert"
-      type=success
-      dismissible>
-    Le panier public a été créé
-    </v-alert>
-    <v-alert
-      v-if="error"
-      v-model="error"
-      border="left"
-      close-text="Close Alert"
-      type="error"
-      dismissible>
-      Votre liste de course est vide ou n'a pas de paramètres
-    </v-alert>
+    <alert-success v-if="success" :text="this.text"></alert-success>
+    <alert-error v-if="error" :text="this.text"></alert-error>
     <v-row>
       <v-dialog
         v-model="dialog"
@@ -71,12 +55,17 @@
 </template>
 
 <script>
-import List from '../components/shoppingList/List.vue';
+
+import alertSuccess from '../components/alerts/AlertSuccess.vue';
+import alertError from '../components/alerts/AlertError.vue';
 import SearchBar from '../components/shoppingList/SearchBar.vue';
+import List from '../components/shoppingList/List.vue';
 
 export default {
   name: 'shoppingList',
   components: {
+    alertSuccess,
+    alertError,
     SearchBar,
     List,
   },
@@ -84,6 +73,7 @@ export default {
     return {
       success: false,
       error: false,
+      text: '',
       dialog: false,
     };
   },
@@ -92,11 +82,13 @@ export default {
   methods: {
     createPublicBasket() {
       this.$store.dispatch('createPublicBasket').then(() => {
+        this.text = 'Le panier public a été créé';
         this.success = true;
       }).catch((err) => {
         this.error = true;
         console.log(err);
       }).finally(() => {
+        this.text = "Le panier est vide ou les settings n'ont pas été effecuté";
         this.dialog = false;
       });
     },
