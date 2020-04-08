@@ -74,26 +74,35 @@ router.get('/products/shop/publicBasket/', (req, res) => {
     const auth = req.headers.authorization;
     Auth(auth).then(() => {
         const items = [];
-        shopsItem.forEach(async (shop) => {
+        // eslint-disable-next-line no-restricted-syntax
+        for (const shop of shopsItem) {
             const parsedShop = JSON.parse(shop);
-            await listItem.items.forEach((priceList) => {
-                Price.find({ shop: parsedShop._id, product: priceList.codebar }).then((price) => {
-                    if (price.length > 0) {
-                        items.push(price[0]);
-                    } else {
-                        const obj = {
-                            items: priceList,
-                            idShop: parsedShop._id,
-                        };
-                        items.push(obj);
-                    }
+            // eslint-disable-next-line no-restricted-syntax
+            for (const priceList of listItem.items) {
+                console.log(parsedShop);
+                // eslint-disable-next-line max-len,no-inner-declarations
+                async function zinzin(priceList1, parsedShop1) {
+                    // eslint-disable-next-line max-len,no-return-await,consistent-return
+                    return await Price.find({ shop: parsedShop1._id, product: priceList1.codebar }).then((price) => {
+                        if (price.length > 0) {
+                            return price[0];
+                        }
+                        if (price.length === 0) {
+                            // eslint-disable-next-line no-param-reassign
+                            priceList1.shop = parsedShop1._id;
+                            return priceList1;
+                        }
+                    });
+                }
+                zinzin(priceList, parsedShop).then((price) => {
+                    items.push(price);
                     if (items.length === (listItem.items.length) * (shopsItem.length)) {
                         console.log(items);
                         res.status(200).json(items);
                     }
                 });
-            });
-        });
+            }
+        }
     }).catch((error) => {
         const err = JSON.parse(error.message);
         return res.status(err.code).json(err);

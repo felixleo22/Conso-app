@@ -122,6 +122,28 @@ export default {
         },
       }];
     },
+    createPopup(shop, items) {
+      // eslint-disable-next-line no-restricted-syntax
+      let str = '';
+      // eslint-disable-next-line no-restricted-syntax
+      for (const item of items) {
+        // eslint-disable-next-line no-underscore-dangle
+        if (shop._id === item.shop && item.product) {
+          str = `${str}codebar: ${item.product} price: ${item.price}`;
+          // eslint-disable-next-line no-underscore-dangle
+        }
+        // eslint-disable-next-line no-underscore-dangle
+        if (shop._id === item.shop && !item.product) {
+          console.log('zinzin');
+          str = `${str}codebar: ${item.codebar}`;
+        }
+      }
+      const obj = {
+        content: str,
+        show: false,
+      };
+      return obj;
+    },
     getAir(event) {
       const url = this.circle
         ? `&position=${this.circle.position.lat},${this.circle.position.lng}&radius=${this.distance}` : '';
@@ -138,21 +160,19 @@ export default {
         };
         this.$store.dispatch('getPricesInShop', body).then((response1) => {
           console.log(response1);
+          // eslint-disable-next-line no-restricted-syntax
+          for (const shop of this.shops) {
+            const shopWithPopup = {
+              position: {
+                lat: shop.position.lat,
+                lng: shop.position.lng,
+              },
+              popup: this.createPopup(shop, response1),
+            };
+            tab1.push(shopWithPopup);
+          }
+          this.shops = tab1;
         });
-        this.shops.forEach((shop) => {
-          const shopWithPopup = {
-            position: {
-              lat: shop.position.lat,
-              lng: shop.position.lng,
-            },
-            popup: {
-              content: shop.name,
-              show: false,
-            },
-          };
-          tab1.push(shopWithPopup);
-        });
-        this.shops = tab1;
       });
     },
   },

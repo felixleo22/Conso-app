@@ -3,7 +3,7 @@
     <leaflet
       @ready="getShops"
       @viewChange="getShops"
-      :items="shops"
+      :markers="shops"
       @markerClick="selectShop"
     >
     </leaflet>
