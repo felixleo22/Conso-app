@@ -28,7 +28,10 @@ router.post('/user', (req, res) => {
         const account = new User({
             email,
             password: Password.hash(password1),
-            shoppingList: [],
+            shoppingList: {
+                list: [],
+                settings: {},
+            },
         });
         account.save((err2) => {
             if (err2) throw err2;
