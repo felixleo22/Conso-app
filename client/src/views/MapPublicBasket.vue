@@ -80,7 +80,6 @@ export default {
       return this.$route.params.id;
     },
     publicBasket() {
-      console.log(this.$store.getters.publicBasketById);
       return this.$store.getters.publicBasketById;
     },
     options() {
@@ -123,17 +122,12 @@ export default {
       }];
     },
     createPopup(shop, items) {
-      // eslint-disable-next-line no-restricted-syntax
       let str = '';
       items.forEach((item) => {
         // eslint-disable-next-line no-underscore-dangle
         if (shop._id === item.shop && item.product) {
           str = `${str}codebar: ${item.product} price: ${item.price}`;
           // eslint-disable-next-line no-underscore-dangle
-        }
-        // eslint-disable-next-line no-underscore-dangle
-        if (shop._id === item.shop && !item.product) {
-          str = `${str}codebar: ${item.codebar}`;
         }
       });
       return {
@@ -156,7 +150,6 @@ export default {
           },
         };
         this.$store.dispatch('getPricesInShop', body).then((response1) => {
-          console.log(response1);
           // eslint-disable-next-line no-restricted-syntax
           for (const shop of this.shops) {
             const shopWithPopup = {

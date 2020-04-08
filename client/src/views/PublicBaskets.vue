@@ -35,7 +35,6 @@ export default {
   mounted() {
     this.$store.dispatch('getPublicBaskets').then(() => {
       this.publicBasket = this.$store.getters.publicBasket;
-      console.log(this.publicBasket);
     });
   },
   computed: {
