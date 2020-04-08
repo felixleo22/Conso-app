@@ -4,9 +4,9 @@ const Auth = require('../utils/Auth');
 const PublicBasket = require('../models/PublicBasket');
 
 /**
- * @api {post} /publicBasket make a private shopping list on public basket
+ * @api {post} /publicbasket make a private shopping list on public basket
  * @apiName PostPublicBasket
- * @apiGroup publicBasket
+ * @apiGroup publicbasket
  *
  * @ApiHeader (Authorisation) {String} token Token Authorization value
  *
@@ -14,7 +14,7 @@ const PublicBasket = require('../models/PublicBasket');
  * @apiError 500 Internal Server Error
  * @apiSuccess (201) {PublicBasket} PublicBasket Return PublicBasket
  */
-router.post('/publicBasket', (req, res) => {
+router.post('/publicbasket', (req, res) => {
     const auth = req.headers.authorization;
     Auth(auth).then((user) => {
         if (user.shoppingList.list.length === 0) {
@@ -53,17 +53,17 @@ router.post('/publicBasket', (req, res) => {
 });
 
 /**
- * @api {get} /publicBaskets get all publicBasket where the token has not expired
+ * @api {get} /publicbaskets get all publicBasket where the token has not expired
  * @apiName getPublicBaskets
- * @apiGroup publicBasket
+ * @apiGroup publicbasket
  *
  * @ApiHeader (Authorisation) {String} token Token Authorization value
  *
  * @apiError 500 Internal Server Error
  *
- * @apiSuccess (201) {PublicBasket} PublicBasket Return PublicBasket
+ * @apiSuccess (201) {PublicBasket} PublicBasket Return publicBasket
  */
-router.get('/publicBaskets', (req, res) => {
+router.get('/publicbaskets', (req, res) => {
     const auth = req.headers.authorization;
     Auth(auth).then(() => {
         const tab = [];
@@ -87,18 +87,18 @@ router.get('/publicBaskets', (req, res) => {
 });
 
 /**
- * @api {get} /publicBasket/:idBasket get publicBasket with idBasket
+ * @api {get} /publicbasket/:idBasket get publicbasket with idBasket
  * @apiName getPublicBasketWithId
- * @apiGroup publicBasket
+ * @apiGroup publicbasket
  *
  * @ApiHeader (Authorisation) {String} token Token Authorization value
  *
  * @apiError 400 invalid idBasket
  * @apiError 500 Internal Server Error
  *
- * @apiSuccess (201) {PublicBasket} PublicBasket Return PublicBasket
+ * @apiSuccess (201) {PublicBasket} PublicBasket Return publicBasket
  */
-router.get('/publicBasket/:idBasket', (req, res) => {
+router.get('/publicbasket/:idBasket', (req, res) => {
     const auth = req.headers.authorization;
     const { idBasket } = req.params;
     if (!idBasket) {
@@ -115,17 +115,17 @@ router.get('/publicBasket/:idBasket', (req, res) => {
 });
 
 /**
- * @api {get} /publicBasket/:idBasket/settings get settings of publicBasket with idBasket
+ * @api {get} /publicbasket/:idBasket/settings get settings of publicBasket with idBasket
  * where the token has not expired
  * @apiName getSettingsOfPublicBasketWithId
- * @apiGroup publicBasket
+ * @apiGroup publicbasket
  *
  * @ApiHeader (Authorisation) {String} token Token Authorization value
  *
  * @apiError 400 invalid idBasket
  * @apiSuccess (201) {Settings} Setting Return Settings of publicBasket
  */
-router.get('/publicBasket/:idBasket/settings', (req, res) => {
+router.get('/publicbasket/:idBasket/settings', (req, res) => {
     const auth = req.headers.authorization;
     const { idBasket } = req.params;
     if (!idBasket) {
@@ -143,15 +143,15 @@ router.get('/publicBasket/:idBasket/settings', (req, res) => {
 });
 
 /**
- * @api {get} /publicBaskets/user get publicBaskets of user
+ * @api {get} /publicbaskets/user get publicbaskets of user
  * @apiName getPublicBasketOfUser
- * @apiGroup publicBasket
+ * @apiGroup publicbasket
  *
  * @ApiHeader (Authorisation) {String} token Token Authorization value
  *
  * @apiSuccess (201) {publicBasketsOfUser} publicBasketsOfUser Return publicBasketsOfUser
  */
-router.get('/publicBaskets/user', (req, res) => {
+router.get('/publicbaskets/user', (req, res) => {
     const auth = req.headers.authorization;
     const publicBasketReturn = [];
     Auth(auth).then((user) => {
@@ -173,17 +173,17 @@ router.get('/publicBaskets/user', (req, res) => {
 });
 
 /**
- * @api {get} /publicBasket/settings/:idBasket/user/:idUser get settings of public basket
+ * @api {get} /publicbasket/settings/:idBasket/user/:idUser get settings of public basket
  * with the id where the token has not expired
  * @apiName getSettingOfPublicBasketOfUserWithId
- * @apiGroup publicBasket
+ * @apiGroup publicbasket
  *
  * @ApiHeader (Authorisation) {String} token Token Authorization value
  *
  * @apiError 400 invalid idBasket
  * @apiSuccess (201) {Settings} Setting Return Settings of publicBasketsOfUser
  */
-router.get('/publicBasket/settings/:idBasket/user', (req, res) => {
+router.get('/publicbasket/settings/:idBasket/user', (req, res) => {
     const { idBasket } = req.params;
     if (!idBasket) {
         res.status(400).json({ type: 'error', code: 400, message: 'invalid idBasket' });
@@ -207,16 +207,16 @@ router.get('/publicBasket/settings/:idBasket/user', (req, res) => {
 });
 
 /**
- * @api {delete} /publicBasket/:id/user delete publicBasketOfUser with the id
+ * @api {delete} /publicbasket/:id/user delete publicBasketOfUser with the id
  * @apiName deletePublicBasketOfUserWithId
- * @apiGroup publicBasket
+ * @apiGroup publicbasket
  *
  * @ApiHeader (Authorisation) {String} token Token Authorization value
  *
  * @apiError 404 id does not exist
- * @apiSuccess (201) {publicBasketsOfUser} publicBasketsOfUser Return publicBasketsOfUser
+ * @apiSuccess (201) {publicbasketsOfUser} publicBasketsOfUser Return publicBasketsOfUser
  */
-router.delete('/publicBasket/:id/user', (req, res) => {
+router.delete('/publicbasket/:id/user', (req, res) => {
     const idBasket = req.params.id;
     if (!idBasket) {
         res.status(400).json({ type: 'error', code: 401, message: 'Missing id' });
@@ -225,8 +225,6 @@ router.delete('/publicBasket/:id/user', (req, res) => {
     const auth = req.headers.authorization;
     Auth(auth).then((user) => {
         PublicBasket.findById(idBasket).then((publicBasket) => {
-            console.log(publicBasket.user);
-            console.log(user._id);
             if (String(publicBasket.user) !== String(user._id)) {
                 res.status(401).json({ status: 401, msg: 'Not Autorized' });
                 return;

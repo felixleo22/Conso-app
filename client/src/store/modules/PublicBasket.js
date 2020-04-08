@@ -38,7 +38,7 @@ export default Axios => ({
     },
     getPublicBaskets(context) {
       return new Promise((resolve, reject) => {
-        Axios.get('/publicBaskets').then((response) => {
+        Axios.get('/publicbaskets').then((response) => {
           context.commit('getPublicBaskets', response.data);
           resolve(response.data);
         }).catch((err) => {
@@ -49,7 +49,7 @@ export default Axios => ({
     getPublicBasketsById(context, params) {
       return new Promise((resolve, reject) => {
         console.log(params.id);
-        Axios.get(`/publicBasket/${params.id}`).then((response) => {
+        Axios.get(`/publicbasket/${params.id}`).then((response) => {
           context.commit('getPublicBasketById', response.data);
           resolve(response.data);
         }).catch((err) => {

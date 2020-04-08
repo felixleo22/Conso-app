@@ -1,6 +1,7 @@
 <template>
 <div>
   <v-container>
+    <alert-error v-if="error" :text="this.text"></alert-error>
     <v-row>
       <v-spacer></v-spacer>
       <v-text-field
@@ -32,15 +33,19 @@
 
 <script>
 import { StreamBarcodeReader } from 'vue-barcode-reader';
+import alertError from '../alerts/AlertError.vue';
 
 export default {
   name: 'scanner',
   components: {
     StreamBarcodeReader,
+    alertError,
   },
   data() {
     return {
       barcode: '',
+      error: false,
+      text: '',
     };
   },
   methods: {
@@ -57,6 +62,8 @@ export default {
           this.barcode = '';
         })
         .catch((error) => {
+          this.error = true;
+          this.text = 'le code bar ne correspond à aucun produit';
           console.log(error.response);
         });
     },

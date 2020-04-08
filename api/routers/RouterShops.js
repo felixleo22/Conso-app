@@ -200,6 +200,7 @@ router.get('/shops', (req, res) => {
         const tab = {
             shops: result,
         };
+        console.log(result);
         if (req.query.position && req.query.radius) {
             const position = req.query.position.split(',');
             tab.shops = tab.shops.filter((elem) => {

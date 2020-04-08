@@ -22,7 +22,7 @@ export default Axios => ({
   actions: {
     getPublicBasketsOfUser(context) {
       return new Promise((resolve, reject) => {
-        Axios.get('/publicBaskets/user').then((response) => {
+        Axios.get('/publicbaskets/user').then((response) => {
           context.commit('getPublicBasketsOfUser', response.data);
           resolve(response.data);
         }).catch((err) => {
@@ -32,7 +32,7 @@ export default Axios => ({
     },
     getSettingsBasketOfUser(context, id) {
       return new Promise((resolve, reject) => {
-        Axios.get(`/publicBasket/settings/${id.id}/user`).then((response) => {
+        Axios.get(`/publicbasket/settings/${id.id}/user`).then((response) => {
           context.commit('getSettingsBasketOfUser', response.data);
           resolve(response.data);
         }).catch((err) => {
@@ -42,7 +42,7 @@ export default Axios => ({
     },
     deletePublicBasketUser(context, id) {
       return new Promise((resolve, reject) => {
-        Axios.delete(`/publicBasket/${id}/user`).then((response) => {
+        Axios.delete(`/publicbasket/${id}/user`).then((response) => {
           resolve(response.data);
         }).catch((err) => {
           reject(err);
