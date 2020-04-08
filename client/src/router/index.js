@@ -63,17 +63,17 @@ const routes = [
     },
   },
   {
-    path: '/leaflet',
-    name: 'leaflet',
-    component() {
-      return import('../views/ViewShops.vue');
-    },
-  },
-  {
     path: '/zoneshoppinglist',
     name: 'zoneshoppinglist',
     component() {
       return import('../views/ZoneShoppingList.vue');
+    },
+  },
+  {
+    path: '/shop/create',
+    name: 'newshop',
+    component() {
+      return import('../views/NewShop.vue');
     },
   },
 ];

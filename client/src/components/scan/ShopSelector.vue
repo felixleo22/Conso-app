@@ -1,7 +1,6 @@
 <template>
   <div class="leaflet-wrapper">
     <leaflet
-      @ready="getShops"
       @viewChange="getShops"
       :items="shops"
       @markerClick="selectShop"
@@ -16,6 +15,7 @@
       title="Ajouter un magasin"
       color="red accent-4"
       style="bottom: 6vh; right: 24px;"
+      @click="createShop"
     >
       <v-icon color="white">fa-plus</v-icon>
     </v-btn>
@@ -92,6 +92,9 @@ export default {
       this.$store.dispatch('changeScanShop', this.selected);
       this.dialog = false;
       this.selected = null;
+    },
+    createShop() {
+      this.$router.push({ name: 'newshop' });
     },
   },
 };
