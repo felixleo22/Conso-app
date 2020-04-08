@@ -1,6 +1,5 @@
 const router = require('express').Router();
 const fetch = require('node-fetch');
-const Auth = require('../utils/Auth');
 const Price = require('../models/Price');
 
 
@@ -102,37 +101,32 @@ router.get('/products/shop/publicBasket/', (req, res) => {
         res.status(400).json(({ type: 'error', code: 400, message: 'Missing list' }));
         return;
     }
-    const auth = req.headers.authorization;
-    if (!auth) {
-        res.status(401).json(({ type: 'error', code: 401, message: 'Unauthorized' }));
+    const listItem = JSON.parse(list);
+    if (!req.authUser) {
+        res.status(201).json({ type: 'error', code: 401, message: 'Authentification required' });
         return;
     }
-    const listItem = JSON.parse(list);
-    Auth(auth).then(() => {
-        const items = [];
-        shops.forEach(async (shop) => {
-            const parsedShop = JSON.parse(shop);
-            await listItem.items.forEach((priceList) => {
-                Price.find({ shop: parsedShop._id, product: priceList.codebar }).then((price) => {
-                    if (price.length > 0) {
-                        items.push(price[0]);
-                    } else {
-                        const obj = {
-                            items: priceList,
-                            idShop: parsedShop._id,
-                        };
-                        items.push(obj);
-                    }
-                    if (items.length === (listItem.items.length) * (shops.length)) {
-                        console.log(items);
-                        res.status(200).json(items);
-                    }
-                });
+
+    const items = [];
+    shops.forEach(async (shop) => {
+        const parsedShop = JSON.parse(shop);
+        await listItem.items.forEach((priceList) => {
+            Price.find({ shop: parsedShop._id, product: priceList.codebar }).then((price) => {
+                if (price.length > 0) {
+                    items.push(price[0]);
+                } else {
+                    const obj = {
+                        items: priceList,
+                        idShop: parsedShop._id,
+                    };
+                    items.push(obj);
+                }
+                if (items.length === (listItem.items.length) * (shops.length)) {
+                    console.log(items);
+                    res.status(200).json(items);
+                }
             });
         });
-    }).catch((error) => {
-        const err = JSON.parse(error.message);
-        return res.status(err.code).json(err);
     });
 });
 module.exports = router;
