@@ -112,35 +112,33 @@ router.get('/products/shop/publicBasket/', (req, res) => {
     const listItem = JSON.parse(list);
     Auth(auth).then(() => {
         const items = [];
-        // eslint-disable-next-line no-restricted-syntax
-        for (const shop of shops) {
+        shops.forEach((shop) => {
             const parsedShop = JSON.parse(shop);
-            // eslint-disable-next-line no-restricted-syntax
-            for (const priceList of listItem.items) {
-                console.log(parsedShop);
-                // eslint-disable-next-line max-len,no-inner-declarations
+            listItem.items.forEach((priceList) => {
                 async function zinzin(priceList1, parsedShop1) {
-                    // eslint-disable-next-line max-len,no-return-await,consistent-return
-                    return await Price.find({ shop: parsedShop1._id, product: priceList1.codebar }).then((price) => {
+                    // eslint-disable-next-line max-len,consistent-return
+                    const p = await Price.find({ shop: parsedShop1._id, product: priceList1.codebar }).then((price) => {
                         if (price.length > 0) {
                             return price[0];
                         }
-                        if (price.length === 0) {
+                        if (price.length < 1) {
+                            console.log(parsedShop1._id);
                             // eslint-disable-next-line no-param-reassign
                             priceList1.shop = parsedShop1._id;
                             return priceList1;
                         }
                     });
+                    return p;
                 }
                 zinzin(priceList, parsedShop).then((price) => {
                     items.push(price);
                     if (items.length === (listItem.items.length) * (shops.length)) {
-                        console.log(items);
+                        // console.log(items);
                         res.status(200).json(items);
                     }
                 });
-            }
-        }
+            });
+        });
     }).catch((error) => {
         const err = JSON.parse(error.message);
         return res.status(err.code).json(err);
