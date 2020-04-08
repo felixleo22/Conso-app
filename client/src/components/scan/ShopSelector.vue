@@ -1,42 +1,22 @@
 <template>
   <div class="leaflet-wrapper">
     <leaflet
-      @ready="getShops"
-      @viewChange="getShops"
-      :items="shops"
-      @markerClick="selectShop"
-    >
+      @ready="getLocalisation"
+      @viewchanged="getShops"
+      :options="options"
+      :markers="shops"
+      @markerclick="selectShop">
     </leaflet>
-
-    <v-dialog
-      v-model="dialog"
-      max-width="500"
-    >
+    <v-dialog v-model="dialog"
+    max-width="500">
       <v-card>
-        <v-card-title
-          primary-title
-        >
-          {{selected ? selected.name : ''}}
-        </v-card-title>
-
-        <v-card-text>
-          {{selected ? selected.address: ''}}
-        </v-card-text>
-
+        <v-card-title primary-title>{{selected ? selected.name : ''}}</v-card-title>
+        <v-card-text>{{selected ? selected.address: ''}}</v-card-text>
         <v-divider></v-divider>
-
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn
-            outlined
-            @click="cancelSelect">
-              Annuler
-          </v-btn>
-          <v-btn
-            color="red accent-4 white--text"
-            @click="confirmSelect">
-              Choisir
-          </v-btn>
+          <v-btn outlined @click="cancelSelect">Annuler</v-btn>
+          <v-btn color="red accent-4 white--text" @click="confirmSelect">Choisir</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -53,39 +33,73 @@ export default {
   },
   data() {
     return {
+      options: {
+        view: {
+          lat: 48.5,
+          lng: 0.5,
+          zoom: 3,
+        },
+      },
       dialog: false,
       shopId: '',
       shops: [],
-      selected: null,
+      selected: {
+        name: '',
+        address: '',
+      },
     };
   },
   methods: {
+    getLocalisation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.watchPosition(this.watchLocation);
+      } else {
+        console.log('impossible to get position');
+      }
+    },
+    watchLocation(e) {
+      this.positionUser = [{
+        position: {
+          lat: e.coords.latitude,
+          lng: e.coords.longitude,
+        },
+      }];
+    },
     selectShop(event) {
-      const { point } = event;
-      this.selected = point;
-
+      console.log(event);
+      this.selected.name = event.marker.name;
+      this.selected.address = event.marker.address;
       this.dialog = true;
     },
     getShops(event) {
-      this.$http.get(`/shops?NW=${event.view[0]}&SE=${event.view[1]}`).then((response) => {
-        this.shops = response.data.shops;
-      });
+      if (!event) return;
+      this.$http
+        .get(`/shops?NW=${event.view.NW}&SE=${event.view.SE}`)
+        .then((response) => {
+          this.shops = response.data.shops;
+        });
     },
     cancelSelect() {
       this.dialog = false;
-      this.selected = null;
+      this.selected = {
+        name: '',
+        address: '',
+      };
     },
     confirmSelect() {
       this.$store.dispatch('changeScanShop', this.selected);
       this.dialog = false;
-      this.selected = null;
+      this.selected = {
+        name: '',
+        address: '',
+      };
     },
   },
 };
 </script>
 
 <style scoped>
-  #leaflet {
-    height: calc(95vh - 56px) !important;
-  }
+#leaflet {
+  height: calc(95vh - 56px) !important;
+}
 </style>
