@@ -197,7 +197,6 @@ router.get('/shops', (req, res) => {
     }
     // filter when inside circle
     query.exec((error, result) => {
-        console.log(result);
         const tab = {
             shops: result,
         };
