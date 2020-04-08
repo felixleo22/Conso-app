@@ -123,7 +123,6 @@ router.get('/products/shop/publicBasket/', (req, res) => {
                         return price[0];
                     }
                     if (price.length < 1) {
-                        console.log(parsedShop1._id);
                         // eslint-disable-next-line no-param-reassign
                         priceList1.shop = parsedShop1._id;
                         return priceList1;
@@ -134,7 +133,9 @@ router.get('/products/shop/publicBasket/', (req, res) => {
             zinzin(priceList, parsedShop).then((price) => {
                 items.push(price);
                 if (items.length === (listItem.items.length) * (shops.length)) {
-                    // console.log(items);
+                    items.forEach((t) => {
+                        console.log(t.shop, t.name);
+                    });
                     res.status(200).json(items);
                 }
             });

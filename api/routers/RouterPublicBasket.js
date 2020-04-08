@@ -71,15 +71,13 @@ router.get('/publicbaskets', (req, res) => {
         if (err) throw err;
         publicBasket.forEach((pb) => {
             jwt.verify(pb.expiredToken, 'test', (err2, decoded) => {
-                if (err2) {
-                    PublicBasket.findByIdAndDelete(pb._id);
-                } if (decoded) {
+                if (decoded) {
                     tab.push(pb);
                 }
             });
         });
+        res.status(200).json(tab);
     });
-    res.status(200).json(tab);
 });
 
 /**

@@ -127,13 +127,8 @@ export default {
       let str = '';
       items.forEach((item) => {
         // eslint-disable-next-line no-underscore-dangle
-        if (shop._id === item.shop && item.product) {
-          str = `${str}codebar: ${item.product} price: ${item.price}`;
-          // eslint-disable-next-line no-underscore-dangle
-        }
-        // eslint-disable-next-line no-underscore-dangle
-        if (shop._id === item.shop && !item.product) {
-          str = `${str}codebar: ${item.codebar}`;
+        if (shop._id === item.shop) {
+          str = `${str}codebar: ${item.product}`;
         }
       });
       return {
