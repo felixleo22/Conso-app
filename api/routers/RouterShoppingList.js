@@ -1,8 +1,6 @@
 /* eslint-disable no-param-reassign */
 const router = require('express').Router();
 
-const Auth = require('../utils/Auth');
-
 /**
  * @api {get} /shoppinglist get the list of shoppinglist of user
  * @apiName getShoppingList
@@ -15,13 +13,12 @@ const Auth = require('../utils/Auth');
  * @apiSuccess (200) {List} List Return List
  */
 router.get('/shoppinglist', (req, res) => {
-    const auth = req.headers.authorization;
-    Auth(auth).then((user) => {
-        res.status(200).json(user.shoppingList.list);
-    }).catch((error) => {
-        const err = JSON.parse(error.message);
-        res.status(err.code).json(err);
-    });
+    if (!req.authUser) {
+        res.status(201).json({ type: 'error', code: 401, message: 'Authentification required' });
+        return;
+    }
+
+    res.status(200).json(req.authUser.shoppingList.list);
 });
 
 /**
@@ -37,29 +34,30 @@ router.get('/shoppinglist', (req, res) => {
  * @apiSuccess (200) {List} List Return List
  */
 router.post('/shoppinglist', (req, res) => {
-    const auth = req.headers.authorization;
     const data = req.body;
-    Auth(auth).then((user) => {
-        if (!Number(data.quantity)) {
-            res.status(400).json(({ type: 'error', code: 400, message: 'invalid quantity' }));
-            return;
-        }
-        const indexOfCodebar = user.shoppingList.list.findIndex(
-            (item) => item.codebar.toString() === data.codebar,
-        );
-        if (indexOfCodebar >= 0) {
-            user.shoppingList.list[indexOfCodebar].quantity += 1;
-        } else {
-            user.shoppingList.list.push(data);
-        }
+    if (!req.authUser) {
+        res.status(201).json({ type: 'error', code: 401, message: 'Authentification required' });
+        return;
+    }
 
-        user.save((error, newUser) => {
-            if (error) throw error;
-            res.status(200).json(newUser.shoppingList.list);
-        });
-    }).catch((error) => {
-        const err = JSON.parse(error.message);
-        res.status(err.code).json(err);
+    const user = req.authUser;
+
+    if (!Number(data.quantity)) {
+        res.status(400).json(({ type: 'error', code: 400, message: 'invalid quantity' }));
+        return;
+    }
+    const indexOfCodebar = user.shoppingList.list.findIndex(
+        (item) => item.codebar.toString() === data.codebar,
+    );
+    if (indexOfCodebar >= 0) {
+        user.shoppingList.list[indexOfCodebar].quantity += 1;
+    } else {
+        user.shoppingList.list.push(data);
+    }
+
+    user.save((error, newUser) => {
+        if (error) throw error;
+        res.status(200).json(newUser.shoppingList.list);
     });
 });
 
@@ -77,23 +75,24 @@ router.post('/shoppinglist', (req, res) => {
  */
 // TODO change by patch
 router.put('/shoppinglist', (req, res) => {
-    const auth = req.headers.authorization;
     const data = req.body;
-    Auth(auth).then((user) => {
-        if (!Number(data.quantity)) {
-            res.status(400).json(({ type: 'error', code: 400, message: 'invalid quantity' }));
-            return;
-        }
-        user.shoppingList.list.find(
-            (item) => item.codebar === data.codebar,
-        ).quantity = data.quantity;
-        user.save((error, newUser) => {
-            if (error) throw error;
-            res.status(200).json(newUser.shoppingList.list);
-        });
-    }).catch((error) => {
-        const err = JSON.parse(error.message);
-        res.status(err.code).json(err);
+    if (!req.authUser) {
+        res.status(201).json({ type: 'error', code: 401, message: 'Authentification required' });
+        return;
+    }
+
+    const user = req.authUser;
+
+    if (!Number(data.quantity)) {
+        res.status(400).json(({ type: 'error', code: 400, message: 'invalid quantity' }));
+        return;
+    }
+    user.shoppingList.list.find(
+        (item) => item.codebar === data.codebar,
+    ).quantity = data.quantity;
+    user.save((error, newUser) => {
+        if (error) throw error;
+        res.status(200).json(newUser.shoppingList.list);
     });
 });
 
@@ -110,19 +109,20 @@ router.put('/shoppinglist', (req, res) => {
  * @apiSuccess (200) {List} List Return List
  */
 router.delete('/shoppinglist', (req, res) => {
-    const auth = req.headers.authorization;
     const data = req.body;
-    Auth(auth).then((user) => {
-        user.shoppingList.list = user.shoppingList.list.filter(
-            (item) => item.codebar !== data.codebar,
-        );
-        user.save((error, newUser) => {
-            if (error) throw error;
-            res.status(200).json(newUser.shoppingList.list);
-        });
-    }).catch((error) => {
-        const err = JSON.parse(error.message);
-        res.status(err.code).json(err);
+
+    if (!req.authUser) {
+        res.status(201).json({ type: 'error', code: 401, message: 'Authentification required' });
+        return;
+    }
+
+    const user = req.authUser;
+    user.shoppingList.list = user.shoppingList.list.filter(
+        (item) => item.codebar !== data.codebar,
+    );
+    user.save((error, newUser) => {
+        if (error) throw error;
+        res.status(200).json(newUser.shoppingList.list);
     });
 });
 
@@ -140,25 +140,26 @@ router.delete('/shoppinglist', (req, res) => {
  */
 // TODO replace by patch or put
 router.post('/shoppinglist/settings', (req, res) => {
-    const auth = req.headers.authorization;
     const data = req.body;
-    Auth(auth).then((user) => {
-        if (!Number(data.radius)) {
-            res.status(400).json(({ type: 'error', code: 400, message: 'invalid radius' }));
-            return;
-        }
-        if (!Number(data.position.lat) || !Number(data.position.lat)) {
-            res.status(400).json(({ type: 'error', code: 400, message: 'invalid coordinates' }));
-            return;
-        }
-        user.shoppingList.settings = data;
-        user.save((error, newUser) => {
-            if (error) throw error;
-            res.status(200).json(newUser.shoppingList);
-        });
-    }).catch((error) => {
-        const err = JSON.parse(error.message);
-        res.status(err.code).json(err);
+
+    if (!req.authUser) {
+        res.status(201).json({ type: 'error', code: 401, message: 'Authentification required' });
+        return;
+    }
+
+    const user = req.authUser;
+    if (!Number(data.radius)) {
+        res.status(400).json(({ type: 'error', code: 400, message: 'invalid radius' }));
+        return;
+    }
+    if (!Number(data.position.lat) || !Number(data.position.lat)) {
+        res.status(400).json(({ type: 'error', code: 400, message: 'invalid coordinates' }));
+        return;
+    }
+    user.shoppingList.settings = data;
+    user.save((error, newUser) => {
+        if (error) throw error;
+        res.status(200).json(newUser.shoppingList);
     });
 });
 
@@ -174,13 +175,14 @@ router.post('/shoppinglist/settings', (req, res) => {
  * @apiSuccess (200) {Settings} Settings Return Settings
  */
 router.get('/shoppinglist/settings', (req, res) => {
-    const auth = req.headers.authorization;
-    Auth(auth).then((user) => {
-        res.status(200).json(user.shoppingList.settings);
-    }).catch((error) => {
-        const err = JSON.parse(error.message);
-        res.status(err.code).json(err);
-    });
+    if (!req.authUser) {
+        res.status(201).json({ type: 'error', code: 401, message: 'Authentification required' });
+        return;
+    }
+
+    const user = req.authUser;
+
+    res.status(200).json(user.shoppingList.settings);
 });
 
 module.exports = router;

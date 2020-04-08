@@ -5,8 +5,6 @@ const geolib = require('geolib');
 const Shop = require('../models/Shop');
 const Price = require('../models/Price');
 
-const Auth = require('../utils/Auth');
-
 /**
  * @api {get} /shop/:id get shop by id
  * @apiName getShopById
@@ -132,44 +130,44 @@ router.get('/shop/:idShop/product/:barCodeProduct', (req, res) => {
  * @apiSuccess (200) {Price} Price Return Price
  */
 router.put('/shop/:idShop/product/:barCodeProduct', (req, res) => {
-    const auth = req.headers.authorization;
+    if (!req.authUser) {
+        res.status(201).json({ type: 'error', code: 401, message: 'Authentification required' });
+        return;
+    }
 
-    Auth(auth).then((user) => {
-        const barcode = req.params.barCodeProduct;
-        const shop = req.params.idShop;
-        const priceValue = req.body.price;
+    const user = req.authUser;
 
-        Price.findOne({ shop, product: barcode }, (err, price) => {
-            if (err) throw err;
+    const barcode = req.params.barCodeProduct;
+    const shop = req.params.idShop;
+    const priceValue = req.body.price;
 
-            if (!price) {
-                const createdPrice = new Price({
-                    shop,
-                    product: barcode,
-                    price: priceValue,
-                    updated_at: new Date(),
-                    updated_by: user._id,
-                });
+    Price.findOne({ shop, product: barcode }, (err, price) => {
+        if (err) throw err;
 
-                createdPrice.save(err, (err2, newPrice) => {
-                    if (err2) throw err2;
-                    res.json(newPrice);
-                });
-                return;
-            }
+        if (!price) {
+            const createdPrice = new Price({
+                shop,
+                product: barcode,
+                price: priceValue,
+                updated_at: new Date(),
+                updated_by: user._id,
+            });
 
-            price.price = priceValue;
-            price.updated_at = new Date();
-            price.updated_by = user._id;
-
-            price.save((err2, newPrice) => {
+            createdPrice.save(err, (err2, newPrice) => {
                 if (err2) throw err2;
                 res.json(newPrice);
             });
+            return;
+        }
+
+        price.price = priceValue;
+        price.updated_at = new Date();
+        price.updated_by = user._id;
+
+        price.save((err2, newPrice) => {
+            if (err2) throw err2;
+            res.json(newPrice);
         });
-    }).catch((error) => {
-        const err = JSON.parse(error.message);
-        res.status(err.code).json(err);
     });
 });
 

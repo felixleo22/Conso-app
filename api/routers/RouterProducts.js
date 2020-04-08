@@ -1,6 +1,5 @@
 const router = require('express').Router();
 const fetch = require('node-fetch');
-const Auth = require('../utils/Auth');
 const Price = require('../models/Price');
 
 /**
@@ -94,6 +93,10 @@ router.get('/products', (req, res) => {
  * @apiError 500 Internal Server Error
  */
 router.get('/products/shop/publicBasket/', (req, res) => {
+    if (!req.authUser) {
+        res.status(201).json({ type: 'error', code: 401, message: 'Authentification required' });
+        return;
+    }
     const { shops } = req.query;
     if (!shops) {
         res.status(400).json(({ type: 'error', code: 400, message: 'Missing shops' }));
@@ -104,44 +107,38 @@ router.get('/products/shop/publicBasket/', (req, res) => {
         res.status(400).json(({ type: 'error', code: 400, message: 'Missing list' }));
         return;
     }
-    const auth = req.headers.authorization;
-    if (!auth) {
-        res.status(401).json(({ type: 'error', code: 401, message: 'Unauthorized' }));
+    if (!req.authUser) {
+        res.status(201).json({ type: 'error', code: 401, message: 'Authentification required' });
         return;
     }
     const listItem = JSON.parse(list);
-    Auth(auth).then(() => {
-        const items = [];
-        shops.forEach((shop) => {
-            const parsedShop = JSON.parse(shop);
-            listItem.items.forEach((priceList) => {
-                async function zinzin(priceList1, parsedShop1) {
-                    // eslint-disable-next-line max-len,consistent-return
-                    const p = await Price.find({ shop: parsedShop1._id, product: priceList1.codebar }).then((price) => {
-                        if (price.length > 0) {
-                            return price[0];
-                        }
-                        if (price.length < 1) {
-                            console.log(parsedShop1._id);
-                            // eslint-disable-next-line no-param-reassign
-                            priceList1.shop = parsedShop1._id;
-                            return priceList1;
-                        }
-                    });
-                    return p;
-                }
-                zinzin(priceList, parsedShop).then((price) => {
-                    items.push(price);
-                    if (items.length === (listItem.items.length) * (shops.length)) {
-                        // console.log(items);
-                        res.status(200).json(items);
+    const items = [];
+    shops.forEach((shop) => {
+        const parsedShop = JSON.parse(shop);
+        listItem.items.forEach((priceList) => {
+            async function zinzin(priceList1, parsedShop1) {
+                // eslint-disable-next-line max-len,consistent-return
+                const p = await Price.find({ shop: parsedShop1._id, product: priceList1.codebar }).then((price) => {
+                    if (price.length > 0) {
+                        return price[0];
+                    }
+                    if (price.length < 1) {
+                        console.log(parsedShop1._id);
+                        // eslint-disable-next-line no-param-reassign
+                        priceList1.shop = parsedShop1._id;
+                        return priceList1;
                     }
                 });
+                return p;
+            }
+            zinzin(priceList, parsedShop).then((price) => {
+                items.push(price);
+                if (items.length === (listItem.items.length) * (shops.length)) {
+                    // console.log(items);
+                    res.status(200).json(items);
+                }
             });
         });
-    }).catch((error) => {
-        const err = JSON.parse(error.message);
-        return res.status(err.code).json(err);
     });
 });
 module.exports = router;
