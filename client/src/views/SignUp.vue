@@ -3,8 +3,10 @@
 <h2 class="text-center">Rejoindre Conso App</h2>
 
 <v-form
+  id="signupForm"
   v-model="valid"
   :lazy-validation="valid"
+  @submit.prevent="signUp"
 >
     <v-row>
       <v-col
@@ -14,9 +16,11 @@
       >
         <v-text-field
           v-model="email"
+          autofocus
           :rules="emailRules"
           label="Email"
-          requiered>
+          requiered
+          >
         </v-text-field>
       </v-col>
     </v-row>
@@ -55,7 +59,7 @@
     </v-row>
     <v-row>
       <v-col cols="12" class="text-center">
-        <v-btn color="primary" :disabled="!valid" @click="signUp">
+        <v-btn color="primary" :disabled="!valid" type="submit">
           S'inscrire
         </v-btn>
       </v-col>
@@ -86,6 +90,9 @@ export default {
   }),
   methods: {
     signUp() {
+      if (!this.valid || !this.email || !this.password1 || !this.password2) return;
+      if (this.$store.getters.isLoading) return;
+      this.$store.dispatch('setLoading', true);
       this.$http.post('/user',
         {
           email: this.email,
@@ -97,13 +104,17 @@ export default {
             'Access-Control-Allow-Origin': '*',
             'Content-Type': 'application/json',
           },
-        }).then((response) => {
-        if (!response.status === 201) {
+        })
+        .then((response) => {
+          if (!response.status === 201) {
           // TODO afficher le message d'erreur
-          return;
-        }
-        this.$router.push('login');
-      });
+            return;
+          }
+          this.$router.push('login');
+        })
+        .finally(() => {
+          this.$store.dispatch('setLoading', false);
+        });
     },
   },
 };

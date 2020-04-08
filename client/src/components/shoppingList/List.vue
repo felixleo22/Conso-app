@@ -7,44 +7,60 @@
           offset-md="1"
           offset-xl="3"
           xl="6"
-         >
-          <v-simple-table fixed-header>
-            <thead>
-              <tr>
-                <th class="text-left" width="66%">Produit</th>
-                <th class="text-left">Quantité</th>
-                <th class="text-left"></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="item in shoppingList" :key="item.id">
-                <td>
-                  <v-list-item>
+        >
+
+          <!-- List display -->
+          <v-card>
+            <v-list>
+              <template v-for="(item, index) in shoppingList">
+                <div :key="index">
+                  <v-divider v-if="index != 0"></v-divider>
+                  <v-list-item two-line style="padding-left: 0.5em; padding-right: 0.5em;">
                     <v-list-item-avatar tile>
-                      <v-responsive :aspect-ratio="1/1">
-                        <img :src="item.icon">
-                      </v-responsive>
+                      <v-img :src="item.icon"></v-img>
                     </v-list-item-avatar>
                     <v-list-item-content>
                       <v-list-item-title>{{item.name}}</v-list-item-title>
                       <v-list-item-subtitle>{{item.brand}}</v-list-item-subtitle>
                     </v-list-item-content>
+                    <v-list-item-action>
+                      <v-text-field
+                        type="number"
+                        min="1"
+                        step="1"
+                        single-line
+                        v-model="item.quantity"
+                        style="max-width: 2.5em;"
+                        @input="update(item)"
+                      >
+                      </v-text-field>
+                    </v-list-item-action>
+                    <v-list-item-action style="margin-left: 0.25em;">
+                      <v-btn
+                        @click="del(item)"
+                        icon
+                      >
+                        <v-icon color="red accent-4">fa-trash</v-icon>
+                      </v-btn>
+                    </v-list-item-action>
                   </v-list-item>
-                </td>
-                <td>
-                  <v-text-field
-                    @input="update(item)" v-model="item.quantity"
-                    type="number" name="quantity" min="1" required single-line>
-                  </v-text-field>
-                </td>
-                <td>
-                  <v-btn color="red accent-4 text-white white--text" v-on:click="del(item)">
-                    <v-icon>fa-trash</v-icon>
-                  </v-btn>
-                </td>
-              </tr>
-            </tbody>
-          </v-simple-table>
+                </div>
+              </template>
+            </v-list>
+          </v-card>
+
+          <!-- Load spinner -->
+          <v-container v-if="!shoppingList">
+            <v-row>
+              <v-spacer></v-spacer>
+                <v-progress-circular
+                  indeterminate
+                  color="red accent-4"
+                >
+                </v-progress-circular>
+              <v-spacer></v-spacer>
+            </v-row>
+          </v-container>
         </v-col>
       </v-row>
     </v-container>
@@ -62,18 +78,28 @@ export default {
   },
   methods: {
     del(item) {
-      this.$store.dispatch('removeItem', item);
+      this.$store.dispatch('setLoading', true);
+
+      this.$store.dispatch('removeItem', item)
+        .finally(() => {
+          this.$store.dispatch('setLoading', false);
+        });
     },
     update(item) {
       if (item.quantity < 1) {
+        // eslint-disable-next-line no-param-reassign
         return;
       }
-      this.$store.dispatch('updateItem', item);
+      this.$store.dispatch('setLoading', true);
+      this.$store.dispatch('updateItem', item)
+        .finally(() => {
+          this.$store.dispatch('setLoading', false);
+        });
     },
   },
   computed: {
     shoppingList() {
-      return this.$store.getters.shoppingList || [];
+      return this.$store.getters.shoppingList;
     },
   },
 };

@@ -39,6 +39,7 @@
               suffix="€"
               outlined
               v-model="price"
+              @keypress.enter="onSave"
             ></v-text-field>
           </v-col>
           <v-spacer></v-spacer>
@@ -71,17 +72,19 @@ export default {
       this.$emit('canceled');
     },
     onSave() {
+      this.$store.dispatch('setLoading', true);
+
       this.$http.put(`/shop/${this.shop._id}/product/${this.product.code}`, { price: this.price })
         .then((response) => {
           this.$emit('updated', response.data);
         })
         .catch((error) => {
           this.$emit('errored', error.response);
+        })
+        .finally(() => {
+          this.$store.dispatch('setLoading', false);
         });
     },
-  },
-  mounted() {
-    console.log(this.product);
   },
 };
 </script>

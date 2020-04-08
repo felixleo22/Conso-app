@@ -15,18 +15,31 @@ export default {
     };
   },
   mounted() {
-    this.carte = L.map('leaflet').setView([48.6880756, 6.1384176, 6.1384176], 13);
-    L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-      attribution:
-          "&copy; <a href='http://osm.org/copyright'>OpenStreetMap</a> contributors",
-    }).addTo(this.carte);
-    this.carte.on('zoomend', this.haveToBeRefresh);
-    this.carte.on('dragend', this.haveToBeRefresh);
-    this.carte.on('click', (event) => {
-      this.$emit('click', event);
-    });
-    this.$emit('ready', { map: this.carte, view: this.getAir() });
-    this.haveToBeRefresh();
+    function mount(initPos) {
+      this.carte = L.map('leaflet').setView(initPos, 6.5);
+      L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+        attribution:
+            "&copy; <a href='http://osm.org/copyright'>OpenStreetMap</a> contributors",
+      }).addTo(this.carte);
+
+      this.carte.on('zoomend', this.haveToBeRefresh);
+      this.carte.on('dragend', this.haveToBeRefresh);
+
+      this.$emit('ready', { map: this.carte, view: this.getAir() });
+      this.haveToBeRefresh();
+    }
+
+    // get geolocalisation to center map
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((pos) => {
+        mount.call(this, [pos.coords.latitude, pos.coords.longitude]);
+      },
+      () => {
+        mount.call(this, [48.6880756, 6.1384176]);
+      });
+    } else {
+      mount.call(this, [48.6880756, 6.1384176]);
+    }
   },
   methods: {
     createCircle() {
