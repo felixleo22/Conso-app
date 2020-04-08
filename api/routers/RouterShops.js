@@ -183,18 +183,18 @@ router.put('/shop/:idShop/product/:barCodeProduct', (req, res) => {
  * @apiSuccess (200) {Shops} Shops Return Shops
  */
 router.get('/shops', (req, res) => {
-    let query = Shop.find();
+    const query = Shop.find();
     // filter by bounds
-    if (req.query.NW && req.query.SE) {
-        const marker1 = req.query.NW.split(',');
-        const marker2 = req.query.SE.split(',');
-        const latMin = marker2[0];
-        const latMax = marker1[0];
-        const lngMin = marker1[1];
-        const lngMax = marker2[1];
-        query = query.where('position.lng').gt(lngMin).lt(lngMax);
-        query = query.where('position.lat').gt(latMin).lt(latMax);
-    }
+    // if (req.query.NW && req.query.SE) {
+    //     const marker1 = req.query.NW.split(',');
+    //     const marker2 = req.query.SE.split(',');
+    //     const latMin = marker2[0];
+    //     const latMax = marker1[0];
+    //     const lngMin = marker1[1];
+    //     const lngMax = marker2[1];
+    //     query = query.where('position.lng').gt(lngMin).lt(lngMax);
+    //     query = query.where('position.lat').gt(latMin).lt(latMax);
+    // }
     // filter when inside circle
     query.exec((error, result) => {
         const tab = {

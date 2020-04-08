@@ -108,28 +108,28 @@ router.get('/products/shop/publicBasket/', (req, res) => {
         return;
     }
     const listItem = JSON.parse(list);
-    const prices = {};
     Auth(auth).then(() => {
-        shops.forEach((shop) => {
-            const shopParsed = JSON.parse(shop);
-            const shopItems = [];
-            let name = '';
-            if (shopParsed.name.indexOf(' ') !== -1) {
-                name = (shopParsed.name).replace(/\s/g, '').toLowerCase();
-            } else {
-                name = (shopParsed.name).toLowerCase();
-            }
-            listItem.items.forEach((priceList) => {
-                Price.find({ barcode: priceList.barcode, shop: shopParsed._id }).then((price) => {
-                    prices[name] = shopItems.push(price);
-                }).catch((err) => {
-                    prices[name] = shopItems.push(priceList);
-                    console.log(err);
+        const items = [];
+        shops.forEach(async (shop) => {
+            const parsedShop = JSON.parse(shop);
+            await listItem.items.forEach((priceList) => {
+                Price.find({ shop: parsedShop._id, product: priceList.codebar }).then((price) => {
+                    if (price.length > 0) {
+                        items.push(price[0]);
+                    } else {
+                        const obj = {
+                            items: priceList,
+                            idShop: parsedShop._id,
+                        };
+                        items.push(obj);
+                    }
+                    if (items.length === (listItem.items.length) * (shops.length)) {
+                        console.log(items);
+                        res.status(200).json(items);
+                    }
                 });
             });
         });
-        console.log(prices);
-        return res.status(200).json({ prices });
     }).catch((error) => {
         const err = JSON.parse(error.message);
         return res.status(err.code).json(err);
