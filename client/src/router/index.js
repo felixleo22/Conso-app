@@ -66,7 +66,7 @@ const routes = [
     path: '/zoneshoppinglist',
     name: 'zoneshoppinglist',
     component() {
-      return import('../views/ZoneShoppingList.vue');
+      return import('../views/NewShop.vue');
     },
   },
 ];
