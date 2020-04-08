@@ -50,7 +50,7 @@ router.post('/user', (req, res) => {
                         lat: 48.5,
                         lng: 0.5,
                     },
-                    radius: 0,
+                    radius: 5,
                 },
             },
         });
