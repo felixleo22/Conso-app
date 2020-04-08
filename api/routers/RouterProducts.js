@@ -106,7 +106,7 @@ router.get('/products/shop/publicBasket/', (req, res) => {
     const listItem = JSON.parse(list);
 
     if (!req.authUser) {
-        res.status(201).json({ type: 'error', code: 401, message: 'Authentification required' });
+        res.status(401).json({ type: 'error', code: 401, message: 'Authentification required' });
         return;
     }
 

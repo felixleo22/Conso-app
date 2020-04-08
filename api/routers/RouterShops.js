@@ -131,7 +131,7 @@ router.get('/shop/:idShop/product/:barCodeProduct', (req, res) => {
  */
 router.put('/shop/:idShop/product/:barCodeProduct', (req, res) => {
     if (!req.authUser) {
-        res.status(201).json({ type: 'error', code: 401, message: 'Authentification required' });
+        res.status(401).json({ type: 'error', code: 401, message: 'Authentification required' });
         return;
     }
 
