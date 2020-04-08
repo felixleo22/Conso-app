@@ -79,17 +79,17 @@ export default {
       this.beforeDelete = id;
     },
     deletePublicBasket() {
-      const id = {
-        id: this.beforeDelete,
-      };
-      console.log(id);
-      this.$store.dispatch('aladin', id).then(() => {
-        this.text = `Le panier public ${this.beforeDelete}a été supprimé`;
+      this.$store.dispatch('deletePublicBasketUser', this.beforeDelete).then(() => {
+        this.text = `Le panier public ${this.beforeDelete} a été supprimé`;
+        // eslint-disable-next-line no-underscore-dangle
+        const index = this.publicBasket.findIndex(e => e._id === this.beforeDelete);
+        this.publicBasket.splice(index, 1);
+        this.success = true;
       }).catch((err) => {
         this.error = true;
+        this.text = `Le panier public ${this.beforeDelete} n'a pas pu être surpprimé`;
         console.log(err);
       }).finally(() => {
-        this.text = `Le panier public ${this.beforeDelete} n'a pas pu être surpprimé`;
         this.dialog = false;
       });
     },

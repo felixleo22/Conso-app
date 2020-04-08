@@ -86,9 +86,9 @@ export default {
         this.success = true;
       }).catch((err) => {
         this.error = true;
+        this.text = "Le panier est vide ou les settings n'ont pas été effecuté";
         console.log(err);
       }).finally(() => {
-        this.text = "Le panier est vide ou les settings n'ont pas été effecuté";
         this.dialog = false;
       });
     },

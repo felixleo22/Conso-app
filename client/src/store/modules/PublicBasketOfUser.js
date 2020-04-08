@@ -32,7 +32,7 @@ export default Axios => ({
     },
     getSettingsBasketOfUser(context, id) {
       return new Promise((resolve, reject) => {
-        Axios.get(`/publicBasket/settings/${id}/user`).then((response) => {
+        Axios.get(`/publicBasket/settings/${id.id}/user`).then((response) => {
           context.commit('getSettingsBasketOfUser', response.data);
           resolve(response.data);
         }).catch((err) => {
@@ -40,8 +40,7 @@ export default Axios => ({
         });
       });
     },
-    deletePublicBasketOfUser(id) {
-      console.log(id);
+    deletePublicBasketUser(context, id) {
       return new Promise((resolve, reject) => {
         Axios.delete(`/publicBasket/${id}/user`).then((response) => {
           resolve(response.data);

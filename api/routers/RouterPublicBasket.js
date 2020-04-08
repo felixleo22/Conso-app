@@ -11,6 +11,7 @@ const PublicBasket = require('../models/PublicBasket');
  * @ApiHeader (Authorisation) {String} token Token Authorization value
  *
  * @apiError 400 Empty list or settings
+ * @apiError 500 Internal Server Error
  * @apiSuccess (201) {PublicBasket} PublicBasket Return PublicBasket
  */
 router.post('/publicBasket', (req, res) => {
@@ -58,6 +59,8 @@ router.post('/publicBasket', (req, res) => {
  *
  * @ApiHeader (Authorisation) {String} token Token Authorization value
  *
+ * @apiError 500 Internal Server Error
+ *
  * @apiSuccess (201) {PublicBasket} PublicBasket Return PublicBasket
  */
 router.get('/publicBaskets', (req, res) => {
@@ -84,13 +87,15 @@ router.get('/publicBaskets', (req, res) => {
 });
 
 /**
- * @api {get} /publicBasket/:idBasket get publicBasket with id
+ * @api {get} /publicBasket/:idBasket get publicBasket with idBasket
  * @apiName getPublicBasketWithId
  * @apiGroup publicBasket
  *
  * @ApiHeader (Authorisation) {String} token Token Authorization value
  *
-* @apiError 400 invalid idBasket
+ * @apiError 400 invalid idBasket
+ * @apiError 500 Internal Server Error
+ *
  * @apiSuccess (201) {PublicBasket} PublicBasket Return PublicBasket
  */
 router.get('/publicBasket/:idBasket', (req, res) => {
@@ -111,7 +116,7 @@ router.get('/publicBasket/:idBasket', (req, res) => {
 
 /**
  * @api {get} /publicBasket/:idBasket/settings get settings of publicBasket with idBasket
- * with the id where the token has not expired
+ * where the token has not expired
  * @apiName getSettingsOfPublicBasketWithId
  * @apiGroup publicBasket
  *
@@ -138,7 +143,7 @@ router.get('/publicBasket/:idBasket/settings', (req, res) => {
 });
 
 /**
- * @api {get} /publicBaskets/user get public basket of user
+ * @api {get} /publicBaskets/user get publicBaskets of user
  * @apiName getPublicBasketOfUser
  * @apiGroup publicBasket
  *
@@ -202,7 +207,7 @@ router.get('/publicBasket/settings/:idBasket/user', (req, res) => {
 });
 
 /**
- * @api {delete} /publicBaskets/:id/user delete publicBasketOfUser with the id
+ * @api {delete} /publicBasket/:id/user delete publicBasketOfUser with the id
  * @apiName deletePublicBasketOfUserWithId
  * @apiGroup publicBasket
  *
@@ -220,7 +225,9 @@ router.delete('/publicBasket/:id/user', (req, res) => {
     const auth = req.headers.authorization;
     Auth(auth).then((user) => {
         PublicBasket.findById(idBasket).then((publicBasket) => {
-            if (publicBasket.user !== user._id) {
+            console.log(publicBasket.user);
+            console.log(user._id);
+            if (String(publicBasket.user) !== String(user._id)) {
                 res.status(401).json({ status: 401, msg: 'Not Autorized' });
                 return;
             }

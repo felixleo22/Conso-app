@@ -12,10 +12,17 @@ const Price = require('../models/Price');
  * @apiParam (URI) {Number} code Barcode of product
  *
  * @apiSuccess (201) {Product} product Return a product with all informations
+ *
+ * @apiError 400 Missing barcode
  * @apiError 404 the barcode does not exist
+ * @apiError 500 Internal Server Error
  */
 router.get('/product/:code', (req, res) => {
     const barcode = req.params.code;
+    if (!barcode) {
+        res.status(400).json(({ type: 'error', code: 400, message: 'Missin barcode' }));
+        return;
+    }
     const url = `https://fr.openfoodfacts.org/api/v0/product/${barcode}.json`;
     fetch(url)
         .then((data) => data.json())
@@ -41,6 +48,8 @@ router.get('/product/:code', (req, res) => {
  * @apiParam (Query) {String} search String for research
  *
  * @apiSuccess (201) {Products} products Return 5 products with barcode, name, icon, brand
+ *
+ * @apiError 500 Internal Server Error
  */
 router.get('/products', (req, res) => {
     const { search } = req.query;
@@ -60,38 +69,61 @@ router.get('/products', (req, res) => {
             }));
             res.json({ products: array });
         }).catch((error) => {
-            console.log(error);
-            // throw error;
+            throw error;
         });
 
 // TODO prendre en compte les erreurs
 });
 
+/**
+ * @api {get} /products/shop/publicBasket/ get prices of each product in public basket for each shop
+ * @apiName GetPricesForEachProductForEachShop
+ * @apiGroup Product
+ *
+ * @ApiHeader (Authorisation) {String} token Token Authorization value
+ *
+ * @apiParam (Query) {Shops} Shops array of shop
+ * @apiParam (list) {String} list of PublicBasket
+ *
+ * @apiSuccess (201) {Products} products Return 5 products with barcode, name, icon, brand
+ *
+ * @apiError 400 Missing shops of list
+ * @apiError 401 Unauthorized
+ * @apiError 500 Internal Server Error
+ */
 router.get('/products/shop/publicBasket/', (req, res) => {
-    const shopsItem = req.query.shops;
+    const { shops } = req.query;
+    if (!shops) {
+        res.status(400).json(({ type: 'error', code: 400, message: 'Missing shops' }));
+        return;
+    }
     const { list } = req.query;
+    if (!list) {
+        res.status(400).json(({ type: 'error', code: 400, message: 'Missing list' }));
+        return;
+    }
     const auth = req.headers.authorization;
+    if (!auth) {
+        res.status(401).json(({ type: 'error', code: 401, message: 'Unauthorized' }));
+        return;
+    }
+    const listItem = JSON.parse(list);
     const prices = {};
     Auth(auth).then(() => {
-        shopsItem.forEach((shop) => {
+        shops.forEach((shop) => {
             const shopParsed = JSON.parse(shop);
-            console.log(shopParsed.name);
             const shopItems = [];
             let name = '';
             if (shopParsed.name.indexOf(' ') !== -1) {
-                console.log('zinzin');
                 name = (shopParsed.name).replace(/\s/g, '').toLowerCase();
             } else {
-                console.log('zinzin');
                 name = (shopParsed.name).toLowerCase();
             }
-            list.forEach((priceList) => {
-                console.log(typeof priceList);
-                const priceParsed = JSON.parse(priceList);
-                Price.find({ barcode: priceParsed.barcode, shop: shopParsed._id }).then((price) => {
+            listItem.items.forEach((priceList) => {
+                Price.find({ barcode: priceList.barcode, shop: shopParsed._id }).then((price) => {
                     prices[name] = shopItems.push(price);
                 }).catch((err) => {
-                    prices[name] = shopItems.push(priceParsed);
+                    prices[name] = shopItems.push(priceList);
                     console.log(err);
                 });
             });

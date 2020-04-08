@@ -9,20 +9,35 @@ function validateEmail(email) {
     return re.test(email);
 }
 
+
+/**
+ * @api {post} /user create a newAccount
+ * @apiName createUser
+ * @apiGroup user
+ *
+ * @apiParam (Body) {String} email email
+ * @apiParam (Body) {String} password1 password1
+ * @apiParam (Body) {String} password2 password2
+ *
+ * @apiError 400 Email invalid
+ * @apiError 400 Password do not match
+ * @apiError 400 Email already used
+ *
+ * @apiSuccess (201) {User} User User without password
+ */
 router.post('/user', (req, res) => {
     const { email, password1, password2 } = req.body;
-
+    if (!validateEmail(email)) {
+        res.status(400).json(({ type: 'error', code: 400, message: 'Email invalid' }));
+        return;
+    }
+    if (password1 !== password2) {
+        res.status(400).json(({ type: 'error', code: 400, message: 'Password do not match' }));
+        return;
+    }
     User.findOne({ email }, (err, user) => {
-        if (!validateEmail(email)) {
-            res.status(400).json(({ type: 'error', code: 400, message: 'Email invalid' }));
-            return;
-        }
         if (user) {
             res.status(400).json(({ type: 'error', code: 400, message: 'Email already used' }));
-            return;
-        }
-        if (password1 !== password2) {
-            res.status(400).json(({ type: 'error', code: 400, message: 'Password do not match' }));
             return;
         }
         const account = new User({
@@ -46,8 +61,31 @@ router.post('/user', (req, res) => {
     });
 });
 
+/**
+ * @api {post} /login do the connexion
+ * @apiName login
+ * @apiGroup login
+ *
+ * @apiParam (Body) {String} email email
+ * @apiParam (Body) {String} password1 password1
+ * @apiParam (Body) {String} password2 password2
+ *
+ * @apiError 400 Email invalid
+ * @apiError 400 Mising password
+ *
+ * @apiSuccess (200) {Token} Token Token with _id of user, email and token.
+ */
+
 router.post('/login', (req, res) => {
     const { email, password } = req.body;
+    if (!validateEmail(email)) {
+        res.status(400).json(({ type: 'error', code: 400, message: 'Email invalid' }));
+        return;
+    }
+    if (!password) {
+        res.status(400).json(({ type: 'error', code: 400, message: 'Mising password' }));
+        return;
+    }
     User.findOne({ email }, (err, user) => {
         if (!user) {
             res.status(400).json(({ auth: false }));
