@@ -15,7 +15,7 @@ const PublicBasket = require('../models/PublicBasket');
  */
 router.post('/publicbasket', (req, res) => {
     if (!req.authUser) {
-        res.status(201).json({ type: 'error', code: 401, message: 'Authentification required' });
+        res.status(401).json({ type: 'error', code: 401, message: 'Authentification required' });
         return;
     }
     const user = req.authUser;
@@ -63,7 +63,7 @@ router.post('/publicbasket', (req, res) => {
  */
 router.get('/publicbaskets', (req, res) => {
     if (!req.authUser) {
-        res.status(201).json({ type: 'error', code: 401, message: 'Authentification required' });
+        res.status(401).json({ type: 'error', code: 401, message: 'Authentification required' });
         return;
     }
     const tab = [];
@@ -99,7 +99,7 @@ router.get('/publicBasket/:idBasket', (req, res) => {
         return;
     }
     if (!req.authUser) {
-        res.status(201).json({ type: 'error', code: 401, message: 'Authentification required' });
+        res.status(401).json({ type: 'error', code: 401, message: 'Authentification required' });
         return;
     }
     PublicBasket.findById(idBasket).then((publicBasket) => res.status(200).json(publicBasket))
@@ -124,7 +124,7 @@ router.get('/publicBasket/:idBasket/settings', (req, res) => {
         return;
     }
     if (!req.authUser) {
-        res.status(201).json({ type: 'error', code: 401, message: 'Authentification required' });
+        res.status(401).json({ type: 'error', code: 401, message: 'Authentification required' });
         return;
     }
     // eslint-disable-next-line max-len
@@ -144,7 +144,7 @@ router.get('/publicBasket/:idBasket/settings', (req, res) => {
 router.get('/publicBaskets/user', (req, res) => {
     const publicBasketReturn = [];
     if (!req.authUser) {
-        res.status(201).json({ type: 'error', code: 401, message: 'Authentification required' });
+        res.status(401).json({ type: 'error', code: 401, message: 'Authentification required' });
         return;
     }
     const user = req.authUser;
@@ -182,7 +182,7 @@ router.get('/publicbasket/settings/:idBasket/user', (req, res) => {
         return;
     }
     if (!req.authUser) {
-        res.status(201).json({ type: 'error', code: 401, message: 'Authentification required' });
+        res.status(401).json({ type: 'error', code: 401, message: 'Authentification required' });
         return;
     }
     const user = req.authUser;
@@ -214,7 +214,7 @@ router.delete('/publicbasket/:id/user', (req, res) => {
         return;
     }
     if (!req.authUser) {
-        res.status(201).json({ type: 'error', code: 401, message: 'Authentification required' });
+        res.status(401).json({ type: 'error', code: 401, message: 'Authentification required' });
         return;
     }
     const user = req.authUser;

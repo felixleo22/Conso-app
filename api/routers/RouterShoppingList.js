@@ -14,7 +14,7 @@ const router = require('express').Router();
  */
 router.get('/shoppinglist', (req, res) => {
     if (!req.authUser) {
-        res.status(201).json({ type: 'error', code: 401, message: 'Authentification required' });
+        res.status(401).json({ type: 'error', code: 401, message: 'Authentification required' });
         return;
     }
 
@@ -36,7 +36,7 @@ router.get('/shoppinglist', (req, res) => {
 router.post('/shoppinglist', (req, res) => {
     const data = req.body;
     if (!req.authUser) {
-        res.status(201).json({ type: 'error', code: 401, message: 'Authentification required' });
+        res.status(401).json({ type: 'error', code: 401, message: 'Authentification required' });
         return;
     }
 
@@ -77,7 +77,7 @@ router.post('/shoppinglist', (req, res) => {
 router.put('/shoppinglist', (req, res) => {
     const data = req.body;
     if (!req.authUser) {
-        res.status(201).json({ type: 'error', code: 401, message: 'Authentification required' });
+        res.status(401).json({ type: 'error', code: 401, message: 'Authentification required' });
         return;
     }
 
@@ -112,7 +112,7 @@ router.delete('/shoppinglist', (req, res) => {
     const data = req.body;
 
     if (!req.authUser) {
-        res.status(201).json({ type: 'error', code: 401, message: 'Authentification required' });
+        res.status(401).json({ type: 'error', code: 401, message: 'Authentification required' });
         return;
     }
 
@@ -143,7 +143,7 @@ router.post('/shoppinglist/settings', (req, res) => {
     const data = req.body;
 
     if (!req.authUser) {
-        res.status(201).json({ type: 'error', code: 401, message: 'Authentification required' });
+        res.status(401).json({ type: 'error', code: 401, message: 'Authentification required' });
         return;
     }
 
@@ -176,7 +176,7 @@ router.post('/shoppinglist/settings', (req, res) => {
  */
 router.get('/shoppinglist/settings', (req, res) => {
     if (!req.authUser) {
-        res.status(201).json({ type: 'error', code: 401, message: 'Authentification required' });
+        res.status(401).json({ type: 'error', code: 401, message: 'Authentification required' });
         return;
     }
 

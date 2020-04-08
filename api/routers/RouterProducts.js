@@ -108,7 +108,7 @@ router.get('/products/shop/publicBasket/', (req, res) => {
         return;
     }
     if (!req.authUser) {
-        res.status(201).json({ type: 'error', code: 401, message: 'Authentification required' });
+        res.status(401).json({ type: 'error', code: 401, message: 'Authentification required' });
         return;
     }
     const listItem = JSON.parse(list);
@@ -122,20 +122,19 @@ router.get('/products/shop/publicBasket/', (req, res) => {
                     if (price.length > 0) {
                         return price[0];
                     }
-                    if (price.length < 1) {
-                        // eslint-disable-next-line no-param-reassign
-                        priceList1.shop = parsedShop1._id;
-                        return priceList1;
-                    }
+                    const productWithoutPrice = {
+                        shop: parsedShop1._id,
+                        product: priceList1.codebar,
+                        price: -1,
+                    };
+                    return productWithoutPrice;
                 });
+                console.log(p);
                 return p;
             }
             zinzin(priceList, parsedShop).then((price) => {
                 items.push(price);
                 if (items.length === (listItem.items.length) * (shops.length)) {
-                    items.forEach((t) => {
-                        console.log(t.shop, t.name);
-                    });
                     res.status(200).json(items);
                 }
             });
