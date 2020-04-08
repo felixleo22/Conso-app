@@ -52,7 +52,6 @@
       :options="options"
       @ready="ready"
       :circles="[circle]"
-      @viewchanged="getAir"
       :markers="shops"
     ></leaflet>
   </v-container>
@@ -60,6 +59,7 @@
 
 <script>
 import Leaflet from 'easy-vue-leaflet';
+import axios from 'axios';
 
 export default {
   data() {
@@ -109,6 +109,7 @@ export default {
     ready() {
       if (navigator.geolocation) {
         navigator.geolocation.watchPosition(this.watchLocation);
+        this.getAir();
       } else {
         console.log('impossible to get position');
       }
@@ -121,19 +122,50 @@ export default {
         },
       }];
     },
+    async getData(item) {
+      const zinzin = await axios.get(`/product/${item.product}`);
+      return zinzin;
+    },
     createPopup(shop, items) {
       let str = '';
+      let tab = null;
+      let str2 = '';
       items.forEach((item) => {
-        // eslint-disable-next-line no-underscore-dangle
-        if (shop._id === item.shop && item.product) {
-          str = `${str}codebar: ${item.product} price: ${item.price}`;
+        let img = '';
+        let name = '';
+        tab = this.getData(item).then((res) => {
+          // eslint-disable-next-line prefer-destructuring
+          name = res.data.brands;
+          img = res.data.image_thumb_url;
           // eslint-disable-next-line no-underscore-dangle
-        }
+          if (shop._id === item.shop && item.product) {
+            str2 = `${str2}
+                        <tr>
+                          <td><img src="${img}" style="height: 50px; width: auto"></td>
+                          <td>${name}</td>
+                          <td>${item.price}</td>
+                      </tr>`;
+            str = `
+              <table class="tab">
+                  <thead>
+                      <tr>
+                          <th>image</th>
+                          <th>produit</th>
+                          <th>prix</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      ${str2}
+                  </tbody>
+              </table>`;
+          }
+          return {
+            content: str,
+            show: false,
+          };
+        });
       });
-      return {
-        content: str,
-        show: false,
-      };
+      return tab;
     },
 
     getAir() {
@@ -152,21 +184,24 @@ export default {
         this.$store.dispatch('getPricesInShop', body).then((response1) => {
           // eslint-disable-next-line no-restricted-syntax
           for (const shop of this.shops) {
-            const shopWithPopup = {
-              position: {
-                lat: shop.position.lat,
-                lng: shop.position.lng,
-              },
-              popup: this.createPopup(shop, response1),
-            };
-            tab1.push(shopWithPopup);
+            this.createPopup(shop, response1).then((res) => {
+              const shopWithPopup = {
+                position: {
+                  lat: shop.position.lat,
+                  lng: shop.position.lng,
+                },
+                popup: res,
+              };
+              tab1.push(shopWithPopup);
+            });
+            this.shops = tab1;
           }
-          this.shops = tab1;
         });
       });
     },
   },
 };
+
 </script>
 <style>
   @import url('https://unpkg.com/leaflet@1.6.0/dist/leaflet.css');
