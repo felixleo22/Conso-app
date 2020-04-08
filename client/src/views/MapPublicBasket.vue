@@ -144,10 +144,10 @@ export default {
       };
       return obj;
     },
-    getAir(event) {
-      const url = this.circle
-        ? `&position=${this.circle.position.lat},${this.circle.position.lng}&radius=${this.distance}` : '';
-      this.$http.get(`/shops?NW=${event.view[0]}&SE=${event.view[1]}${url}`).then((response) => {
+
+    getAir() {
+      const url = `&position=${this.circle.position.lat},${this.circle.position.lng}&radius=${this.distance}`;
+      this.$http.get(`/shops?${url}`).then((response) => {
         this.shops = response.data.shops;
         const tab1 = [];
         const body = {

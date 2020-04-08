@@ -4,7 +4,7 @@
       v-if="circle"
       :options="options"
       :markers="shops"
-      @ready="ready"
+      @ready="getLocalisation"
       :circles="[circle]"
       @viewchanged="getAir"
       @mapclick="saveLatLngClick"
@@ -44,7 +44,7 @@ export default {
     },
   },
   methods: {
-    ready() {
+    getLocalisation() {
       if (navigator.geolocation) {
         navigator.geolocation.watchPosition(this.watchLocation);
       } else {

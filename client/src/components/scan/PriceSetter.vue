@@ -71,7 +71,7 @@ export default {
       this.$emit('canceled');
     },
     onSave() {
-      this.$http.put(`/shop/${this.shop._id}/product/${this.product.code}`, { price: this.price })
+      this.$http.put(`/shop/${this.shop.id}/product/${this.product.code}`, { price: this.price })
         .then((response) => {
           this.$emit('updated', response.data);
         })
