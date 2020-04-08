@@ -9,8 +9,16 @@
       @viewchanged="getAir"
       @mapclick="saveLatLngClick"
     ></leaflet>
-   <input v-if="circle" type='number' @keyup="updateRadiusCircle"
-   v-model="distance" min="1" max="500" placeholder="en km">
+    <v-text-field
+      v-if="circle"
+      type="number"
+      label="Distance maximum (en km)"
+      @keyup="updateRadiusCircle"
+       v-model="distance"
+       min="1"
+       max="500"
+    >
+    </v-text-field>
    <v-btn @click="saveSetting">Valider la zone</v-btn>
   </div>
 </template>
