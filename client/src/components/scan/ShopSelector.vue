@@ -67,7 +67,6 @@ export default {
       }];
     },
     selectShop(event) {
-      console.log(event);
       // eslint-disable-next-line no-underscore-dangle
       this.selected.id = event.marker._id;
       this.selected.name = event.marker.name;

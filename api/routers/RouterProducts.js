@@ -2,7 +2,6 @@ const router = require('express').Router();
 const fetch = require('node-fetch');
 const Price = require('../models/Price');
 
-
 /**
  * @api {get} /product/:code get a product with barcode and a call to openfoodfacts
  * @apiName GetProductWithBarCode
@@ -13,13 +12,18 @@ const Price = require('../models/Price');
  * @apiSuccess (201) {Product} product Return a product with all informations
  *
  * @apiError 400 Missing barcode
+ * @apiError 400 Bad type barcode
  * @apiError 404 the barcode does not exist
  * @apiError 500 Internal Server Error
  */
 router.get('/product/:code', (req, res) => {
     const barcode = req.params.code;
     if (!barcode) {
-        res.status(400).json(({ type: 'error', code: 400, message: 'Missin barcode' }));
+        res.status(400).json(({ type: 'error', code: 400, message: 'Missing barcode' }));
+        return;
+    }
+    if (!Number(barcode)) {
+        res.status(400).json(({ type: 'error', code: 400, message: 'Bad type barcode' }));
         return;
     }
     const url = `https://fr.openfoodfacts.org/api/v0/product/${barcode}.json`;
@@ -32,7 +36,7 @@ router.get('/product/:code', (req, res) => {
         })
         .catch((error) => {
             res.status(404).json({
-                typea: 'error',
+                type: 'error',
                 error: 404,
                 message: error.message,
             });
@@ -48,12 +52,13 @@ router.get('/product/:code', (req, res) => {
  *
  * @apiSuccess (201) {Products} products Return 5 products with barcode, name, icon, brand
  *
+ * @apiError 400 Missing search
  * @apiError 500 Internal Server Error
  */
 router.get('/products', (req, res) => {
     const { search } = req.query;
     if (!search) {
-        res.json({});
+        res.status(400).json(({ type: 'error', code: 400, message: 'Missing search' }));
         return;
     }
     const url = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${search}&search_simple=1&json=1`;
@@ -70,10 +75,7 @@ router.get('/products', (req, res) => {
         }).catch((error) => {
             throw error;
         });
-
-// TODO prendre en compte les erreurs
 });
-
 /**
  * @api {get} /products/shop/publicBasket/ get prices of each product in public basket for each shop
  * @apiName GetPricesForEachProductForEachShop
@@ -102,31 +104,41 @@ router.get('/products/shop/publicBasket/', (req, res) => {
         return;
     }
     const listItem = JSON.parse(list);
+
     if (!req.authUser) {
         res.status(201).json({ type: 'error', code: 401, message: 'Authentification required' });
         return;
     }
 
     const items = [];
-    shops.forEach(async (shop) => {
+    // eslint-disable-next-line no-restricted-syntax
+    for (const shop of shops) {
         const parsedShop = JSON.parse(shop);
-        await listItem.items.forEach((priceList) => {
-            Price.find({ shop: parsedShop._id, product: priceList.codebar }).then((price) => {
-                if (price.length > 0) {
-                    items.push(price[0]);
-                } else {
-                    const obj = {
-                        items: priceList,
-                        idShop: parsedShop._id,
-                    };
-                    items.push(obj);
-                }
+        // eslint-disable-next-line no-restricted-syntax
+        for (const priceList of listItem.items) {
+            console.log(parsedShop);
+            // eslint-disable-next-line max-len,no-inner-declarations
+            async function zinzin(priceList1, parsedShop1) {
+                // eslint-disable-next-line max-len,no-return-await,consistent-return
+                return await Price.find({ shop: parsedShop1._id, product: priceList1.codebar }).then((price) => {
+                    if (price.length > 0) {
+                        return price[0];
+                    }
+                    if (price.length === 0) {
+                        // eslint-disable-next-line no-param-reassign
+                        priceList1.shop = parsedShop1._id;
+                        return priceList1;
+                    }
+                });
+            }
+            zinzin(priceList, parsedShop).then((price) => {
+                items.push(price);
                 if (items.length === (listItem.items.length) * (shops.length)) {
                     console.log(items);
                     res.status(200).json(items);
                 }
             });
-        });
-    });
+        }
+    }
 });
 module.exports = router;
