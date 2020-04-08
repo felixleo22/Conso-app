@@ -125,8 +125,7 @@ export default {
     createPopup(shop, items) {
       // eslint-disable-next-line no-restricted-syntax
       let str = '';
-      // eslint-disable-next-line no-restricted-syntax
-      for (const item of items) {
+      items.forEach((item) => {
         // eslint-disable-next-line no-underscore-dangle
         if (shop._id === item.shop && item.product) {
           str = `${str}codebar: ${item.product} price: ${item.price}`;
@@ -134,15 +133,13 @@ export default {
         }
         // eslint-disable-next-line no-underscore-dangle
         if (shop._id === item.shop && !item.product) {
-          console.log('zinzin');
           str = `${str}codebar: ${item.codebar}`;
         }
-      }
-      const obj = {
+      });
+      return {
         content: str,
         show: false,
       };
-      return obj;
     },
 
     getAir() {
