@@ -44,6 +44,7 @@ export default {
       shopId: '',
       shops: [],
       selected: {
+        _id: '',
         name: '',
         address: '',
       },
@@ -67,6 +68,8 @@ export default {
     },
     selectShop(event) {
       console.log(event);
+      // eslint-disable-next-line no-underscore-dangle
+      this.selected.id = event.marker._id;
       this.selected.name = event.marker.name;
       this.selected.address = event.marker.address;
       this.dialog = true;
@@ -82,6 +85,7 @@ export default {
     cancelSelect() {
       this.dialog = false;
       this.selected = {
+        id: '',
         name: '',
         address: '',
       };
@@ -90,6 +94,7 @@ export default {
       this.$store.dispatch('changeScanShop', this.selected);
       this.dialog = false;
       this.selected = {
+        id: '',
         name: '',
         address: '',
       };
