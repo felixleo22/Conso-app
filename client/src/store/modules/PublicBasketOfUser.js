@@ -32,7 +32,7 @@ export default Axios => ({
     },
     getSettingsBasketOfUser(context, id) {
       return new Promise((resolve, reject) => {
-        Axios.get(`/publicbasket/settings/${id.id}/user`).then((response) => {
+        Axios.get(`/publicbasket/settings/${id}/user`).then((response) => {
           context.commit('getSettingsBasketOfUser', response.data);
           resolve(response.data);
         }).catch((err) => {

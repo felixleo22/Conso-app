@@ -17,10 +17,10 @@
             Rendre votre liste de course public
           </v-card-title>
           <v-card-text>
-            Etes-vous sur de mettre votre liste de couse en panier public ?
-            Si vous le faites, le panier sera anonyme et les autres utilisateurs
-            pourront indiqué les prix de chaque produits dans les magasins de la
-            zone de recherche que vous avez parametré
+            Êtes-vous sur de mettre votre liste de course en panier public ?
+            Si vous le faite, le panier sera anonyme et les autres utilisateurs
+            pourront indiquer les prix de chaque produit dans les magasins de la
+            zone de recherche que vous avez parametrée.
           </v-card-text>
           <v-divider></v-divider>
           <v-card-actions>
@@ -35,7 +35,7 @@
               color="primary"
               text
               @click="createPublicBasket">
-              Je l'a publie
+              Je la publie
             </v-btn>
           </v-card-actions>
         </v-card>
