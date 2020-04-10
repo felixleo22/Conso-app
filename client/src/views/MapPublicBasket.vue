@@ -123,7 +123,7 @@ export default {
       }];
     },
     async getData(item) {
-      const zinzin = await axios.get(`/product/${item.product}`);
+      const zinzin = await axios.get(`/product/${item.product}`).then(res => res.data);
       return zinzin;
     },
     createPopup(shop, items) {
@@ -133,12 +133,23 @@ export default {
       items.forEach((item) => {
         let img = '';
         let name = '';
+        let price = 0;
+        let counterItem = 0;
+        const itemsTotal = this.$store.getters.publicBasketById.shoppingList.list.length;
         tab = this.getData(item).then((res) => {
           // eslint-disable-next-line prefer-destructuring
-          name = res.data.brands;
-          img = res.data.image_thumb_url;
+          name = res.brands;
+          img = res.image_thumb_url;
+
           // eslint-disable-next-line no-underscore-dangle
           if (shop._id === item.shop && item.product) {
+            if (item.price === -1) {
+              counterItem += 0;
+              price += 0;
+            } else {
+              counterItem += 1;
+              price += item.price;
+            }
             str2 = `${str2}
                         <tr>
                           <td><img src="${img}" style="height: 50px; width: auto"></td>
@@ -156,7 +167,12 @@ export default {
                   </thead>
                   <tbody>
                       ${str2}
+
                   </tbody>
+                  <tfoot>
+                     Total: ${price} €
+                     Item trouvé: ${counterItem}/${itemsTotal}
+                  </tfoot>
               </table>`;
           }
           return {
@@ -181,9 +197,9 @@ export default {
             },
           },
         };
-        this.$store.dispatch('getPricesInShop', body).then((response1) => {
-          // eslint-disable-next-line no-restricted-syntax
-          for (const shop of this.shops) {
+        axios.get('/products/shop/publicBasket/', body).then((response2) => {
+          const response1 = response2.data;
+          this.shops.forEach((shop) => {
             this.createPopup(shop, response1).then((res) => {
               const shopWithPopup = {
                 position: {
@@ -195,7 +211,9 @@ export default {
               tab1.push(shopWithPopup);
             });
             this.shops = tab1;
-          }
+          });
+        }).catch((err) => {
+          console.log(err);
         });
       });
     },
