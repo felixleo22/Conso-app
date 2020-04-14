@@ -123,8 +123,9 @@ router.get('/products/shop/publicBasket/', (req, res) => {
                         return price[0];
                     }
                     const productWithoutPrice = {
+                        _id: -1,
                         shop: parsedShop1._id,
-                        product: priceList1.codebar,
+                        product: String(priceList1.codebar),
                         price: -1,
                     };
                     return productWithoutPrice;
