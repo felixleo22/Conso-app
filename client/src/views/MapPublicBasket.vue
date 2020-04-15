@@ -19,7 +19,7 @@
               <th class="text-left">Image</th>
               <th class="text-left">Nom</th>
               <th class="text-left">Quantité</th>
-              <th class="text-left">Prix</th>
+              <th class="text-left">Prix unitaire</th>
             </tr>
           </thead>
           <tbody>
@@ -27,7 +27,7 @@
               <td><v-img :src=product.icon width="30"></v-img></td>
               <td>{{ product.name }}</td>
               <td>{{ product.quantity }}</td>
-              <td>{{ product.price * product.quantity}} | {{ product.price }}/u </td>
+              <td>{{ product.price }}</td>
             </tr>
           </tbody>
         </v-simple-table>
@@ -124,32 +124,25 @@ export default {
       this.selected.id = event.marker._id;
       this.selected.name = event.marker.name;
       this.selected.address = event.marker.address;
-      this.updateContentModal(this.selected.id);
+      this.updateContentDialog(this.selected.id);
       this.dialog = true;
     },
-    updateContentModal(id) {
+    updateContentDialog(id) {
       this.selected.products = [];
       const sorted = [];
+      // sort products of id shop
       this.products.forEach((elem) => {
         if (elem.shop === id) {
           sorted.push(elem);
         }
       });
+      // put informations on dialog
       this.$store.getters.publicBasketById.shoppingList.list.forEach((element) => {
         const product = sorted.find(elem => elem.product === String(element.codebar));
         // eslint-disable-next-line no-param-reassign
         element.price = product.price;
         this.selected.products.push(element);
       });
-    },
-    cancelSelect() {
-      this.dialog = false;
-      this.selected = {
-        _id: '',
-        name: '',
-        address: '',
-        products: [],
-      };
     },
     async getData(item) {
       const zinzin = await axios
