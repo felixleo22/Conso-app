@@ -208,6 +208,7 @@ router.get('/publicbasket/settings/:idBasket/user', (req, res) => {
  * @apiSuccess (201) {publicbasketsOfUser} publicBasketsOfUser Return publicBasketsOfUser
  */
 router.delete('/publicbasket/:id/user', (req, res) => {
+    console.log('salut cest moi ');
     const idBasket = req.params.id;
     if (!idBasket) {
         res.status(400).json({ type: 'error', code: 401, message: 'Missing id' });

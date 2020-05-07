@@ -33,8 +33,8 @@ export default {
   methods: {
   },
   mounted() {
-    this.$store.dispatch('getPublicBaskets').then(() => {
-      this.publicBasket = this.$store.getters.publicBasket;
+    this.$http.get('/publicbaskets').then((response) => {
+      this.publicBasket = response.data;
     });
   },
   computed: {

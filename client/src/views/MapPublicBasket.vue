@@ -31,6 +31,8 @@
             </tr>
           </tbody>
         </v-simple-table>
+          Total: {{ selected.priceTotal }} euros
+          pour {{ selected.productFound }}/{{ selected.products.length }} produit(s) trouvé(s)
         <v-divider></v-divider>
         <v-card-actions>
           <v-btn outlined>Scanner</v-btn>
@@ -48,10 +50,11 @@ export default {
   data() {
     return {
       publicBasketId: null,
-      dialog: false,
-      positionUser: null,
+      list: [],
       shops: [],
       products: [],
+      dialog: false,
+      positionUser: null,
       distance: 1,
       circle: null,
       selected: {
@@ -59,6 +62,8 @@ export default {
         name: '',
         address: '',
         products: [],
+        priceTotal: 0,
+        productFound: 0,
       },
     };
   },
@@ -83,22 +88,17 @@ export default {
     },
   },
   mounted() {
-    this.$store
-      .dispatch('getPublicBasketsById', { id: this.idPublicBasket })
-      .then(() => {
-        this.circle = {
-          position: {
-            lat: this.$store.getters.publicBasketById.shoppingList.settings
-              .position.lat,
-            lng: this.$store.getters.publicBasketById.shoppingList.settings
-              .position.lng,
-          },
-          radius: this.$store.getters.publicBasketById.shoppingList.settings
-            .radius,
-        };
-        this.distance = this.$store.getters.publicBasketById.shoppingList.settings.radius
-          / 1000;
-      });
+    this.$http.get(`/publicbasket/${this.idPublicBasket}`).then((response) => {
+      this.circle = {
+        position: {
+          lat: response.data.shoppingList.settings.position.lat,
+          lng: response.data.shoppingList.settings.position.lng,
+        },
+        radius: response.data.shoppingList.settings.radius,
+      };
+      this.list = response.data.shoppingList.list;
+      this.distance = response.data.shoppingList.settings.radius / 1000;
+    });
   },
   methods: {
     ready() {
@@ -128,7 +128,7 @@ export default {
       this.dialog = true;
     },
     updateContentDialog(id) {
-      this.selected.products = [];
+      this.resetContentDialog();
       const sorted = [];
       // sort products of id shop
       this.products.forEach((elem) => {
@@ -137,12 +137,21 @@ export default {
         }
       });
       // put informations on dialog
-      this.$store.getters.publicBasketById.shoppingList.list.forEach((element) => {
+      this.list.forEach((element) => {
         const product = sorted.find(elem => elem.product === String(element.codebar));
+        if (element.price !== -1) {
+          this.selected.priceTotal += element.price * element.quantity;
+          this.selected.productFound += 1;
+        }
         // eslint-disable-next-line no-param-reassign
         element.price = product.price;
         this.selected.products.push(element);
       });
+    },
+    resetContentDialog() {
+      this.selected.products = [];
+      this.selected.priceTotal = 0;
+      this.selected.productFound = 0;
     },
     async getData(item) {
       const zinzin = await axios
@@ -155,22 +164,24 @@ export default {
       const url = `&position=${this.circle.position.lat},${this.circle.position.lng}&radius=${this.distance}`;
       this.$http.get(`/shops?${url}`).then((response) => {
         this.shops = response.data.shops;
-        const body = {
-          params: {
-            shops: this.shops,
-            list: {
-              items: this.$store.getters.publicBasketById.shoppingList.list,
+        this.$http.get(`/publicbasket/${this.idPublicBasket}`).then((response2) => {
+          const body = {
+            params: {
+              shops: this.shops,
+              list: {
+                items: response2.data.shoppingList.list,
+              },
             },
-          },
-        };
-        axios
-          .get('/products/shop/publicBasket/', body)
-          .then((response2) => {
-            this.products = response2.data;
-          })
-          .catch((err) => {
-            console.log(err);
-          });
+          };
+          axios
+            .get('/products/shop/publicBasket/', body)
+            .then((response3) => {
+              this.products = response3.data;
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        });
       });
     },
   },

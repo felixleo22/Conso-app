@@ -67,19 +67,16 @@ export default {
     };
   },
   mounted() {
-    this.$store
-      // eslint-disable-next-line no-underscore-dangle
-      .dispatch('getPublicBasketsOfUser', this.$store.getters.loggedUser._id)
-      .then((response) => {
-        this.publicBasket = response;
-      });
+    this.$http.get('/publicbaskets/user').then((response) => {
+      this.publicBasket = response.data;
+    });
   },
   methods: {
     setIdBeforeDelete(id) {
       this.beforeDelete = id;
     },
     deletePublicBasket() {
-      this.$store.dispatch('deletePublicBasketUser', this.beforeDelete).then(() => {
+      this.$http.delete(`/publicbasket/${this.beforeDelete}/user`).then(() => {
         this.text = `Le panier public ${this.beforeDelete} a été supprimé`;
         // eslint-disable-next-line no-underscore-dangle
         const index = this.publicBasket.findIndex(e => e._id === this.beforeDelete);
