@@ -139,8 +139,8 @@ export default {
       // put informations on dialog
       this.list.forEach((element) => {
         const product = sorted.find(elem => elem.product === String(element.codebar));
-        if (element.price !== -1) {
-          this.selected.priceTotal += element.price * element.quantity;
+        if (product.price !== -1) {
+          this.selected.priceTotal += product.price * element.quantity;
           this.selected.productFound += 1;
         }
         // eslint-disable-next-line no-param-reassign
