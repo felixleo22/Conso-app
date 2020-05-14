@@ -220,15 +220,17 @@ router.delete('/shoppinglist/:idShoppingList', (req, res) => {
  *
  * @apiSuccess (200) {ShoppingList} ShoppingList Return ShoppingList
  */
-router.post('/shoppinglist/settings', (req, res) => {
-    const data = req.body;
-
+router.post('/shoppinglist/settings/:idShoppingList', (req, res) => {
+    const { idShoppingList } = req.params;
+    if (!idShoppingList) {
+        res.status(400).json({ type: 'error', code: 400, message: 'invalid idShoppingList' });
+        return;
+    }
     if (!req.authUser) {
         res.status(401).json({ type: 'error', code: 401, message: 'Authentification required' });
         return;
     }
-
-    const user = req.authUser;
+    const data = req.body;
     if (!Number(data.radius)) {
         res.status(400).json(({ type: 'error', code: 400, message: 'invalid radius' }));
         return;
@@ -237,10 +239,12 @@ router.post('/shoppinglist/settings', (req, res) => {
         res.status(400).json(({ type: 'error', code: 400, message: 'invalid coordinates' }));
         return;
     }
-    user.shoppingList.settings = data;
-    user.save((error, newUser) => {
-        if (error) throw error;
-        res.status(200).json(newUser.shoppingList);
+    ShoppingList.findById(idShoppingList).then((shoppingList) => {
+        shoppingList.settings = data;
+        shoppingList.save((error, newShoppingList) => {
+            if (error) throw error;
+            res.status(200).json(newShoppingList);
+        });
     });
 });
 
@@ -255,15 +259,19 @@ router.post('/shoppinglist/settings', (req, res) => {
  *
  * @apiSuccess (200) {Settings} Settings Return Settings
  */
-router.get('/shoppinglist/settings', (req, res) => {
+router.get('/shoppinglist/settings/:idShoppingList', (req, res) => {
+    const { idShoppingList } = req.params;
+    if (!idShoppingList) {
+        res.status(400).json({ type: 'error', code: 400, message: 'invalid idShoppingList' });
+        return;
+    }
     if (!req.authUser) {
         res.status(401).json({ type: 'error', code: 401, message: 'Authentification required' });
         return;
     }
-
-    const user = req.authUser;
-
-    res.status(200).json(user.shoppingList.settings);
+    ShoppingList.findById(idShoppingList)
+        .then((shoppingList) => res.status(200).json(shoppingList.settings))
+        .catch((err) => res.status(500).json(err));
 });
 
 module.exports = router;

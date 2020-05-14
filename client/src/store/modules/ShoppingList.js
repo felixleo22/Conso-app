@@ -70,7 +70,7 @@ export default Axios => ({
     },
     setSettings(context, setting) {
       return new Promise((resolve, reject) => {
-        Axios.post('/shoppingList/settings', setting).then((response) => {
+        Axios.post(`/shoppingList/settings/${this.getters.id}`, setting).then((response) => {
           context.commit('getSettings', response.data);
           resolve(response);
         }).catch((err) => {
@@ -78,9 +78,9 @@ export default Axios => ({
         });
       });
     },
-    getSettings(context, setting) {
+    getSettings(context) {
       return new Promise((resolve, reject) => {
-        Axios.get('/shoppingList/settings', setting).then((response) => {
+        Axios.get(`/shoppingList/settings/${this.getters.id}`).then((response) => {
           context.commit('getSettings', response.data);
           resolve(response);
         }).catch((err) => {
