@@ -1,8 +1,8 @@
 /* eslint-disable no-param-reassign */
 const router = require('express').Router();
-
+const ShoppingList = require('../models/ShoppingList');
 /**
- * @api {get} /shoppinglist get the list of shoppinglist of user
+ * @api {get} /shoppinglist get lists of shoppinglist of user
  * @apiName getShoppingList
  * @apiGroup shoppinglist
  *
@@ -17,13 +17,84 @@ router.get('/shoppinglist', (req, res) => {
         res.status(401).json({ type: 'error', code: 401, message: 'Authentification required' });
         return;
     }
-
-    res.status(200).json(req.authUser.shoppingList.list);
+    const tab = [];
+    ShoppingList.find({}, (err, shoppingLists) => {
+        if (err) throw err;
+        shoppingLists.forEach((shoppingList) => {
+            if (String(shoppingList.user) === String(req.authUser._id)) {
+                tab.push(shoppingList);
+            }
+        });
+        res.status(200).json(tab);
+    });
 });
 
 /**
- * @api {post} /shoppinglist add an item to the list of shoppingList
+ * @api {get} /shoppinglist/:idShoppingList get the list of shoppinglist of user whith id
+ * @apiName getShoppingListById
+ * @apiGroup shoppinglist
+ *
+ * @ApiHeader (Authorisation) {String} token Token Authorization value
+ *
+ * @apiError 500 Internal Server Error
+ *
+ * @apiSuccess (200) {List} List Return List
+ */
+router.get('/shoppinglist/:idShoppingList', (req, res) => {
+    const { idShoppingList } = req.params;
+    if (!idShoppingList) {
+        res.status(400).json({ type: 'error', code: 400, message: 'invalid idShoppingList' });
+        return;
+    }
+    if (!req.authUser) {
+        res.status(401).json({ type: 'error', code: 401, message: 'Authentification required' });
+        return;
+    }
+    ShoppingList.findById(idShoppingList)
+        .then((shoppingList) => res.status(200).json(shoppingList.list))
+        .catch((err) => res.status(500).json(err));
+});
+
+/**
+ * @api {post} /shoppinglist create a shoppingList
  * @apiName postShoppingList
+ * @apiGroup shoppinglist
+ *
+ * @ApiHeader (Authorisation) {String} token Token Authorization value
+ *
+ * @apiError 400 invalid name
+ * @apiError 401 Unauthorized
+ * @apiError 500 Internal Server Error
+ *
+ * @apiSuccess (200) {ShoppingList} List Return List
+ */
+router.post('/shoppinglist', (req, res) => {
+    const { name } = req.body;
+    if (!req.authUser) {
+        res.status(401).json({ type: 'error', code: 401, message: 'Authentification required' });
+        return;
+    }
+    const shoppingList = new ShoppingList({
+        name,
+        list: [],
+        settings: {
+            position: {
+                lat: 48.5,
+                lng: 0.5,
+            },
+            radius: 5,
+        },
+        user: req.authUser._id,
+    });
+    shoppingList.save((err, newShoppingList) => {
+        if (err) throw err;
+        return res.status(200).json(newShoppingList);
+    });
+});
+
+/**
+ * @api {patch} /shoppinglist add an item to the list of shoppingList
+ * @apiName putShoppingList
  * @apiGroup shoppinglist
  *
  * @ApiHeader (Authorisation) {String} token Token Authorization value
@@ -33,31 +104,34 @@ router.get('/shoppinglist', (req, res) => {
  *
  * @apiSuccess (200) {List} List Return List
  */
-router.post('/shoppinglist', (req, res) => {
+router.put('/shoppinglist/:idShoppingList', (req, res) => {
+    const { idShoppingList } = req.params;
+    if (!idShoppingList) {
+        res.status(400).json({ type: 'error', code: 400, message: 'invalid idShoppingList' });
+        return;
+    }
     const data = req.body;
     if (!req.authUser) {
         res.status(401).json({ type: 'error', code: 401, message: 'Authentification required' });
         return;
     }
-
-    const user = req.authUser;
-
     if (!Number(data.quantity)) {
         res.status(400).json(({ type: 'error', code: 400, message: 'invalid quantity' }));
         return;
     }
-    const indexOfCodebar = user.shoppingList.list.findIndex(
-        (item) => item.codebar.toString() === data.codebar,
-    );
-    if (indexOfCodebar >= 0) {
-        user.shoppingList.list[indexOfCodebar].quantity += 1;
-    } else {
-        user.shoppingList.list.push(data);
-    }
-
-    user.save((error, newUser) => {
-        if (error) throw error;
-        res.status(200).json(newUser.shoppingList.list);
+    ShoppingList.findById(idShoppingList).then((shoppingList) => {
+        const indexOfCodebar = shoppingList.list.findIndex(
+            (item) => item.codebar.toString() === data.codebar,
+        );
+        if (indexOfCodebar >= 0) {
+            shoppingList.list[indexOfCodebar].quantity += 1;
+        } else {
+            shoppingList.list.push(data);
+        }
+        shoppingList.save((error, newShoppingList) => {
+            if (error) throw error;
+            return res.status(200).json(newShoppingList.list);
+        });
     });
 });
 
@@ -73,27 +147,30 @@ router.post('/shoppinglist', (req, res) => {
  *
  * @apiSuccess (200) {List} List Return List
  */
-// TODO change by patch
-router.put('/shoppinglist', (req, res) => {
+router.patch('/shoppinglist/:idShoppingList', (req, res) => {
+    const { idShoppingList } = req.params;
+    if (!idShoppingList) {
+        res.status(400).json({ type: 'error', code: 400, message: 'invalid idShoppingList' });
+        return;
+    }
     const data = req.body;
     if (!req.authUser) {
         res.status(401).json({ type: 'error', code: 401, message: 'Authentification required' });
         return;
     }
-
-    const user = req.authUser;
-
     if (!Number(data.quantity)) {
         res.status(400).json(({ type: 'error', code: 400, message: 'invalid quantity' }));
         return;
     }
-    user.shoppingList.list.find(
-        (item) => item.codebar === data.codebar,
-    ).quantity = data.quantity;
-    user.save((error, newUser) => {
-        if (error) throw error;
-        res.status(200).json(newUser.shoppingList.list);
-    });
+    ShoppingList.findById(idShoppingList).then((shoppingList) => {
+        shoppingList.list.find(
+            (item) => item.codebar === data.codebar,
+        ).quantity = data.quantity;
+        shoppingList.save((error, newShoppingList) => {
+            if (error) throw error;
+            res.status(200).json(newShoppingList.list);
+        });
+    }).catch((err) => res.status(500).json(err));
 });
 
 /**
@@ -108,22 +185,27 @@ router.put('/shoppinglist', (req, res) => {
  *
  * @apiSuccess (200) {List} List Return List
  */
-router.delete('/shoppinglist', (req, res) => {
+router.delete('/shoppinglist/:idShoppingList', (req, res) => {
+    const { idShoppingList } = req.params;
+    if (!idShoppingList) {
+        res.status(400).json({ type: 'error', code: 400, message: 'invalid idShoppingList' });
+        return;
+    }
     const data = req.body;
 
     if (!req.authUser) {
         res.status(401).json({ type: 'error', code: 401, message: 'Authentification required' });
         return;
     }
-
-    const user = req.authUser;
-    user.shoppingList.list = user.shoppingList.list.filter(
-        (item) => item.codebar !== data.codebar,
-    );
-    user.save((error, newUser) => {
-        if (error) throw error;
-        res.status(200).json(newUser.shoppingList.list);
-    });
+    ShoppingList.findById(idShoppingList).then((shoppingList) => {
+        shoppingList.list = shoppingList.list.filter(
+            (item) => item.codebar !== data.codebar,
+        );
+        shoppingList.save((error, newShoppingList) => {
+            if (error) throw error;
+            res.status(200).json(newShoppingList.list);
+        });
+    }).catch((err) => res.status(500).json(err));
 });
 
 /**
@@ -138,7 +220,6 @@ router.delete('/shoppinglist', (req, res) => {
  *
  * @apiSuccess (200) {ShoppingList} ShoppingList Return ShoppingList
  */
-// TODO replace by patch or put
 router.post('/shoppinglist/settings', (req, res) => {
     const data = req.body;
 

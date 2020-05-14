@@ -41,16 +41,12 @@
         </v-card>
       </v-dialog>
       <v-spacer></v-spacer>
-      <v-btn link :to="{name: 'publicBasketOfUser'}">
-       Vos paniers publics
-      </v-btn>
-      <v-spacer></v-spacer>
       <v-btn link :to="{name: 'zoneshoppinglist'}">
         <v-icon>fas fa-map-marked-alt</v-icon>
       </v-btn>
     </v-row>
-    <search-bar></search-bar>
-    <list></list>
+    <search-bar :idShoppingList="idShoppingList"></search-bar>
+    <list :idShoppingList="idShoppingList"></list>
   </v-container>
 </template>
 
@@ -77,7 +73,10 @@ export default {
       dialog: false,
     };
   },
-  mounted() {
+  computed: {
+    idShoppingList() {
+      return this.$route.params.id;
+    },
   },
   methods: {
     createPublicBasket() {

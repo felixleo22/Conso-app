@@ -13,7 +13,6 @@
             </v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-
         <!-- IF USER IS LOGGED IN -->
         <template v-if="loggedIn">
           <!-- Route scan -->
@@ -28,13 +27,24 @@
             </v-list-item-content>
           </v-list-item>
           <!-- Route scan -->
-          <v-list-item link :to="{name: 'shoppingList'}">
+          <v-list-item link :to="{name: 'shoppingLists'}">
             <v-list-item-action>
               <v-icon>fa-list</v-icon>
             </v-list-item-action>
             <v-list-item-content>
               <v-list-item-title>
-                Liste de course
+                Vos listes de courses
+              </v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <!-- Public basket of user -->
+          <v-list-item link :to="{name: 'publicBasketOfUser'}">
+            <v-list-item-action>
+              <v-icon>fa-globe-europe</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>
+                Vos paniers publics
               </v-list-item-title>
             </v-list-item-content>
           </v-list-item>
@@ -45,7 +55,7 @@
             </v-list-item-action>
             <v-list-item-content>
               <v-list-item-title>
-                Paniers publics
+                Aider les autres !
               </v-list-item-title>
             </v-list-item-content>
           </v-list-item>
