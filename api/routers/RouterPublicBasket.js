@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const jwt = require('jsonwebtoken');
 const PublicBasket = require('../models/PublicBasket');
+const ShoppingList = require('../models/ShoppingList');
 
 /**
  * @api {post} /publicbasket make a private shopping list on public basket
@@ -13,40 +14,45 @@ const PublicBasket = require('../models/PublicBasket');
  * @apiError 500 Internal Server Error
  * @apiSuccess (201) {PublicBasket} PublicBasket Return PublicBasket
  */
-router.post('/publicbasket', (req, res) => {
+router.post('/publicbasket/:idShoppingList', (req, res) => {
+    const { idShoppingList } = req.params;
+    if (!idShoppingList) {
+        res.status(400).json({ type: 'error', code: 400, message: 'invalid idShoppingList' });
+        return;
+    }
     if (!req.authUser) {
         res.status(401).json({ type: 'error', code: 401, message: 'Authentification required' });
         return;
     }
     const user = req.authUser;
-    if (user.shoppingList.list.length === 0) {
-        res.status(400).json({ type: 'error', code: 400, message: 'Empty list' });
-        return;
-    }
-    if (user.shoppingList.settings.radius === 0) {
-        res.status(400).json({ type: 'error', code: 400, message: 'Empty settings' });
-        return;
-    }
-    const shoppingListUser = user.shoppingList.list;
-    const settingPublicBasket = user.shoppingList.settings;
-    const publicBasket = new PublicBasket({
-        shoppingList: {
-            list: shoppingListUser,
-            settings: settingPublicBasket,
-        },
-    });
+    ShoppingList.findById(idShoppingList).then((shoppingList) => {
+        if (shoppingList.list.length === 0) {
+            res.status(400).json({ type: 'error', code: 400, message: 'Empty list' });
+            return;
+        }
+        if (shoppingList.settings.radius === 0) {
+            res.status(400).json({ type: 'error', code: 400, message: 'Empty settings' });
+            return;
+        }
+        const publicBasket = new PublicBasket({
+            shoppingList: {
+                list: shoppingList.list,
+                settings: shoppingList.settings,
+            },
+        });
         // expiration token
-    const token = jwt.sign(
-        { id: user._id, email: user.email },
-        'test',
-        { expiresIn: '10000000' },
-    );
-    publicBasket.expiredToken = token;
-    // token user
-    publicBasket.user = user._id;
-    publicBasket.save((err, publicB) => {
-        if (err) throw err;
-        return res.status(200).json(publicB);
+        const token = jwt.sign(
+            { id: user._id, email: user.email },
+            'test',
+            { expiresIn: '10000000' },
+        );
+        publicBasket.expiredToken = token;
+        // token user
+        publicBasket.user = user._id;
+        publicBasket.save((err, publicB) => {
+            if (err) throw err;
+            return res.status(200).json(publicB);
+        });
     });
 });
 

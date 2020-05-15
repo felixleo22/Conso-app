@@ -80,7 +80,7 @@ export default {
   },
   methods: {
     createPublicBasket() {
-      this.$http.post('publicBasket').then(() => {
+      this.$http.post(`publicBasket/${this.idShoppingList}`).then(() => {
         this.text = 'Le panier public a été créé';
         this.success = true;
       }).catch((err) => {
