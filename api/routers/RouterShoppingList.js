@@ -99,6 +99,32 @@ router.post('/shoppinglist', (req, res) => {
 });
 
 /**
+ * @api {delete} /shoppinglist/:idShoppingList delete the list of shoppinglist of user whith id
+ * @apiName deleteShoppingListById
+ * @apiGroup shoppinglist
+ *
+ * @ApiHeader (Authorisation) {String} token Token Authorization value
+ *
+ * @apiError 500 Internal Server Error
+ *
+ * @apiSuccess (200) {List} List Return List
+ */
+router.delete('/shoppinglist/:idShoppingList', (req, res) => {
+    const { idShoppingList } = req.params;
+    if (!idShoppingList) {
+        res.status(400).json({ type: 'error', code: 400, message: 'invalid idShoppingList' });
+        return;
+    }
+    if (!req.authUser) {
+        res.status(401).json({ type: 'error', code: 401, message: 'Authentification required' });
+        return;
+    }
+    ShoppingList.findByIdAndDelete(idShoppingList)
+        .then(() => res.status(200).json(idShoppingList))
+        .catch((err) => res.status(500).json(err));
+});
+
+/**
  * @api {put} /shoppinglist add an item to the list of shoppingList
  * @apiName putShoppingList
  * @apiGroup shoppinglist

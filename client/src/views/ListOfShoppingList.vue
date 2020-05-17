@@ -5,7 +5,7 @@
       <alert-success v-if="success" :text="this.text"></alert-success>
       <alert-error v-if="error" :text="this.text"></alert-error>
       <v-dialog
-        v-model="dialog"
+        v-model="dialogCreateShoppingList"
         width="500">
         <template v-slot:activator="{ on }">
           <v-btn v-on="on">Créer</v-btn>
@@ -27,7 +27,7 @@
             <v-btn
               color="primary"
               text
-              @click="dialog=false">
+              @click="dialogCreateShoppingList=false">
               Annuler
             </v-btn>
             <v-spacer></v-spacer>
@@ -52,9 +52,31 @@
                      link :to="{name: 'shoppingList', params: {id: shoppingList._id}}"
                      text>
               Voir</v-btn>
-              <v-btn color="red"
-                     text>
+              <v-dialog v-model="dialogDeleteShoppingList" width="500">
+                <template v-slot:activator="{ on }">
+                <v-btn v-on="on"
+                       @click="setBeforeDelete(shoppingList._id, shoppingList.name)" color="red"
+                       text>
               Supprimer</v-btn>
+              </template>
+              <v-card>
+                  <v-card-title
+                    v-if="idBeforeDelete"
+                    class="headline grey lighten-2"
+                    primary-title
+                  >Supprimer la liste de course {{nameBeforeDelete}}</v-card-title>
+                  <v-card-text>
+                    Etes-vous sur de supprimer cette liste de course ? Cette suppression
+                    est irréversible
+                  </v-card-text>
+                  <v-divider></v-divider>
+                  <v-card-actions>
+                    <v-btn color="primary" text @click="dialogDeleteShoppingList=false">Non</v-btn>
+                    <v-spacer></v-spacer>
+                    <v-btn color="primary" text @click="deleteShoppingLists">Oui</v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
             </v-card-actions>
           </v-card>
         </v-col>
@@ -77,15 +99,18 @@ export default {
       success: false,
       error: false,
       text: '',
-      dialog: false,
+      dialogCreateShoppingList: false,
+      dialogDeleteShoppingList: false,
       name: '',
       shoppingLists: null,
+      idBeforeDelete: '',
+      nameBeforeDelete: '',
     };
   },
   methods: {
     createShoppingList() {
       this.$http.post('shoppinglist', { name: this.name }).then(() => {
-        this.text = 'La liste de course a été créé';
+        this.text = `La liste de course " ${this.name} " a été créé`;
         this.success = true;
         this.$http.get('/shoppinglist').then((response) => {
           this.shoppingLists = response.data;
@@ -95,7 +120,27 @@ export default {
         this.text = "La liste de course n'a pas pu être créé";
         console.log(err);
       }).finally(() => {
-        this.dialog = false;
+        this.dialogCreateShoppingList = false;
+        this.name = '';
+      });
+    },
+    setBeforeDelete(id, name) {
+      this.idBeforeDelete = id;
+      this.nameBeforeDelete = name;
+    },
+    deleteShoppingLists() {
+      this.$http.delete(`/shoppinglist/${this.idBeforeDelete}`).then(() => {
+        this.text = `La liste de course " ${this.nameBeforeDelete} " a été supprimé`;
+        // eslint-disable-next-line no-underscore-dangle
+        const index = this.shoppingLists.findIndex(e => e._id === this.idBeforeDelete);
+        this.shoppingLists.splice(index, 1);
+        this.success = true;
+      }).catch((err) => {
+        this.error = true;
+        this.text = `La liste de course " ${this.nameBeforeDelete} " n'a pas pu être surpprimé`;
+        console.log(err);
+      }).finally(() => {
+        this.dialogDeleteShoppingList = false;
       });
     },
   },
