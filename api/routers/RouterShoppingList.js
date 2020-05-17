@@ -51,7 +51,13 @@ router.get('/shoppinglist/:idShoppingList', (req, res) => {
         return;
     }
     ShoppingList.findById(idShoppingList)
-        .then((shoppingList) => res.status(200).json(shoppingList.list))
+        .then((shoppingList) => {
+            if (String(shoppingList.user) !== String(req.authUser._id)) {
+                res.status(401).json({ type: 'error', code: 401, message: 'Unauthorized' });
+                return;
+            }
+            res.status(200).json(shoppingList.list);
+        })
         .catch((err) => res.status(500).json(err));
 });
 
@@ -93,7 +99,7 @@ router.post('/shoppinglist', (req, res) => {
 });
 
 /**
- * @api {patch} /shoppinglist add an item to the list of shoppingList
+ * @api {put} /shoppinglist add an item to the list of shoppingList
  * @apiName putShoppingList
  * @apiGroup shoppinglist
  *
@@ -120,6 +126,10 @@ router.put('/shoppinglist/:idShoppingList', (req, res) => {
         return;
     }
     ShoppingList.findById(idShoppingList).then((shoppingList) => {
+        if (String(shoppingList.user) !== String(req.authUser._id)) {
+            res.status(401).json({ type: 'error', code: 401, message: 'Unauthorized' });
+            return;
+        }
         const indexOfCodebar = shoppingList.list.findIndex(
             (item) => item.codebar.toString() === data.codebar,
         );
@@ -163,6 +173,10 @@ router.patch('/shoppinglist/:idShoppingList', (req, res) => {
         return;
     }
     ShoppingList.findById(idShoppingList).then((shoppingList) => {
+        if (String(shoppingList.user) !== String(req.authUser._id)) {
+            res.status(401).json({ type: 'error', code: 401, message: 'Unauthorized' });
+            return;
+        }
         shoppingList.list.find(
             (item) => item.codebar === data.codebar,
         ).quantity = data.quantity;
@@ -198,6 +212,10 @@ router.delete('/shoppinglist/:idShoppingList', (req, res) => {
         return;
     }
     ShoppingList.findById(idShoppingList).then((shoppingList) => {
+        if (String(shoppingList.user) !== String(req.authUser._id)) {
+            res.status(401).json({ type: 'error', code: 401, message: 'Unauthorized' });
+            return;
+        }
         shoppingList.list = shoppingList.list.filter(
             (item) => item.codebar !== data.codebar,
         );
@@ -240,6 +258,10 @@ router.post('/shoppinglist/settings/:idShoppingList', (req, res) => {
         return;
     }
     ShoppingList.findById(idShoppingList).then((shoppingList) => {
+        if (String(shoppingList.user) !== String(req.authUser._id)) {
+            res.status(401).json({ type: 'error', code: 401, message: 'Unauthorized' });
+            return;
+        }
         shoppingList.settings = data;
         shoppingList.save((error, newShoppingList) => {
             if (error) throw error;
@@ -270,7 +292,13 @@ router.get('/shoppinglist/settings/:idShoppingList', (req, res) => {
         return;
     }
     ShoppingList.findById(idShoppingList)
-        .then((shoppingList) => res.status(200).json(shoppingList.settings))
+        .then((shoppingList) => {
+            if (String(shoppingList.user) !== String(req.authUser._id)) {
+                res.status(401).json({ type: 'error', code: 401, message: 'Unauthorized' });
+                return;
+            }
+            res.status(200).json(shoppingList.settings);
+        })
         .catch((err) => res.status(500).json(err));
 });
 
