@@ -73,7 +73,7 @@ router.get('/publicbaskets', (req, res) => {
         return;
     }
     const tab = [];
-    // delete if publicbasket if stay too long
+    // delete if stay too long
     PublicBasket.find({}, (err, publicBasket) => {
         if (err) throw err;
         publicBasket.forEach((pb) => {

@@ -78,12 +78,18 @@ const routes = [
     component() {
       return import('../views/ZoneShoppingList.vue');
     },
+    meta: {
+      requiresAuth: true,
+    },
   },
   {
     path: '/publicBasketOfUser',
     name: 'publicBasketOfUser',
     component() {
       return import('../views/PublicBasketOfUser.vue');
+    },
+    meta: {
+      requiresAuth: true,
     },
   },
   {
@@ -92,6 +98,9 @@ const routes = [
     component() {
       return import('../views/MapPublicBasketOfUser.vue');
     },
+    meta: {
+      requiresAuth: true,
+    },
   },
   {
     path: '/publicBaskets',
@@ -99,12 +108,18 @@ const routes = [
     component() {
       return import('../views/PublicBaskets.vue');
     },
+    meta: {
+      requiresAuth: true,
+    },
   },
   {
     path: '/mapPublicBasket/:id',
     name: 'mapPublicBasket',
     component() {
       return import('../views/MapPublicBasket.vue');
+    },
+    meta: {
+      requiresAuth: true,
     },
   },
 ];
