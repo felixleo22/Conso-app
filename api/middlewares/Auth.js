@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
-
+// middlewares
 module.exports = (req, res, next) => {
     // verify if header contains token
     if (!req.headers.authorization) {
