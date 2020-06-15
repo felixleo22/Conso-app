@@ -24,7 +24,7 @@
 export default {
   data() {
     return {
-      visible: true,
+      visible: false,
     };
   },
   props: ['nameBeforeDelete', 'idBeforeDelete', 'shoppingLists'],

@@ -8,7 +8,6 @@
       <!-- DIALOG -->
       <dialog-delete
                 ref="beforeDeleteList"
-                v-if="idBeforeDelete && nameBeforeDelete && shoppingLists"
                 :nameBeforeDelete="this.nameBeforeDelete"
                 :idBeforeDelete="this.idBeforeDelete"
                 :shoppingLists="this.shoppingLists"
@@ -117,7 +116,6 @@ export default {
     async setBeforeDelete(id, name) {
       this.idBeforeDelete = id;
       this.nameBeforeDelete = name;
-      // open modal
       this.$refs.beforeDeleteList.open();
     },
     deleteShoppingLists() {
