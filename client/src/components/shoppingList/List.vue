@@ -68,13 +68,14 @@
 
 <script>
 export default {
+  props: ['idShoppingList'],
   name: 'list',
   data() {
     return {
     };
   },
   mounted() {
-    this.$store.dispatch('getShoppingList');
+    this.$store.dispatch('getShoppingList', this.idShoppingList);
   },
   methods: {
     del(item) {

@@ -23,6 +23,8 @@ mongoose.connect('mongodb://mongodb/ConsoApp', {
 app.use(cors());
 app.use(bodyparser.json());
 
+app.use(require('./middlewares/Auth'));
+
 // Routers
 app.get('/', (req, res) => {
     res.json({ name: 'Conso App' });

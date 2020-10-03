@@ -54,6 +54,16 @@ const routes = [
   },
   {
     path: '/shoppinglist',
+    name: 'shoppingLists',
+    component() {
+      return import('../views/ListOfShoppingList.vue');
+    },
+    meta: {
+      requiresAuth: true,
+    },
+  },
+  {
+    path: '/shoppinglist/:id',
     name: 'shoppingList',
     component() {
       return import('../views/ShoppingList.vue');
@@ -67,6 +77,49 @@ const routes = [
     name: 'zoneshoppinglist',
     component() {
       return import('../views/NewShop.vue');
+    },
+    meta: {
+      requiresAuth: true,
+    },
+  },
+  {
+    path: '/publicBasketOfUser',
+    name: 'publicBasketOfUser',
+    component() {
+      return import('../views/PublicBasketOfUser.vue');
+    },
+    meta: {
+      requiresAuth: true,
+    },
+  },
+  {
+    path: '/mapPublicBasketOfUser/:id',
+    name: 'mapPublicBasketOfUser',
+    component() {
+      return import('../views/MapPublicBasketOfUser.vue');
+    },
+    meta: {
+      requiresAuth: true,
+    },
+  },
+  {
+    path: '/publicBaskets',
+    name: 'publicBaskets',
+    component() {
+      return import('../views/PublicBaskets.vue');
+    },
+    meta: {
+      requiresAuth: true,
+    },
+  },
+  {
+    path: '/mapPublicBasket/:id',
+    name: 'mapPublicBasket',
+    component() {
+      return import('../views/MapPublicBasket.vue');
+    },
+    meta: {
+      requiresAuth: true,
     },
   },
 ];

@@ -12,11 +12,9 @@ const user = new mongoose.Schema({
             quantity: { type: Number, required: true },
         }],
         settings: {
-            center: {
-                position: {
-                    lat: { type: Number, required: false },
-                    lng: { type: Number, required: false },
-                },
+            position: {
+                lat: { type: Number, required: false },
+                lng: { type: Number, required: false },
             },
             radius: { type: Number, required: false },
         },

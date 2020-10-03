@@ -1,63 +1,239 @@
 const router = require('express').Router();
 const jwt = require('jsonwebtoken');
-const Auth = require('../utils/Auth');
 const PublicBasket = require('../models/PublicBasket');
+const ShoppingList = require('../models/ShoppingList');
 
-router.post('/publicBasket', (req, res) => {
-    const auth = req.headers.authorization;
-    const tokenSplited = auth.split(' ');
-    console.log(tokenSplited[1]);
-    Auth(tokenSplited[1]).then((user) => {
-        const shoppingListUser = user.shoppingList;
+/**
+ * @api {post} /publicbasket make a private shopping list on public basket
+ * @apiName PostPublicBasket
+ * @apiGroup publicbasket
+ *
+ * @ApiHeader (Authorisation) {String} token Token Authorization value
+ *
+ * @apiError 400 Empty list or settings
+ * @apiError 500 Internal Server Error
+ * @apiSuccess (201) {PublicBasket} PublicBasket Return PublicBasket
+ */
+router.post('/publicbasket/:idShoppingList', (req, res) => {
+    const { idShoppingList } = req.params;
+    if (!idShoppingList) {
+        res.status(400).json({ type: 'error', code: 400, message: 'invalid idShoppingList' });
+        return;
+    }
+    if (!req.authUser) {
+        res.status(401).json({ type: 'error', code: 401, message: 'Authentification required' });
+        return;
+    }
+    const user = req.authUser;
+    ShoppingList.findById(idShoppingList).then((shoppingList) => {
+        if (shoppingList.list.length === 0) {
+            res.status(400).json({ type: 'error', code: 400, message: 'Empty list' });
+            return;
+        }
+        if (shoppingList.settings.radius === 0) {
+            res.status(400).json({ type: 'error', code: 400, message: 'Empty settings' });
+            return;
+        }
         const publicBasket = new PublicBasket({
-            shoppingList: shoppingListUser,
+            shoppingList: {
+                list: shoppingList.list,
+                settings: shoppingList.settings,
+            },
         });
+        // expiration token
         const token = jwt.sign(
             { id: user._id, email: user.email },
             'test',
-            { expiresIn: '100000' },
+            { expiresIn: '10000000' },
         );
         publicBasket.expiredToken = token;
-        // eslint-disable-next-line prefer-destructuring
-        publicBasket.user = tokenSplited[1];
+        // token user
+        publicBasket.user = user._id;
         publicBasket.save((err, publicB) => {
             if (err) throw err;
-            res.status(200).json(publicB);
+            return res.status(200).json(publicB);
         });
-    }).catch((error) => {
-        const err = JSON.parse(error.message);
-        res.status(err.code).json(err);
     });
 });
 
-router.get('/publicBasket', (req, res) => {
-    const auth = req.headers.authorization;
-    const tokenSplited = auth.split(' ');
-    console.log(tokenSplited[1]);
-    const publicBasketReturn = [];
-    Auth(tokenSplited[1]).then(() => {
-        PublicBasket.find({}, (err, publicBasket) => {
-            if (err) throw err;
-            publicBasket.forEach((pb) => {
-                jwt.verify(pb.expiredToken, 'test', (err2, decoded) => {
-                    if (err2) {
-                        PublicBasket.findByIdAndDelete(publicBasket._id);
-                    }
-                    if (decoded) {
-                        publicBasketReturn.push(pb);
-                    }
-                });
+/**
+ * @api {get} /publicbaskets get all publicBasket where the token has not expired
+ * @apiName getPublicBaskets
+ * @apiGroup publicbasket
+ *
+ * @ApiHeader (Authorisation) {String} token Token Authorization value
+ *
+ * @apiError 500 Internal Server Error
+ *
+ * @apiSuccess (201) {PublicBasket} PublicBasket Return publicBasket
+ */
+router.get('/publicbaskets', (req, res) => {
+    if (!req.authUser) {
+        res.status(401).json({ type: 'error', code: 401, message: 'Authentification required' });
+        return;
+    }
+    const tab = [];
+    // delete if stay too long
+    PublicBasket.find({}, (err, publicBasket) => {
+        if (err) throw err;
+        publicBasket.forEach((pb) => {
+            jwt.verify(pb.expiredToken, 'test', (err2, decoded) => {
+                if (decoded) {
+                    tab.push(pb);
+                }
             });
-            res.status(200).json(publicBasketReturn);
         });
+        res.status(200).json(tab);
     });
 });
 
-router.post('/publicBasket/product/:id', (req) => {
-    const auth = req.headers.authorization;
-    const tokenSplited = auth.split(' ');
-    console.log(tokenSplited[1]);
+/**
+ * @api {get} /publicbasket/:idBasket get publicbasket with idBasket
+ * @apiName getPublicBasketWithId
+ * @apiGroup publicbasket
+ *
+ * @ApiHeader (Authorisation) {String} token Token Authorization value
+ *
+ * @apiError 400 invalid idBasket
+ * @apiError 500 Internal Server Error
+ *
+ * @apiSuccess (201) {PublicBasket} PublicBasket Return publicBasket
+ */
+router.get('/publicBasket/:idBasket', (req, res) => {
+    const { idBasket } = req.params;
+    if (!idBasket) {
+        res.status(400).json({ type: 'error', code: 400, message: 'invalid idBasket' });
+        return;
+    }
+    if (!req.authUser) {
+        res.status(401).json({ type: 'error', code: 401, message: 'Authentification required' });
+        return;
+    }
+    PublicBasket.findById(idBasket).then((publicBasket) => res.status(200).json(publicBasket))
+        .catch((err) => res.status(500).json(err));
 });
 
+/**
+ * @api {get} /publicbasket/:idBasket/settings get settings of publicBasket with idBasket
+ * where the token has not expired
+ * @apiName getSettingsOfPublicBasketWithId
+ * @apiGroup publicbasket
+ *
+ * @ApiHeader (Authorisation) {String} token Token Authorization value
+ *
+ * @apiError 400 invalid idBasket
+ * @apiSuccess (201) {Settings} Setting Return Settings of publicBasket
+ */
+router.get('/publicBasket/:idBasket/settings', (req, res) => {
+    const { idBasket } = req.params;
+    if (!idBasket) {
+        res.status(400).json({ type: 'error', code: 400, message: 'invalid idBasket' });
+        return;
+    }
+    if (!req.authUser) {
+        res.status(401).json({ type: 'error', code: 401, message: 'Authentification required' });
+        return;
+    }
+    // eslint-disable-next-line max-len
+    PublicBasket.findById(idBasket).then((publicBasket) => res.status(200).json(publicBasket.shoppingList.settings))
+        .catch((err) => res.status(500).json(err));
+});
 
+/**
+ * @api {get} /publicbaskets/user get publicbaskets of user
+ * @apiName getPublicBasketOfUser
+ * @apiGroup publicbasket
+ *
+ * @ApiHeader (Authorisation) {String} token Token Authorization value
+ *
+ * @apiSuccess (201) {publicBasketsOfUser} publicBasketsOfUser Return publicBasketsOfUser
+ */
+router.get('/publicBaskets/user', (req, res) => {
+    const publicBasketReturn = [];
+    if (!req.authUser) {
+        res.status(401).json({ type: 'error', code: 401, message: 'Authentification required' });
+        return;
+    }
+    const user = req.authUser;
+    PublicBasket.find({ user: user._id }, (err, publicBasket) => {
+        if (err) throw err;
+        publicBasket.forEach((pb) => {
+            jwt.verify(pb.expiredToken, 'test', (err2, decoded) => {
+                if (err2) {
+                    PublicBasket.findByIdAndDelete(publicBasket._id);
+                }
+                if (decoded) {
+                    publicBasketReturn.push(pb);
+                }
+            });
+        });
+        res.status(200).json(publicBasketReturn);
+    });
+});
+
+/**
+ * @api {get} /publicbasket/settings/:idBasket/user/:idUser get settings of public basket
+ * with the id where the token has not expired
+ * @apiName getSettingOfPublicBasketOfUserWithId
+ * @apiGroup publicbasket
+ *
+ * @ApiHeader (Authorisation) {String} token Token Authorization value
+ *
+ * @apiError 400 invalid idBasket
+ * @apiSuccess (201) {Settings} Setting Return Settings of publicBasketsOfUser
+ */
+router.get('/publicbasket/settings/:idBasket/user', (req, res) => {
+    const { idBasket } = req.params;
+    if (!idBasket) {
+        res.status(400).json({ type: 'error', code: 400, message: 'invalid idBasket' });
+        return;
+    }
+    if (!req.authUser) {
+        res.status(401).json({ type: 'error', code: 401, message: 'Authentification required' });
+        return;
+    }
+    const user = req.authUser;
+    PublicBasket.findById(idBasket).then((basket) => {
+        if (String(basket.user) !== String(user._id)) {
+            res.status(401).json({ type: 'error', message: 'Not authorized' });
+            return;
+        }
+        res.status(200).json(basket.shoppingList.settings);
+    }).catch((err) => {
+        res.status(500).json(err);
+    });
+});
+
+/**
+ * @api {delete} /publicbasket/:id/user delete publicBasketOfUser with the id
+ * @apiName deletePublicBasketOfUserWithId
+ * @apiGroup publicbasket
+ *
+ * @ApiHeader (Authorisation) {String} token Token Authorization value
+ *
+ * @apiError 404 id does not exist
+ * @apiSuccess (201) {publicbasketsOfUser} publicBasketsOfUser Return publicBasketsOfUser
+ */
+router.delete('/publicbasket/:id/user', (req, res) => {
+    console.log('salut cest moi ');
+    const idBasket = req.params.id;
+    if (!idBasket) {
+        res.status(400).json({ type: 'error', code: 401, message: 'Missing id' });
+        return;
+    }
+    if (!req.authUser) {
+        res.status(401).json({ type: 'error', code: 401, message: 'Authentification required' });
+        return;
+    }
+    const user = req.authUser;
+    PublicBasket.findById(idBasket).then((publicBasket) => {
+        if (String(publicBasket.user) !== String(user._id)) {
+            res.status(401).json({ status: 401, msg: 'Not Autorized' });
+            return;
+        }
+        PublicBasket.findByIdAndDelete(publicBasket._id).then(() => {
+            res.status(200).json(publicBasket);
+        });
+    });
+});
 module.exports = router;

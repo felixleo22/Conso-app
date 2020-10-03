@@ -70,6 +70,7 @@
 
 <script>
 export default {
+  props: ['idShoppingList'],
   name: 'searchbar',
   data() {
     return {

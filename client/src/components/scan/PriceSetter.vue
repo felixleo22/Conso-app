@@ -73,7 +73,6 @@ export default {
     },
     onSave() {
       this.$store.dispatch('setLoading', true);
-
       this.$http.put(`/shop/${this.shop._id}/product/${this.product.code}`, { price: this.price })
         .then((response) => {
           this.$emit('updated', response.data);

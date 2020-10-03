@@ -5,11 +5,22 @@ const geolib = require('geolib');
 const Shop = require('../models/Shop');
 const Price = require('../models/Price');
 
-const Auth = require('../utils/Auth');
-
-
+/**
+ * @api {get} /shop/:id get shop by id
+ * @apiName getShopById
+ * @apiGroup shop
+ *
+ * @apiError 400 invalid idShop
+ * @apiError 500 Internal Server Error
+ *
+ * @apiSuccess (200) {Shop} Shop Return Shop
+ */
 router.get('/shop/:id', (req, res) => {
     const shopId = req.params.id;
+    if (!shopId) {
+        res.status(400).json(({ type: 'error', code: 400, message: 'invalid idShop' }));
+        return;
+    }
     Shop.findById(shopId, (err, shop) => {
         if (err) throw err;
 
@@ -19,7 +30,16 @@ router.get('/shop/:id', (req, res) => {
     });
 });
 
-// create a new shop
+/**
+ * @api {post} /shop create a new shop
+ * @apiName postShop
+ * @apiGroup shop
+ *
+ * @apiError 400 missing data
+ * @apiError 500 Internal Server Error
+ *
+ * @apiSuccess (201) {Shop} Shop Return Shop
+ */
 router.post('/shop', (req, res) => {
     const data = req.body;
 
@@ -27,26 +47,25 @@ router.post('/shop', (req, res) => {
         res.status(400).json({ type: 'error', code: 400, message: 'Missing data' });
         return;
     }
-
-    const auth = req.headers.authorization;
-
-    Auth(auth)
-        .then(() => {
-            const shop = new Shop(data);
-
-            shop.save((err) => {
-                if (err) {
-                    throw err;
-                }
-                res.status(201).send(shop);
-            });
-        })
-        .catch((error) => {
-            const err = JSON.parse(error.message);
-            res.status(err.code).json(err);
-        });
+    const shop = new Shop(data);
+    shop.save((err) => {
+        if (err) {
+            throw err;
+        }
+        res.status(201).send(shop);
+    });
 });
 
+/**
+ * @api {put} /shop/:id create a new shop
+ * @apiName putShop
+ * @apiGroup shop
+ *
+ * @apiError 400 missing data
+ * @apiError 500 Internal Server Error
+ *
+ * @apiSuccess (200) {Shop} Shop Return Shop
+ */
 router.put('/shop/:id', (req, res) => {
     const shopId = req.params.id;
     const data = req.body;
@@ -72,7 +91,16 @@ router.put('/shop/:id', (req, res) => {
     });
 });
 
-
+/**
+ * @api {get} /shop/:idShop/product/:barCodeProduct get price a product of one shop
+ * @apiName getPriceProductOfShop
+ * @apiGroup shop
+ *
+ * @apiError 400 missing data
+ * @apiError 500 Internal Server Error
+ *
+ * @apiSuccess (200) {Price} Price Return Price
+ */
 router.get('/shop/:idShop/product/:barCodeProduct', (req, res) => {
     const barcode = req.params.barCodeProduct;
     const shop = req.params.idShop;
@@ -89,49 +117,69 @@ router.get('/shop/:idShop/product/:barCodeProduct', (req, res) => {
     });
 });
 
-// Update price of a product in a shop (need auth)
+/**
+ * @api {put} /shop/:idShop/product/:barCodeProduct Update price of a product in a shop
+ * @apiName putPriceProductOfShop
+ * @apiGroup shop
+ *
+ * @ApiHeader (Authorisation) {String} token Token Authorization value
+ *
+ * @apiError 400 missing data
+ * @apiError 500 Internal Server Error
+ *
+ * @apiSuccess (200) {Price} Price Return Price
+ */
 router.put('/shop/:idShop/product/:barCodeProduct', (req, res) => {
-    const auth = req.headers.authorization;
+    if (!req.authUser) {
+        res.status(401).json({ type: 'error', code: 401, message: 'Authentification required' });
+        return;
+    }
 
-    Auth(auth).then((user) => {
-        const barcode = req.params.barCodeProduct;
-        const shop = req.params.idShop;
-        const priceValue = req.body.price;
+    const user = req.authUser;
 
-        Price.findOne({ shop, product: barcode }, (err, price) => {
-            if (err) throw err;
+    const barcode = req.params.barCodeProduct;
+    const shop = req.params.idShop;
+    const priceValue = req.body.price;
 
-            if (!price) {
-                const createdPrice = new Price({
-                    shop,
-                    product: barcode,
-                    price: priceValue,
-                    updated_at: new Date(),
-                    updated_by: user._id,
-                });
+    Price.findOne({ shop, product: barcode }, (err, price) => {
+        if (err) throw err;
 
-                createdPrice.save(err, (err2, newPrice) => {
-                    if (err2) throw err2;
-                    res.json(newPrice);
-                });
-                return;
-            }
+        if (!price) {
+            const createdPrice = new Price({
+                shop,
+                product: barcode,
+                price: priceValue,
+                updated_at: new Date(),
+                updated_by: user._id,
+            });
 
-            price.price = priceValue;
-            price.updated_at = new Date();
-            price.updated_by = user._id;
-
-            price.save((err2, newPrice) => {
+            createdPrice.save(err, (err2, newPrice) => {
                 if (err2) throw err2;
                 res.json(newPrice);
             });
+            return;
+        }
+
+        price.price = priceValue;
+        price.updated_at = new Date();
+        price.updated_by = user._id;
+
+        price.save((err2, newPrice) => {
+            if (err2) throw err2;
+            res.json(newPrice);
         });
-    }).catch((error) => {
-        const err = JSON.parse(error.message);
-        res.status(err.code).json(err);
     });
 });
 
+/**
+ * @api {get} /shops get shops
+ * @apiName getShops
+ * @apiGroup shop
+ *
+ * @apiError 500 Internal Server Error
+ *
+ * @apiSuccess (200) {Shops} Shops Return Shops
+ */
 router.get('/shops', (req, res) => {
     let query = Shop.find();
     // filter by bounds
@@ -146,20 +194,20 @@ router.get('/shops', (req, res) => {
         query = query.where('position.lat').gt(latMin).lt(latMax);
     }
     // filter when inside circle
-
     query.exec((error, result) => {
         const tab = {
             shops: result,
         };
-        if (req.query.center && req.query.radius) {
-            const center = req.query.center.split(',');
+        console.log(result);
+        if (req.query.position && req.query.radius) {
+            const position = req.query.position.split(',');
             tab.shops = tab.shops.filter((elem) => {
                 const dist = geolib.getDistance({
                     latitude: Number(elem.position.lat),
                     longitude: Number(elem.position.lng),
                 }, {
-                    latitude: Number(center[0]),
-                    longitude: Number(center[1]),
+                    latitude: Number(position[0]),
+                    longitude: Number(position[1]),
                 });
                 return dist <= req.query.radius * 1000;
             });
