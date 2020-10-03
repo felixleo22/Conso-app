@@ -2,22 +2,20 @@ version: "3"
 
 services:
   client:
-    image: node:14.5.0
-    working_dir: /app/client
-    volumes:
-      - ./client:/app/client
+    build:
+      context: ./api
     command: "npm run serve"
     ports:
       - "22000:8080"
 
   api:
-    image: node:14.5.0
-    working_dir: /app/client
-    volumes:
-      - ./api:/app/client
+    build:
+      context: ./client
     command: "npm run dev"
     ports:
       - "8080:8080"
+    links: 
+      - database:mongodb
       
   database:
     image: mongo:4.2
@@ -30,10 +28,3 @@ services:
         - ./mongo-volume:/data/db
     ports:
         - '27017:27017'
-
-  dbmanager:
-    image: mongo-express:0.54
-    ports:
-      - "8081:8081"
-    links:
-      - database:mongo

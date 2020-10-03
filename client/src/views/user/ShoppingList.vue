@@ -52,10 +52,11 @@
 
 <script>
 
-import alertSuccess from '../components/alerts/AlertSuccess.vue';
-import alertError from '../components/alerts/AlertError.vue';
-import SearchBar from '../components/shoppingList/SearchBar.vue';
-import List from '../components/shoppingList/List.vue';
+const alertError = require('../../components/alerts/AlertError');
+const alertSuccess = require('../../components/alerts/AlertSuccess.vue');
+const SearchBar = require('../../components/shoppingList/SearchBar.vue');
+const List = require('../../components/shoppingList/List.vue');
+
 
 export default {
   name: 'shoppingList',

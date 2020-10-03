@@ -1,7 +1,0 @@
-{
-    "eslint.workingDirectories": [
-        "api",
-        "client"
-    ],
-    "vscode-corda.isCordaProject": false
-}

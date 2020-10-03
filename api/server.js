@@ -11,23 +11,25 @@ const RouterProducts = require('./routers/RouterProducts');
 const RouterShoppingList = require('./routers/RouterShoppingList');
 const RouterPublicBasket = require('./routers/RouterPublicBasket');
 
+const authMiddleware = require('./middlewares/auth');
+
 // create app
 const app = express();
 
 // database
 mongoose.connect('mongodb://mongodb/ConsoApp', {
-    useNewUrlParser: true,
+  useNewUrlParser: true,
 });
 
 // middleware
 app.use(cors());
 app.use(bodyparser.json());
 
-app.use(require('./middlewares/Auth'));
+app.use(authMiddleware);
 
 // Routers
 app.get('/', (req, res) => {
-    res.json({ name: 'Conso App' });
+  res.json({ name: 'Conso App' });
 });
 
 app.use(RouterShops);
@@ -40,10 +42,10 @@ app.use(RouterPublicBasket);
 app.all('*', (req, res) => res.status(400).json({ type: 'error', code: 400, message: 'bad request' }));
 // eslint-disable-next-line no-unused-vars
 app.use((error, req, res, next) => {
-    console.log(error);
-    return res.status(500).json({ type: 'error', code: 500, message: error.message });
+  console.log(error);
+  return res.status(500).json({ type: 'error', code: 500, message: error.message });
 });
 
 app.listen(8080, () => {
-    console.log('Conso App API is running !');
+  console.log('Conso App API is running !');
 });

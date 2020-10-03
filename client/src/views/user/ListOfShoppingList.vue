@@ -73,9 +73,9 @@
 </template>
 
 <script>
-import alertSuccess from '../components/alerts/AlertSuccess.vue';
-import alertError from '../components/alerts/AlertError.vue';
-import dialogDelete from '../components/dialog/BeforeDeleteList.vue';
+const alertError = require('../../components/alerts/AlertError');
+const alertSuccess = require('../../components/alerts/AlertSuccess.vue');
+const dialogDelete = require('../../components/dialog/BeforeDeleteList.vue');
 
 export default {
   components: {

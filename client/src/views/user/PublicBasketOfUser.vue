@@ -48,8 +48,8 @@
 </template>
 
 <script>
-import alertSuccess from '../components/alerts/AlertSuccess.vue';
-import alertError from '../components/alerts/AlertError.vue';
+const alertError = require('../../components/alerts/AlertError');
+const alertSuccess = require('../../components/alerts/AlertSuccess.vue');
 
 export default {
   components: {

@@ -15,45 +15,45 @@ const ShoppingList = require('../models/ShoppingList');
  * @apiSuccess (201) {PublicBasket} PublicBasket Return PublicBasket
  */
 router.post('/publicbasket/:idShoppingList', (req, res) => {
-    const { idShoppingList } = req.params;
-    if (!idShoppingList) {
-        res.status(400).json({ type: 'error', code: 400, message: 'invalid idShoppingList' });
-        return;
+  const { idShoppingList } = req.params;
+  if (!idShoppingList) {
+    res.status(400).json({ type: 'error', code: 400, message: 'invalid idShoppingList' });
+    return;
+  }
+  if (!req.authUser) {
+    res.status(401).json({ type: 'error', code: 401, message: 'Authentification required' });
+    return;
+  }
+  const user = req.authUser;
+  ShoppingList.findById(idShoppingList).then((shoppingList) => {
+    if (shoppingList.list.length === 0) {
+      res.status(400).json({ type: 'error', code: 400, message: 'Empty list' });
+      return;
     }
-    if (!req.authUser) {
-        res.status(401).json({ type: 'error', code: 401, message: 'Authentification required' });
-        return;
+    if (shoppingList.settings.radius === 0) {
+      res.status(400).json({ type: 'error', code: 400, message: 'Empty settings' });
+      return;
     }
-    const user = req.authUser;
-    ShoppingList.findById(idShoppingList).then((shoppingList) => {
-        if (shoppingList.list.length === 0) {
-            res.status(400).json({ type: 'error', code: 400, message: 'Empty list' });
-            return;
-        }
-        if (shoppingList.settings.radius === 0) {
-            res.status(400).json({ type: 'error', code: 400, message: 'Empty settings' });
-            return;
-        }
-        const publicBasket = new PublicBasket({
-            shoppingList: {
-                list: shoppingList.list,
-                settings: shoppingList.settings,
-            },
-        });
-        // expiration token
-        const token = jwt.sign(
-            { id: user._id, email: user.email },
-            'test',
-            { expiresIn: '10000000' },
-        );
-        publicBasket.expiredToken = token;
-        // token user
-        publicBasket.user = user._id;
-        publicBasket.save((err, publicB) => {
-            if (err) throw err;
-            return res.status(200).json(publicB);
-        });
+    const publicBasket = new PublicBasket({
+      shoppingList: {
+        list: shoppingList.list,
+        settings: shoppingList.settings,
+      },
     });
+    // expiration token
+    const token = jwt.sign(
+      { id: user._id, email: user.email },
+      'test',
+      { expiresIn: '10000000' },
+    );
+    publicBasket.expiredToken = token;
+    // token user
+    publicBasket.user = user._id;
+    publicBasket.save((err, publicB) => {
+      if (err) throw err;
+      return res.status(200).json(publicB);
+    });
+  });
 });
 
 /**
@@ -68,23 +68,23 @@ router.post('/publicbasket/:idShoppingList', (req, res) => {
  * @apiSuccess (201) {PublicBasket} PublicBasket Return publicBasket
  */
 router.get('/publicbaskets', (req, res) => {
-    if (!req.authUser) {
-        res.status(401).json({ type: 'error', code: 401, message: 'Authentification required' });
-        return;
-    }
-    const tab = [];
-    // delete if stay too long
-    PublicBasket.find({}, (err, publicBasket) => {
-        if (err) throw err;
-        publicBasket.forEach((pb) => {
-            jwt.verify(pb.expiredToken, 'test', (err2, decoded) => {
-                if (decoded) {
-                    tab.push(pb);
-                }
-            });
-        });
-        res.status(200).json(tab);
+  if (!req.authUser) {
+    res.status(401).json({ type: 'error', code: 401, message: 'Authentification required' });
+    return;
+  }
+  const tab = [];
+  // delete if stay too long
+  PublicBasket.find({}, (err, publicBasket) => {
+    if (err) throw err;
+    publicBasket.forEach((pb) => {
+      jwt.verify(pb.expiredToken, 'test', (err2, decoded) => {
+        if (decoded) {
+          tab.push(pb);
+        }
+      });
     });
+    res.status(200).json(tab);
+  });
 });
 
 /**
@@ -100,17 +100,17 @@ router.get('/publicbaskets', (req, res) => {
  * @apiSuccess (201) {PublicBasket} PublicBasket Return publicBasket
  */
 router.get('/publicBasket/:idBasket', (req, res) => {
-    const { idBasket } = req.params;
-    if (!idBasket) {
-        res.status(400).json({ type: 'error', code: 400, message: 'invalid idBasket' });
-        return;
-    }
-    if (!req.authUser) {
-        res.status(401).json({ type: 'error', code: 401, message: 'Authentification required' });
-        return;
-    }
-    PublicBasket.findById(idBasket).then((publicBasket) => res.status(200).json(publicBasket))
-        .catch((err) => res.status(500).json(err));
+  const { idBasket } = req.params;
+  if (!idBasket) {
+    res.status(400).json({ type: 'error', code: 400, message: 'invalid idBasket' });
+    return;
+  }
+  if (!req.authUser) {
+    res.status(401).json({ type: 'error', code: 401, message: 'Authentification required' });
+    return;
+  }
+  PublicBasket.findById(idBasket).then((publicBasket) => res.status(200).json(publicBasket))
+    .catch((err) => res.status(500).json(err));
 });
 
 /**
@@ -125,18 +125,18 @@ router.get('/publicBasket/:idBasket', (req, res) => {
  * @apiSuccess (201) {Settings} Setting Return Settings of publicBasket
  */
 router.get('/publicBasket/:idBasket/settings', (req, res) => {
-    const { idBasket } = req.params;
-    if (!idBasket) {
-        res.status(400).json({ type: 'error', code: 400, message: 'invalid idBasket' });
-        return;
-    }
-    if (!req.authUser) {
-        res.status(401).json({ type: 'error', code: 401, message: 'Authentification required' });
-        return;
-    }
-    // eslint-disable-next-line max-len
-    PublicBasket.findById(idBasket).then((publicBasket) => res.status(200).json(publicBasket.shoppingList.settings))
-        .catch((err) => res.status(500).json(err));
+  const { idBasket } = req.params;
+  if (!idBasket) {
+    res.status(400).json({ type: 'error', code: 400, message: 'invalid idBasket' });
+    return;
+  }
+  if (!req.authUser) {
+    res.status(401).json({ type: 'error', code: 401, message: 'Authentification required' });
+    return;
+  }
+  // eslint-disable-next-line max-len
+  PublicBasket.findById(idBasket).then((publicBasket) => res.status(200).json(publicBasket.shoppingList.settings))
+    .catch((err) => res.status(500).json(err));
 });
 
 /**
@@ -149,26 +149,26 @@ router.get('/publicBasket/:idBasket/settings', (req, res) => {
  * @apiSuccess (201) {publicBasketsOfUser} publicBasketsOfUser Return publicBasketsOfUser
  */
 router.get('/publicBaskets/user', (req, res) => {
-    const publicBasketReturn = [];
-    if (!req.authUser) {
-        res.status(401).json({ type: 'error', code: 401, message: 'Authentification required' });
-        return;
-    }
-    const user = req.authUser;
-    PublicBasket.find({ user: user._id }, (err, publicBasket) => {
-        if (err) throw err;
-        publicBasket.forEach((pb) => {
-            jwt.verify(pb.expiredToken, 'test', (err2, decoded) => {
-                if (err2) {
-                    PublicBasket.findByIdAndDelete(publicBasket._id);
-                }
-                if (decoded) {
-                    publicBasketReturn.push(pb);
-                }
-            });
-        });
-        res.status(200).json(publicBasketReturn);
+  const publicBasketReturn = [];
+  if (!req.authUser) {
+    res.status(401).json({ type: 'error', code: 401, message: 'Authentification required' });
+    return;
+  }
+  const user = req.authUser;
+  PublicBasket.find({ user: user._id }, (err, publicBasket) => {
+    if (err) throw err;
+    publicBasket.forEach((pb) => {
+      jwt.verify(pb.expiredToken, 'test', (err2, decoded) => {
+        if (err2) {
+          PublicBasket.findByIdAndDelete(publicBasket._id);
+        }
+        if (decoded) {
+          publicBasketReturn.push(pb);
+        }
+      });
     });
+    res.status(200).json(publicBasketReturn);
+  });
 });
 
 /**
@@ -183,25 +183,25 @@ router.get('/publicBaskets/user', (req, res) => {
  * @apiSuccess (201) {Settings} Setting Return Settings of publicBasketsOfUser
  */
 router.get('/publicbasket/settings/:idBasket/user', (req, res) => {
-    const { idBasket } = req.params;
-    if (!idBasket) {
-        res.status(400).json({ type: 'error', code: 400, message: 'invalid idBasket' });
-        return;
+  const { idBasket } = req.params;
+  if (!idBasket) {
+    res.status(400).json({ type: 'error', code: 400, message: 'invalid idBasket' });
+    return;
+  }
+  if (!req.authUser) {
+    res.status(401).json({ type: 'error', code: 401, message: 'Authentification required' });
+    return;
+  }
+  const user = req.authUser;
+  PublicBasket.findById(idBasket).then((basket) => {
+    if (String(basket.user) !== String(user._id)) {
+      res.status(401).json({ type: 'error', message: 'Not authorized' });
+      return;
     }
-    if (!req.authUser) {
-        res.status(401).json({ type: 'error', code: 401, message: 'Authentification required' });
-        return;
-    }
-    const user = req.authUser;
-    PublicBasket.findById(idBasket).then((basket) => {
-        if (String(basket.user) !== String(user._id)) {
-            res.status(401).json({ type: 'error', message: 'Not authorized' });
-            return;
-        }
-        res.status(200).json(basket.shoppingList.settings);
-    }).catch((err) => {
-        res.status(500).json(err);
-    });
+    res.status(200).json(basket.shoppingList.settings);
+  }).catch((err) => {
+    res.status(500).json(err);
+  });
 });
 
 /**
@@ -215,25 +215,25 @@ router.get('/publicbasket/settings/:idBasket/user', (req, res) => {
  * @apiSuccess (201) {publicbasketsOfUser} publicBasketsOfUser Return publicBasketsOfUser
  */
 router.delete('/publicbasket/:id/user', (req, res) => {
-    console.log('salut cest moi ');
-    const idBasket = req.params.id;
-    if (!idBasket) {
-        res.status(400).json({ type: 'error', code: 401, message: 'Missing id' });
-        return;
+  console.log('salut cest moi ');
+  const idBasket = req.params.id;
+  if (!idBasket) {
+    res.status(400).json({ type: 'error', code: 401, message: 'Missing id' });
+    return;
+  }
+  if (!req.authUser) {
+    res.status(401).json({ type: 'error', code: 401, message: 'Authentification required' });
+    return;
+  }
+  const user = req.authUser;
+  PublicBasket.findById(idBasket).then((publicBasket) => {
+    if (String(publicBasket.user) !== String(user._id)) {
+      res.status(401).json({ status: 401, msg: 'Not Autorized' });
+      return;
     }
-    if (!req.authUser) {
-        res.status(401).json({ type: 'error', code: 401, message: 'Authentification required' });
-        return;
-    }
-    const user = req.authUser;
-    PublicBasket.findById(idBasket).then((publicBasket) => {
-        if (String(publicBasket.user) !== String(user._id)) {
-            res.status(401).json({ status: 401, msg: 'Not Autorized' });
-            return;
-        }
-        PublicBasket.findByIdAndDelete(publicBasket._id).then(() => {
-            res.status(200).json(publicBasket);
-        });
+    PublicBasket.findByIdAndDelete(publicBasket._id).then(() => {
+      res.status(200).json(publicBasket);
     });
+  });
 });
 module.exports = router;

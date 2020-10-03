@@ -2,6 +2,10 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import store from '../store';
 
+const auth = require('./auth');
+const user = require('./user');
+const published = require('./published');
+
 Vue.use(VueRouter);
 
 const routes = [
@@ -10,36 +14,6 @@ const routes = [
     name: 'home',
     component() {
       return import('../views/Home.vue');
-    },
-  },
-  {
-    path: '/signup',
-    name: 'signup',
-    component() {
-      return import('../views/SignUp.vue');
-    },
-    meta: {
-      requiresVisitor: true,
-    },
-  },
-  {
-    path: '/login',
-    name: 'login',
-    component() {
-      return import('../views/LogIn.vue');
-    },
-    meta: {
-      requiresVisitor: true,
-    },
-  },
-  {
-    path: '/logout',
-    name: 'logout',
-    component() {
-      return import('../views/LogOut.vue');
-    },
-    meta: {
-      requiresAuth: true,
     },
   },
   {
@@ -52,77 +26,11 @@ const routes = [
       requiresAuth: true,
     },
   },
-  {
-    path: '/shoppinglist',
-    name: 'shoppingLists',
-    component() {
-      return import('../views/ListOfShoppingList.vue');
-    },
-    meta: {
-      requiresAuth: true,
-    },
-  },
-  {
-    path: '/shoppinglist/:id',
-    name: 'shoppingList',
-    component() {
-      return import('../views/ShoppingList.vue');
-    },
-    meta: {
-      requiresAuth: true,
-    },
-  },
-  {
-    path: '/zoneshoppinglist',
-    name: 'zoneshoppinglist',
-    component() {
-      return import('../views/NewShop.vue');
-    },
-    meta: {
-      requiresAuth: true,
-    },
-  },
-  {
-    path: '/publicBasketOfUser',
-    name: 'publicBasketOfUser',
-    component() {
-      return import('../views/PublicBasketOfUser.vue');
-    },
-    meta: {
-      requiresAuth: true,
-    },
-  },
-  {
-    path: '/mapPublicBasketOfUser/:id',
-    name: 'mapPublicBasketOfUser',
-    component() {
-      return import('../views/MapPublicBasketOfUser.vue');
-    },
-    meta: {
-      requiresAuth: true,
-    },
-  },
-  {
-    path: '/publicBaskets',
-    name: 'publicBaskets',
-    component() {
-      return import('../views/PublicBaskets.vue');
-    },
-    meta: {
-      requiresAuth: true,
-    },
-  },
-  {
-    path: '/mapPublicBasket/:id',
-    name: 'mapPublicBasket',
-    component() {
-      return import('../views/MapPublicBasket.vue');
-    },
-    meta: {
-      requiresAuth: true,
-    },
-  },
 ];
+
+routes.concat(auth);
+routes.concat(user);
+routes.concat(published);
 
 const router = new VueRouter({
   mode: 'history',

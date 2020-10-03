@@ -6,33 +6,33 @@
   "scripts": {
     "start": "ENV=prod node server.js",
     "dev": "ENV=dev nodemon server.js",
-    "lint": "eslint --ext .js --ignore-path ../.gitignore ."
+    "lint": "eslint --ext .js --ignore-path .gitignore ."
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/felixleo22/ConsoApp.git"
   },
-  "author": "Conso App Team",
-  "license": "ISC",
+  "author": "felixleo22",
+  "license": "USC",
   "bugs": {
     "url": "https://github.com/felixleo22/ConsoApp/issues"
   },
   "homepage": "https://github.com/felixleo22/ConsoApp#readme",
   "devDependencies": {
-    "eslint": "^6.8.0",
-    "eslint-config-airbnb-base": "^14.0.0",
-    "eslint-plugin-import": "^2.19.1",
+    "eslint": "^7.10.0",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-plugin-import": "^2.22.1",
     "husky": "^4.0.0",
     "nodemon": "^2.0.2"
   },
   "dependencies": {
-    "jsonwebtoken": "^8.5.1",
+    "axios": "^0.20.0",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "geolib": "^3.2.1",
+    "jsonwebtoken": "^8.5.1",
     "mongodb": "^3.4.1",
-    "mongoose": "^5.8.11",
-    "node-fetch": "^2.6.1"
+    "mongoose": "^5.8.11"
   }
 }
