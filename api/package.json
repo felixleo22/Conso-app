@@ -33,6 +33,6 @@
     "geolib": "^3.2.1",
     "mongodb": "^3.4.1",
     "mongoose": "^5.8.11",
-    "node-fetch": "^2.6.0"
+    "node-fetch": "^2.6.1"
   }
 }
