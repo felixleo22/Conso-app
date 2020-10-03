@@ -2,7 +2,7 @@
   <v-container>
     <h2 class="text-center">Se connecter à Conso App</h2>
 
-    <v-form>
+    <v-form @submit.prevent="login">
       <v-row>
         <v-col
           cols="12"
@@ -34,7 +34,7 @@
       </v-row>
       <v-row>
         <v-col cols="12" class="text-center">
-          <v-btn color="primary" @click="login">
+          <v-btn color="primary" type="submit">
             Se connecter
           </v-btn>
         </v-col>
@@ -55,6 +55,9 @@ export default {
   },
   methods: {
     login() {
+      if (this.$store.getters.isLoading) return;
+      this.$store.dispatch('setLoading', true);
+
       this.$store.dispatch('retrieveToken', {
         email: this.email,
         password: this.password,
@@ -70,6 +73,9 @@ export default {
           if (error.status === 400) {
             console.log('Email ou mot de passe incorrecte ! ');
           }
+        })
+        .finally(() => {
+          this.$store.dispatch('setLoading', false);
         });
     },
   },

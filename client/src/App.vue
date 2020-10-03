@@ -104,6 +104,16 @@
           <v-icon>fa-bars</v-icon>
         </v-app-bar-nav-icon>
         <v-toolbar-title class="font-weight-bold">Conso App</v-toolbar-title>
+
+        <v-progress-linear
+          absolute
+          bottom
+          indeterminate
+          stripped
+          :active="isLoading"
+          color="red lighten-4"
+        >
+        </v-progress-linear>
     </v-app-bar>
 
     <v-content>
@@ -124,6 +134,9 @@ export default {
   computed: {
     loggedIn() {
       return this.$store.getters.loggedIn;
+    },
+    isLoading() {
+      return this.$store.getters.isLoading;
     },
   },
   methods: {

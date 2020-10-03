@@ -50,6 +50,9 @@ export default {
   },
   methods: {
     onScanned(event) {
+      if (this.$store.getters.isLoading) return;
+      this.$store.dispatch('setLoading', true);
+
       const barcode = event;
       this.$http.get(`/product/${barcode}`)
         .then((response) => {
@@ -65,6 +68,9 @@ export default {
           this.error = true;
           this.text = 'le code bar ne correspond à aucun produit';
           console.log(error.response);
+        })
+        .finally(() => {
+          this.$store.dispatch('setLoading', false);
         });
     },
   },

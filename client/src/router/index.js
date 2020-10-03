@@ -76,7 +76,7 @@ const routes = [
     path: '/zoneshoppinglist',
     name: 'zoneshoppinglist',
     component() {
-      return import('../views/ZoneShoppingList.vue');
+      return import('../views/NewShop.vue');
     },
     meta: {
       requiresAuth: true,
@@ -131,6 +131,10 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
+  // show loading bar
+  store.dispatch('setLoading', true);
+
+  // view metas
   if (to.matched.some(record => record.meta.requiresAuth)) {
     // when route require to be logged in
     if (!store.getters.loggedIn) {
@@ -154,6 +158,11 @@ router.beforeEach((to, from, next) => {
     // when no meta are specified
     next();
   }
+});
+
+router.afterEach(() => {
+  // hide loading bar
+  setTimeout(() => { store.dispatch('setLoading', false); }, 500);
 });
 
 export default router;

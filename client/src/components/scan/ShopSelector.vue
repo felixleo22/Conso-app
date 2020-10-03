@@ -1,14 +1,29 @@
 <template>
   <div class="leaflet-wrapper">
     <leaflet
-      @ready="getLocalisation"
-      @viewchanged="getShops"
-      :options="options"
-      :markers="shops"
-      @markerclick="selectShop">
+      @viewChange="getShops"
+      :items="shops"
+      @markerClick="selectShop"
+    >
     </leaflet>
-    <v-dialog v-model="dialog"
-    max-width="500">
+
+    <v-btn
+      fixed
+      fab
+      bottom
+      right
+      title="Ajouter un magasin"
+      color="red accent-4"
+      style="bottom: 6vh; right: 24px;"
+      @click="createShop"
+    >
+      <v-icon color="white">fa-plus</v-icon>
+    </v-btn>
+
+    <v-dialog
+      v-model="dialog"
+      max-width="500"
+    >
       <v-card>
         <v-card-title primary-title>{{selected ? selected.name : ''}}</v-card-title>
         <v-card-text>{{selected ? selected.address: ''}}</v-card-text>
@@ -97,6 +112,9 @@ export default {
         name: '',
         address: '',
       };
+    },
+    createShop() {
+      this.$router.push({ name: 'newshop' });
     },
   },
 };
